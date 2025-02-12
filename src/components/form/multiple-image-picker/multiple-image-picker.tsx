@@ -89,7 +89,7 @@ function MultipleImagePicker(props: MultipleImagePickerProps) {
       "image/png": [],
     },
     maxFiles: 1,
-    maxSize: 1024 * 1024 * 2, // 2MB
+    maxSize: 1024 * 1024 * 4, // 2MB
     disabled: isLoading || props.disabled,
   });
 
@@ -143,7 +143,7 @@ function MultipleImagePicker(props: MultipleImagePickerProps) {
                     />
                   </IconButton>
                 </StyledOverlay>
-                <img src={item.path} loading="lazy" />
+                <img src={item.path} loading="lazy" alt="" />
               </ImageListItem>
             ))}
           </ImageList>

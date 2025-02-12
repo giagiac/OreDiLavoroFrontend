@@ -89,7 +89,7 @@ function ImagePicker(props: ImagePickerProps) {
       "image/png": [],
     },
     maxFiles: 1,
-    maxSize: 1024 * 1024 * 2, // 2MB
+    maxSize: 1024 * 1024 * 4, // 2MB
     disabled: isLoading || props.disabled,
   });
 
@@ -142,7 +142,7 @@ function ImagePicker(props: ImagePickerProps) {
                   />
                 </IconButton>
               </StyledOverlay>
-              <img src={props.value.path} loading="lazy" />
+              <img src={props.value.path} loading="lazy" alt="" />
             </ImageListItem>
           </ImageList>
         </>

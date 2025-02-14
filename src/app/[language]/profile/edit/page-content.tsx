@@ -21,6 +21,7 @@ import Box from "@mui/material/Box";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
 import { UserProviderEnum } from "@/services/api/types/user";
+import MyDropzone from "@/components/form/avatar-input/MyDropzone";
 
 type EditProfileBasicInfoFormData = {
   firstName: string;
@@ -207,6 +208,8 @@ function FormBasicInfo() {
 
   return (
     <FormProvider {...methods}>
+      {/* <MyDropzone />
+      <hr /> */}
       <Container maxWidth="xs">
         <form onSubmit={onSubmit}>
           <Grid container spacing={2} mb={3} mt={3}>

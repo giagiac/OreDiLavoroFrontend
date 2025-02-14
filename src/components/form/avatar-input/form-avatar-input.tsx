@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import React, { useCallback, useState } from "react";
+//import * as reactDropzone from "react-dropzone"
 import { useDropzone } from "react-dropzone";
 import {
   Controller,
@@ -17,6 +18,8 @@ import {
 import { useTranslation } from "react-i18next";
 import IconButton from "@mui/material/IconButton";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
+
+// const { useDropzone } = reactDropzone;
 
 type AvatarInputProps = {
   error?: string;
@@ -98,7 +101,7 @@ function AvatarInput(props: AvatarInputProps) {
       "image/png": [],
     },
     maxFiles: 1,
-    maxSize: 1024 * 1024 * 2, // 2MB
+    maxSize: 1024 * 1024 * 4, // 2MB
     disabled: isLoading || props.disabled,
   });
 

@@ -117,6 +117,16 @@ function ResponsiveAppBar() {
                     </Typography>
                   </MenuItem>,
                   // mobile-menu-items
+                  <MenuItem
+                    key="home"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/home-panel"
+                  >
+                    <Typography textAlign="center">
+                      {t("common:navigation.homePanel")}
+                    </Typography>
+                  </MenuItem>,
                 ]}
               {isLoaded &&
                 !user && [
@@ -186,6 +196,14 @@ function ResponsiveAppBar() {
                     {t("common:navigation.users")}
                   </Button>
                   {/* desktop-menu-items */}
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                    component={Link}
+                    href="/home-panel"
+                  >
+                    {t("common:navigation.homePanel")}
+                  </Button>
                 </>
               )}
           </Box>

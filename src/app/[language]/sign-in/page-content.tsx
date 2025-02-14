@@ -22,6 +22,7 @@ import Chip from "@mui/material/Chip";
 import { isGoogleAuthEnabled } from "@/services/social-auth/google/google-config";
 import { isFacebookAuthEnabled } from "@/services/social-auth/facebook/facebook-config";
 import { IS_SIGN_UP_ENABLED } from "@/services/auth/config";
+import LogoApp from "@/components/logo-app";
 
 type SignInFormData = {
   email: string;
@@ -110,7 +111,16 @@ function Form() {
       <Container maxWidth="xs">
         <form onSubmit={onSubmit}>
           <Grid container spacing={2} mb={2}>
-            <Grid size={{ xs: 12 }} mt={3}>
+            <Grid
+              size={{ xs: 12 }}
+              mt={3}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <LogoApp />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
               <Typography variant="h6">{t("sign-in:title")}</Typography>
             </Grid>
             <Grid size={{ xs: 12 }}>

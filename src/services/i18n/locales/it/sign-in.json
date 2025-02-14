@@ -1,0 +1,32 @@
+{
+  "title": "Accedi",
+  "actions": {
+    "submit": "Accedi",
+    "createAccount": "Crea Account",
+    "forgotPassword": "Password dimenticata?"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "validation": {
+        "required": "L'email è obbligatoria",
+        "invalid": "L'email non è valida",
+        "server": {
+          "emailNotExists": "L'email non esiste",
+          "notFound": "L'email non esiste"
+        }
+      }
+    },
+    "password": {
+      "label": "Password",
+      "validation": {
+        "required": "La password è obbligatoria",
+        "min": "La password deve essere lunga almeno 6 caratteri",
+        "server": {
+          "incorrectPassword": "La password non è valida"
+        }
+      }
+    }
+  },
+  "or": "OPPURE"
+}

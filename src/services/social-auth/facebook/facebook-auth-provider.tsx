@@ -29,7 +29,8 @@ declare global {
 
 // Add new languages here
 const languageToCode: Record<LanguageCode, string> = {
-  en: "en_US",
+  it: "it_IT",
+  // en: "en_US",
 };
 
 const useCodeFromLanguage = () => {
@@ -38,7 +39,7 @@ const useCodeFromLanguage = () => {
     .replace("_", "-")
     .split("-")[0] as LanguageCode;
 
-  return languageToCode[language] || languageToCode.en;
+  return languageToCode[language] || languageToCode.it;
 };
 
 function FacebookProvider({ children }: FacebookAuthProviderProps) {

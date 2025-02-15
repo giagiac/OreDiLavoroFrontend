@@ -112,11 +112,10 @@ function Form() {
         <form onSubmit={onSubmit}>
           <Grid container spacing={2} mb={2}>
             <Grid
-              size={{ xs: 12 }}
+              size={{ xs: 6 }}
               mt={3}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
+              container
+              textAlign={{ xs: "center" }}
             >
               <LogoApp />
             </Grid>

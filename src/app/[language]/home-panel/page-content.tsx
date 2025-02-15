@@ -4,7 +4,7 @@ import { RoleEnum } from "@/services/api/types/role";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useTranslation } from "@/services/i18n/client";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";

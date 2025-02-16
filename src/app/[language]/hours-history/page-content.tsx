@@ -2,12 +2,9 @@
 
 import { RoleEnum } from "@/services/api/types/role";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
-import { useTranslation } from "@/services/i18n/client";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import React from "react";
+import { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
@@ -17,11 +14,11 @@ import "dayjs/locale/en";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function AdminPanel() {
-  const { t } = useTranslation("admin-panel-home");
+  // const { t } = useTranslation("admin-panel-home");
 
   const language = useLanguage();
 
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs());
+  const [value, setValue] = useState<Dayjs | null>(dayjs());
 
   return (
     <Container maxWidth="md">

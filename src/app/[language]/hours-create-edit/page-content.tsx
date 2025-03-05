@@ -18,6 +18,7 @@ function AdminPanel() {
             CTREATE {t("title")}
           </Typography>
           <Typography>{t("description")}</Typography>
+          
         </Grid>
       </Grid>
     </Container>

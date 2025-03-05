@@ -46,7 +46,7 @@ function AdminPanel() {
                 color="secondary"
                 size="large"
                 style={{ height: 80 }}
-                onClick={() => router.push("/hours-create-edit")}
+                onClick={() => router.push("/hours-create-edit/hours")}
                 endIcon={"🆕 ✍🏻"}
               >
                 {t("createEdit")}

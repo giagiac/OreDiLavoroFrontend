@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 function AdminPanel() {
   const router = useRouter();
-  const { t } = useTranslation("admin-panel-home");
+  const { t } = useTranslation("user-panel-home");
   const { user } = useAuth();
 
   return (
@@ -47,6 +47,7 @@ function AdminPanel() {
                 size="large"
                 style={{ height: 80 }}
                 onClick={() => router.push("/hours-create-edit")}
+                endIcon={"🆕 ✍🏻"}
               >
                 {t("createEdit")}
               </Button>
@@ -58,7 +59,8 @@ function AdminPanel() {
                 color="primary"
                 size="large"
                 style={{ height: 80 }}
-                onClick={() => router.push("/hours-history")}
+                onClick={() => router.push("/hours-history/commesse")}
+                endIcon={"🔒"}
               >
                 {t("history")}
               </Button>

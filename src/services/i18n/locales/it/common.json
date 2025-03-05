@@ -1,5 +1,5 @@
 {
-  "app-name": "APP",
+  "app-name": "ORE DI LAVORO",
   "loading": "Loading ...",
   "navigation": {
     "home": "Home",
@@ -8,7 +8,8 @@
     "signUp": "Sign Up",
     "profile": "Profile",
     "users": "Users",
-    "logout": "Logout"
+    "logout": "Logout",
+    "articoliCosti": "Costi Articoli"
   },
   "formInputs": {
     "avatarInput": {

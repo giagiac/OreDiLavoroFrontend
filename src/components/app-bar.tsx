@@ -1,26 +1,26 @@
 "use client";
-import { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
+import Link from "@/components/link";
+import ThemeSwitchButton from "@/components/switch-theme-button";
+import { RoleEnum } from "@/services/api/types/role";
+import { IS_SIGN_UP_ENABLED } from "@/services/auth/config";
 import useAuth from "@/services/auth/use-auth";
 import useAuthActions from "@/services/auth/use-auth-actions";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "@/services/i18n/client";
-import Link from "@/components/link";
-import { RoleEnum } from "@/services/api/types/role";
+import MenuIcon from "@mui/icons-material/Menu";
+import AppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
-import ThemeSwitchButton from "@/components/switch-theme-button";
-import { IS_SIGN_UP_ENABLED } from "@/services/auth/config";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
 
 function ResponsiveAppBar() {
   const { t } = useTranslation("common");
@@ -116,6 +116,16 @@ function ResponsiveAppBar() {
                       {t("common:navigation.users")}
                     </Typography>
                   </MenuItem>,
+                  <MenuItem
+                    key="articoliCosti"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/admin-panel/articoliCosti"
+                  >
+                    <Typography textAlign="center">
+                      {t("common:navigation.articoliCosti")}
+                    </Typography>
+                  </MenuItem>,
                   // mobile-menu-items,
                 ]}
               {!!user?.role && [
@@ -199,6 +209,14 @@ function ResponsiveAppBar() {
                     {t("common:navigation.users")}
                   </Button>
                   {/* desktop-menu-items */}
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                    component={Link}
+                    href="/admin-panel/articoliCosti"
+                  >
+                    {t("common:navigation.articoliCosti")}
+                  </Button>
                 </>
               )}
             {!!user?.role && (

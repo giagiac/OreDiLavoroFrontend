@@ -2,46 +2,24 @@
 
 import { RoleEnum } from "@/services/api/types/role";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import { useState } from "react";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import dayjs, { Dayjs } from "dayjs";
-import useLanguage from "@/services/i18n/use-language";
-import "dayjs/locale/it";
 import "dayjs/locale/en";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import "dayjs/locale/it";
+import { useTranslation } from "react-i18next";
 
 function AdminPanel() {
-  // const { t } = useTranslation("admin-panel-home");
-
-  const language = useLanguage();
-
-  const [value, setValue] = useState<Dayjs | null>(dayjs());
+  const { t } = useTranslation("hours-history");
 
   return (
     <Container maxWidth="md">
-      <Grid
-        container
-        direction="column"
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <Grid container spacing={3} wrap="nowrap" pt={3}>
         <Grid>
-          <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            adapterLocale={language}
-          >
-            <DatePicker
-              label="Date Picker"
-              format="YYYY/MM/DD"
-              value={value}
-              onChange={(newValue) => setValue(newValue)}
-            />
-          </LocalizationProvider>
+          <Typography variant="h3" gutterBottom>
+            {t("title")}
+          </Typography>
+          <Typography>{t("description")}</Typography>
         </Grid>
       </Grid>
     </Container>

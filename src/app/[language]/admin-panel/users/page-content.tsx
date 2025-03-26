@@ -1,11 +1,36 @@
 "use client";
 
+import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
+import Link from "@/components/link";
+import { useDeleteUsersService } from "@/services/api/services/users";
 import { RoleEnum } from "@/services/api/types/role";
+import { SortEnum } from "@/services/api/types/sort-type";
+import { User } from "@/services/api/types/user";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Table, TableBody, TableHead } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
+import Grow from "@mui/material/Grow";
+import LinearProgress from "@mui/material/LinearProgress";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import { styled } from "@mui/material/styles";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   PropsWithChildren,
   useCallback,
@@ -13,35 +38,10 @@ import {
   useRef,
   useState,
 } from "react";
+import FormCreateEdit from "../operatori/create-operatori/page-content";
 import { useGetUsersQuery, usersQueryKeys } from "./queries/queries";
-import { TableVirtuoso } from "react-virtuoso";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import Avatar from "@mui/material/Avatar";
-import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
-import TableComponents from "@/components/table/table-components";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import { User } from "@/services/api/types/user";
-import Link from "@/components/link";
-import useAuth from "@/services/auth/use-auth";
-import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
-import { useDeleteUsersService } from "@/services/api/services/users";
-import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import UserFilter from "./user-filter";
-import { useRouter, useSearchParams } from "next/navigation";
-import TableSortLabel from "@mui/material/TableSortLabel";
 import { UserFilterType, UserSortType } from "./user-filter-types";
-import { SortEnum } from "@/services/api/types/sort-type";
 
 type UsersKeys = keyof User;
 
@@ -319,77 +319,75 @@ function Users() {
             </Grid>
           </Grid>
         </Grid>
-
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableVirtuoso
-            style={{ height: 500 }}
-            data={result}
-            components={TableComponents}
-            endReached={handleScroll}
-            overscan={20}
-            useWindowScroll
-            increaseViewportBy={400}
-            fixedHeaderContent={() => (
-              <>
-                <TableRow>
-                  <TableCell style={{ width: 50 }}></TableCell>
-                  <TableSortCellWrapper
-                    width={100}
-                    orderBy={orderBy}
-                    order={order}
-                    column="id"
-                    handleRequestSort={handleRequestSort}
-                  >
-                    {tUsers("admin-panel-users:table.column1")}
-                  </TableSortCellWrapper>
-                  <TableCell style={{ width: 200 }}>
-                    {tUsers("admin-panel-users:table.column2")}
-                  </TableCell>
-                  <TableSortCellWrapper
-                    orderBy={orderBy}
-                    order={order}
-                    column="email"
-                    handleRequestSort={handleRequestSort}
-                  >
-                    {tUsers("admin-panel-users:table.column3")}
-                  </TableSortCellWrapper>
-
-                  <TableCell style={{ width: 80 }}>
-                    {tUsers("admin-panel-users:table.column4")}
-                  </TableCell>
-                  <TableCell style={{ width: 130 }}></TableCell>
-                </TableRow>
-                {isFetchingNextPage && (
-                  <TableRow>
-                    <TableCellLoadingContainer colSpan={6}>
-                      <LinearProgress />
-                    </TableCellLoadingContainer>
-                  </TableRow>
-                )}
-              </>
-            )}
-            itemContent={(index, user) => (
-              <>
-                <TableCell style={{ width: 50 }}>
-                  <Avatar
-                    alt={user?.firstName + " " + user?.lastName}
-                    src={user?.photo?.path}
-                  />
-                </TableCell>
-                <TableCell style={{ width: 100 }}>{user?.id}</TableCell>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ width: 50 }}></TableCell>
+                <TableSortCellWrapper
+                  width={100}
+                  orderBy={orderBy}
+                  order={order}
+                  column="id"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {tUsers("admin-panel-users:table.column1")}
+                </TableSortCellWrapper>
                 <TableCell style={{ width: 200 }}>
-                  {user?.firstName} {user?.lastName}
+                  {tUsers("admin-panel-users:table.column2")}
                 </TableCell>
-                <TableCell>{user?.email}</TableCell>
+                <TableSortCellWrapper
+                  orderBy={orderBy}
+                  order={order}
+                  column="email"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {tUsers("admin-panel-users:table.column3")}
+                </TableSortCellWrapper>
+
                 <TableCell style={{ width: 80 }}>
-                  {tRoles(`role.${user?.role?.id}`)}
+                  {tUsers("admin-panel-users:table.column4")}
                 </TableCell>
-                <TableCell style={{ width: 130 }}>
-                  {!!user && <Actions user={user} />}
-                </TableCell>
-              </>
-            )}
-          />
+                <TableCell style={{ width: 130 }}></TableCell>
+                <TableCell style={{ width: 230 }}>Operatore HG</TableCell>
+              </TableRow>
+              {isFetchingNextPage && (
+                <TableRow>
+                  <TableCellLoadingContainer colSpan={6}>
+                    <LinearProgress />
+                  </TableCellLoadingContainer>
+                </TableRow>
+              )}
+            </TableHead>
+            <TableBody>
+              {result.map((user) => {
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell style={{ width: 50 }}>
+                      <Avatar
+                        alt={user?.firstName + " " + user?.lastName}
+                        src={user?.photo?.path}
+                      />
+                    </TableCell>
+                    <TableCell style={{ width: 100 }}>{user?.id}</TableCell>
+                    <TableCell style={{ width: 200 }}>
+                      {user?.firstName} {user?.lastName}
+                    </TableCell>
+                    <TableCell>{user?.email}</TableCell>
+                    <TableCell style={{ width: 80 }}>
+                      {tRoles(`role.${user?.role?.id}`)}
+                    </TableCell>
+                    <TableCell style={{ width: 130 }}>
+                      {!!user && <Actions user={user} />}
+                    </TableCell>
+                    <TableCell style={{ width: 230 }}>
+                      <FormCreateEdit user={user} />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </Grid>
       </Grid>
     </Container>

@@ -120,7 +120,7 @@ function ResponsiveAppBar() {
                     key="articoliCosti"
                     onClick={handleCloseNavMenu}
                     component={Link}
-                    href="/admin-panel/articoliCosti"
+                    href="/admin-panel/articoli-costi"
                   >
                     <Typography textAlign="center">
                       {t("common:navigation.articoliCosti")}
@@ -213,7 +213,7 @@ function ResponsiveAppBar() {
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: "white", display: "block" }}
                     component={Link}
-                    href="/admin-panel/articoliCosti"
+                    href="/admin-panel/articoli-costi"
                   >
                     {t("common:navigation.articoliCosti")}
                   </Button>

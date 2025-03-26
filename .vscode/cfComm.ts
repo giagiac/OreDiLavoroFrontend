@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import useFetch from "../src/services/api/use-fetch";
 import { API_URL } from "../src/services/api/config";
-import wrapperFetchJsonResponse from "../src/services/api/wrapper-fetch-json-response";
+import { RequestConfigType } from "../src/services/api/services/types/request-config";
 import { CfComm } from "../src/services/api/types/cfComm";
 import { InfinityPaginationType } from "../src/services/api/types/infinity-pagination";
 import { Role } from "../src/services/api/types/role";
 import { SortEnum } from "../src/services/api/types/sort-type";
-import { RequestConfigType } from "../src/services/api/services/types/request-config";
+import useFetch from "../src/services/api/use-fetch";
+import wrapperFetchJsonResponse from "../src/services/api/wrapper-fetch-json-response";
 
 export type CfCommRequest = {
   page: number;

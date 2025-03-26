@@ -1,4 +1,5 @@
 import { FileEntity } from "./file-entity";
+import { Operatori } from "./operatori";
 import { Role } from "./role";
 
 export enum UserProviderEnum {
@@ -15,4 +16,7 @@ export type User = {
   provider?: UserProviderEnum;
   socialId?: string;
   role?: Role;
+
+  COD_OP?: string | null
+  operatori: Operatori | null
 };

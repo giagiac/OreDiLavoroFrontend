@@ -65,164 +65,6 @@ function TableSortCellWrapper(
   );
 }
 
-// function Actions({ user }: { user: User }) {
-//   const [open, setOpen] = useState(false);
-//   const { user: authUser } = useAuth();
-//   const { confirmDialog } = useConfirmDialog();
-//   const fetchUserDelete = useDeleteUsersService();
-//   const queryClient = useQueryClient();
-//   const anchorRef = useRef<HTMLDivElement>(null);
-//   const canDelete = user.id !== authUser?.id;
-//   const { t: tUsers } = useTranslation("admin-panel-users");
-
-//   const handleToggle = () => {
-//     setOpen((prevOpen) => !prevOpen);
-//   };
-
-//   const handleClose = (event: Event) => {
-//     if (
-//       anchorRef.current &&
-//       anchorRef.current.contains(event.target as HTMLElement)
-//     ) {
-//       return;
-//     }
-
-//     setOpen(false);
-//   };
-
-//   const handleDelete = async () => {
-//     const isConfirmed = await confirmDialog({
-//       title: tUsers("hours-history:confirm.delete.title"),
-//       message: tUsers("hours-history:confirm.delete.message"),
-//     });
-
-//     if (isConfirmed) {
-//       setOpen(false);
-
-//       const searchParams = new URLSearchParams(window.location.search);
-//       const searchParamsFilter = searchParams.get("filter");
-//       const searchParamsSort = searchParams.get("sort");
-
-//       let filter: UserFilterType | undefined = undefined;
-//       let sort: UserSortType | undefined = {
-//         order: SortEnum.DESC,
-//         orderBy: "id",
-//       };
-
-//       if (searchParamsFilter) {
-//         filter = JSON.parse(searchParamsFilter);
-//       }
-
-//       if (searchParamsSort) {
-//         sort = JSON.parse(searchParamsSort);
-//       }
-
-//       const previousData = queryClient.getQueryData<
-//         InfiniteData<{ nextPage: number; data: User[] }>
-//       >(usersQueryKeys.list().sub.by({ sort, filter }).key);
-
-//       await queryClient.cancelQueries({ queryKey: usersQueryKeys.list().key });
-
-//       const newData = {
-//         ...previousData,
-//         pages: previousData?.pages.map((page) => ({
-//           ...page,
-//           data: page?.data.filter((item) => item.id !== user.id),
-//         })),
-//       };
-
-//       queryClient.setQueryData(
-//         usersQueryKeys.list().sub.by({ sort, filter }).key,
-//         newData
-//       );
-
-//       await fetchUserDelete({
-//         id: user.id,
-//       });
-//     }
-//   };
-
-//   const mainButton = (
-//     <Button
-//       size="small"
-//       variant="contained"
-//       LinkComponent={Link}
-//       href={`/admin-panel/users/edit/${user.id}`}
-//     >
-//       {tUsers("hours-history:actions.edit")}
-//     </Button>
-//   );
-
-//   return (
-//     <>
-//       {[!canDelete].every(Boolean) ? (
-//         mainButton
-//       ) : (
-//         <ButtonGroup
-//           variant="contained"
-//           ref={anchorRef}
-//           aria-label="split button"
-//           size="small"
-//         >
-//           {mainButton}
-
-//           <Button
-//             size="small"
-//             aria-controls={open ? "split-button-menu" : undefined}
-//             aria-expanded={open ? "true" : undefined}
-//             aria-label="select merge strategy"
-//             aria-haspopup="menu"
-//             onClick={handleToggle}
-//           >
-//             <ArrowDropDownIcon />
-//           </Button>
-//         </ButtonGroup>
-//       )}
-//       <Popper
-//         sx={{
-//           zIndex: 1,
-//         }}
-//         open={open}
-//         anchorEl={anchorRef.current}
-//         role={undefined}
-//         transition
-//         disablePortal
-//       >
-//         {({ TransitionProps, placement }) => (
-//           <Grow
-//             {...TransitionProps}
-//             style={{
-//               transformOrigin:
-//                 placement === "bottom" ? "center top" : "center bottom",
-//             }}
-//           >
-//             <Paper>
-//               <ClickAwayListener onClickAway={handleClose}>
-//                 <MenuList id="split-button-menu" autoFocusItem>
-//                   {canDelete && (
-//                     <MenuItem
-//                       sx={{
-//                         bgcolor: "error.main",
-//                         color: `var(--mui-palette-common-white)`,
-//                         "&:hover": {
-//                           bgcolor: "error.light",
-//                         },
-//                       }}
-//                       onClick={handleDelete}
-//                     >
-//                       {tUsers("hours-history:actions.delete")}
-//                     </MenuItem>
-//                   )}
-//                 </MenuList>
-//               </ClickAwayListener>
-//             </Paper>
-//           </Grow>
-//         )}
-//       </Popper>
-//     </>
-//   );
-// }
-
 function Commesse() {
   const { t: tHoursHistory } = useTranslation("hours-history");
   // const { t: tRoles } = useTranslation("admin-panel-roles");
@@ -288,7 +130,7 @@ function Commesse() {
 
   const language = useLanguage();
 
-  const [value, setValue] = useState<Dayjs | null>(dayjs());
+  const [dateSelected, setDateSelected] = useState<Dayjs | null>(dayjs());
 
   return (
     <Container maxWidth="md">
@@ -315,8 +157,8 @@ function Commesse() {
             <DatePicker
               label={t("hours-history:formInputs.dateFilter.label")}
               format="DD//MM//YYYY"
-              value={value}
-              onChange={(newValue) => setValue(newValue)}
+              value={dateSelected}
+              onChange={(newValue) => setDateSelected(newValue)}
             />
           </LocalizationProvider>
         </Grid>
@@ -351,7 +193,7 @@ function Commesse() {
             style={{ height: 500 }}
             data={result}
             components={TableComponents}
-            endReached={handleScroll}
+            //endReached={handleScroll}
             overscan={20}
             useWindowScroll
             increaseViewportBy={400}
@@ -422,6 +264,13 @@ function Commesse() {
               </>
             )}
           />
+          <Grid mt={2} textAlign={"center"}>
+            <Grid>
+              <Button variant="contained" onClick={() => handleScroll()}>
+                NEXT
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

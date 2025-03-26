@@ -1,6 +1,5 @@
 "use client";
 
-import TableComponents from "@/components/table/table-components";
 import { Cf } from "@/services/api/types/cf";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { RoleEnum } from "@/services/api/types/role";
@@ -12,7 +11,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import LinkIcon from "@mui/icons-material/Link";
-import TableBody from "@mui/material/TableBody";
+import { TableHead, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
@@ -20,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import LinearProgress from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
@@ -35,11 +35,11 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { TableVirtuoso } from "react-virtuoso";
+import FormCreateEdit from "./create/page-content-cf";
 import CfCommPage from "./page-content-cf-comm";
 import { useGetCfQuery } from "./queries/queries";
 
-type CfsKeys = keyof Cf;
+type CfKeys = keyof Cf;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -48,12 +48,12 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
 function TableSortFilterCellWrapper(
   props: PropsWithChildren<{
     width?: number | string;
-    orderBy: CfsKeys;
+    orderBy: CfKeys;
     order: SortEnum;
-    column: CfsKeys;
+    column: CfKeys;
     handleRequestSort: (
       event: React.MouseEvent<unknown>,
-      property: CfsKeys
+      property: CfKeys
     ) => void;
     filters: Array<FilterItem<Cf>>;
     handleRequestFilter: (prop: FilterItem<Cf>) => void;
@@ -173,7 +173,7 @@ function Cfs() {
 
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
-    orderBy: CfsKeys;
+    orderBy: CfKeys;
   }>(() => {
     const searchParamsSort = searchParams.get("sort");
     if (searchParamsSort) {
@@ -192,7 +192,7 @@ function Cfs() {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: CfsKeys
+    property: CfKeys
   ) => {
     const isAsc = orderBy === property && order === SortEnum.ASC;
     const searchParams = new URLSearchParams(window.location.search);
@@ -266,6 +266,8 @@ function Cfs() {
     );
   };
 
+  const theme = useTheme();
+
   return (
     <Container maxWidth="xl">
       <Grid container spacing={3} pt={3}>
@@ -289,103 +291,127 @@ function Cfs() {
         </Grid>
 
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableVirtuoso
-            style={{ height: 500 }}
-            data={result}
-            components={TableComponents}
-            //endReached={handleScroll}
-            // overscan={20}
-            useWindowScroll
-            // increaseViewportBy={400}
-            fixedHeaderContent={() => (
-              <>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ width: "10%" }} />
+                <TableSortFilterCellWrapper
+                  width={"10%"}
+                  orderBy={orderBy}
+                  order={order}
+                  column="COD_CF"
+                  filters={filters}
+                  handleRequestSort={handleRequestSort}
+                  handleRequestFilter={handleRequestFilter}
+                >
+                  {tArticoliCosti("table.column1")}
+                </TableSortFilterCellWrapper>
+                <TableSortFilterCellWrapper
+                  width={"30%"}
+                  orderBy={orderBy}
+                  order={order}
+                  column="RAG_SOC_CF"
+                  filters={filters}
+                  handleRequestSort={handleRequestSort}
+                  handleRequestFilter={handleRequestFilter}
+                >
+                  {tArticoliCosti("table.column2")}
+                </TableSortFilterCellWrapper>
+                <TableSortFilterCellWrapper
+                  width={"50%"}
+                  orderBy={orderBy}
+                  order={order}
+                  column="P_IVA_CF"
+                  filters={filters}
+                  handleRequestSort={handleRequestSort}
+                  handleRequestFilter={handleRequestFilter}
+                >
+                  {tArticoliCosti("table.column3")}
+                </TableSortFilterCellWrapper>
+              </TableRow>
+              {isFetchingNextPage && (
                 <TableRow>
-                  <TableCell style={{ width: "10%" }} />
-                  <TableSortFilterCellWrapper
-                    width={"10%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="COD_CF"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    {tArticoliCosti("admin-panel-users:table.column1")}
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"30%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="RAG_SOC_CF"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    {tArticoliCosti("admin-panel-users:table.column1")}
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"50%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="P_IVA_CF"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    {tArticoliCosti("admin-panel-users:table.column3")}
-                  </TableSortFilterCellWrapper>
+                  <TableCellLoadingContainer colSpan={4}>
+                    <LinearProgress />
+                  </TableCellLoadingContainer>
                 </TableRow>
-                {isFetchingNextPage && (
-                  <TableRow>
-                    <TableCellLoadingContainer colSpan={4}>
-                      <LinearProgress />
-                    </TableCellLoadingContainer>
+              )}
+            </TableHead>
+            <TableBody style={{ borderBottom: "none" }}>
+              {result.map((cf, index) => {
+                return (
+                  <TableRow
+                    key={cf.COD_CF}
+                    style={{
+                      backgroundColor:
+                        index % 2 == 0
+                          ? theme.palette.grey[50]
+                          : theme.palette.grey[100],
+                    }}
+                  >
+                    <TableCell colSpan={4} style={{ borderBottom: "none" }}>
+                      <Table
+                        style={{
+                          borderCollapse: "separate",
+                          borderBottom: "none",
+                        }}
+                      >
+                        <TableBody>
+                          <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                            <TableCell style={{ width: "10%" }}>
+                              {cf.articoliCostiCf && (
+                                <IconButton
+                                  aria-label="expand row"
+                                  size="small"
+                                  onClick={() => handleOpen(cf.COD_CF)}
+                                >
+                                  {open[cf.COD_CF] ? (
+                                    <KeyboardArrowUpIcon />
+                                  ) : (
+                                    <KeyboardArrowDownIcon />
+                                  )}
+                                </IconButton>
+                              )}
+                            </TableCell>
+                            <TableCell
+                              style={{ width: "10%", textAlign: "right" }}
+                            >
+                              {cf?.COD_CF}
+                            </TableCell>
+                            <TableCell
+                              style={{ width: "30%", textAlign: "right" }}
+                            >
+                              {cf?.RAG_SOC_CF}
+                            </TableCell>
+                            <TableCell
+                              style={{ width: "50%", textAlign: "right" }}
+                            >
+                              {cf?.P_IVA_CF}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                            <TableCell colSpan={4} padding="none">
+                              <FormCreateEdit cf={cf} />
+                            </TableCell>
+                          </TableRow>
+                          {open[cf.COD_CF] && (
+                            <TableRow
+                              style={{ padding: "none" }}
+                              sx={{ "& > *": { borderBottom: "unset" } }}
+                            >
+                              <TableCell colSpan={4}>
+                                <CfCommPage {...cf} />
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableCell>
                   </TableRow>
-                )}
-              </>
-            )}
-            itemContent={(index, cf) => {
-              return (
-                <TableCell colSpan={4} key={cf.COD_CF}>
-                  <Table style={{ borderCollapse: "separate", border: "none" }}>
-                    <TableBody>
-                      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                        <TableCell style={{ width: "10%" }}>
-                          <IconButton
-                            aria-label="expand row"
-                            size="small"
-                            onClick={() => handleOpen(cf.COD_CF)}
-                          >
-                            {open[cf.COD_CF] ? (
-                              <KeyboardArrowUpIcon />
-                            ) : (
-                              <KeyboardArrowDownIcon />
-                            )}
-                          </IconButton>
-                        </TableCell>
-                        <TableCell style={{ width: "10%", textAlign: "right" }}>
-                          {cf?.COD_CF}
-                        </TableCell>
-                        <TableCell style={{ width: "30%", textAlign: "right" }}>
-                          {cf?.RAG_SOC_CF}
-                        </TableCell>
-                        <TableCell style={{ width: "50%", textAlign: "right" }}>
-                          {cf?.P_IVA_CF}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                        {open[cf.COD_CF] && (
-                          <TableCell colSpan={4}>
-                            <CfCommPage {...cf} />
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableCell>
-              );
-            }}
-          />
+                );
+              })}
+            </TableBody>
+          </Table>
           <Grid mt={2} textAlign={"center"}>
             <Grid>
               <Button variant="contained" onClick={() => handleScroll()}>

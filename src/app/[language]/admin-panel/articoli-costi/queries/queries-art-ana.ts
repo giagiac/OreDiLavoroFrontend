@@ -1,16 +1,16 @@
-import { useGetCfsService } from "@/services/api/services/cf";
-import { Cf } from "@/services/api/types/cf";
+import { useGetArtAnaService } from "@/services/api/services/art-ana";
+import { ArtAna } from "@/services/api/types/art-ana";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  CfFilterType,
-  CfSortType,
+  ArtAnaFilterType,
+  ArtAnaSortType,
   OthersFiltersType,
-} from "../cf-filter-types";
+} from "../art-ana-filter-types";
 
-export const cfsQueryKeys = createQueryKeys(["Cf"], {
+export const artAnasQueryKeys = createQueryKeys(["ArtAna"], {
   list: () => ({
     key: [],
     sub: {
@@ -19,8 +19,8 @@ export const cfsQueryKeys = createQueryKeys(["Cf"], {
         filter,
         othersFilters,
       }: {
-        filter: CfFilterType | undefined;
-        sort?: CfSortType | undefined;
+        filter: ArtAnaFilterType | undefined;
+        sort?: ArtAnaSortType | undefined;
         othersFilters?: OthersFiltersType | undefined;
       }) => ({
         key: [sort, filter, othersFilters],
@@ -29,19 +29,19 @@ export const cfsQueryKeys = createQueryKeys(["Cf"], {
   }),
 });
 
-export const useGetCfQuery = ({
+export const useGetArtAnaQuery = ({
   sort,
   filters,
   othersFilters,
 }: {
-  sort?: CfSortType | undefined;
-  filters?: Array<FilterItem<Cf>> | undefined;
+  sort?: ArtAnaSortType | undefined;
+  filters?: Array<FilterItem<ArtAna>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
-  const fetch = useGetCfsService();
+  const fetch = useGetArtAnaService();
 
   const query = useInfiniteQuery({
-    queryKey: cfsQueryKeys.list().sub.by({
+    queryKey: artAnasQueryKeys.list().sub.by({
       sort,
       filter: { filters },
       othersFilters: { filters: othersFilters },

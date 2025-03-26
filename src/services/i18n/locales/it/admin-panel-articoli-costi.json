@@ -1,10 +1,9 @@
 {
   "title": "Costo articoli",
   "table": {
-    "column1": "ID",
-    "column2": "Name",
-    "column3": "Email",
-    "column4": "Role"
+    "column1": "Codice",
+    "column2": "Ragione sociale",
+    "column3": "P.IVA"
   },
   "actions": {
     "add": "Add User",
@@ -31,6 +30,11 @@
           "2": "User"
         }
       }
+    }
+  },
+  "alerts": {
+    "articolicosti": {
+      "success": "Articolo impostato correttamente"
     }
   }
 }

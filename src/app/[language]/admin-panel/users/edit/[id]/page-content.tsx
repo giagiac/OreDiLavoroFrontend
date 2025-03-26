@@ -26,12 +26,13 @@ import { useParams } from "next/navigation";
 import { Role, RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
 
-type EditUserFormData = {
+export type EditUserFormData = {
   email: string;
   firstName: string;
   lastName: string;
   photo?: FileEntity;
   role: Role;
+  COD_OP?: string | null;
 };
 
 type ChangeUserPasswordFormData = {
@@ -66,6 +67,7 @@ const useValidationEditUserSchema = () => {
         name: yup.string(),
       })
       .required(t("admin-panel-users-edit:inputs.role.validation.required")),
+    COD_OP: yup.string().notRequired(),
   });
 };
 
@@ -144,6 +146,7 @@ function FormEditUser() {
       lastName: "",
       role: undefined,
       photo: undefined,
+      COD_OP: undefined,
     },
   });
 
@@ -254,6 +257,21 @@ function FormEditUser() {
                 renderOption={(option) =>
                   t(`admin-panel-users-edit:inputs.role.options.${option.id}`)
                 }
+              />
+              <FormSelectInput<EditUserFormData, Pick<Role, "name">>
+                name="firstName"
+                testId="name"
+                label={t("admin-panel-users-edit:inputs.role.label")}
+                options={[
+                  {
+                    name: `${RoleEnum.ADMIN}`,
+                  },
+                  {
+                    name: `${RoleEnum.USER}`,
+                  },
+                ]}
+                keyValue="name"
+                renderOption={(option) => option.name}
               />
             </Grid>
 

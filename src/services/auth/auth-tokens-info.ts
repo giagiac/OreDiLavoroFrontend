@@ -1,5 +1,5 @@
-import { TokensInfo } from "./auth-context";
 import Cookies from "js-cookie";
+import { TokensInfo } from "./auth-context";
 import { AUTH_TOKEN_KEY } from "./config";
 
 export function getTokensInfo() {

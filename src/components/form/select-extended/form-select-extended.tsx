@@ -33,6 +33,7 @@ type SelectExtendedInputProps<T extends object> = {
   renderOption: (option: T) => React.ReactNode;
   keyExtractor: (option: T) => string;
   onEndReached?: () => void;
+  onChangeCallback: (value: T) => void; // Tipo per la callback
 } & (
   | {
       isSearchable: true;
@@ -89,6 +90,10 @@ function SelectExtendedInputRaw<T extends object>(
     }
   }, [isOpen]);
 
+  const value = JSON.stringify(
+    props.value ? props.renderOption(props.value) : ""
+  );
+
   return (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div>
@@ -122,7 +127,13 @@ function SelectExtendedInputRaw<T extends object>(
         </Box>
 
         {isOpen && (
-          <Card>
+          <Card
+            sx={{
+              position: "absolute",
+              zIndex: 100,
+              width: "auto"
+            }}
+          >
             <CardContent
               sx={{
                 p: 0,
@@ -164,6 +175,7 @@ function SelectExtendedInputRaw<T extends object>(
                     }
                     onClick={() => {
                       props.onChange(item);
+                      props.onChangeCallback(item); // Chiamata alla callback
                       setIsOpen(false);
                     }}
                   >
@@ -187,6 +199,7 @@ const SelectExtendedInput = forwardRef(SelectExtendedInputRaw) as never as <
   T extends object,
 >(
   props: SelectExtendedInputProps<T> & {
+    onChangeCallback: (value: T) => void; // Tipo per la callback
     name: string;
     value: T | undefined | null;
     onChange: (value: T) => void;
@@ -225,6 +238,7 @@ function FormSelectExtendedInput<
           onEndReached={props.isSearchable ? props.onEndReached : undefined}
           searchLabel={props.isSearchable ? props.searchLabel : ""}
           searchPlaceholder={props.isSearchable ? props.searchPlaceholder : ""}
+          onChangeCallback={props.onChangeCallback}
         />
       )}
     />

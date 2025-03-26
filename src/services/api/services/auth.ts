@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import useFetch from "../use-fetch";
 import { API_URL } from "../config";
-import { User } from "../types/user";
 import { Tokens } from "../types/tokens";
+import { User } from "../types/user";
+import useFetch from "../use-fetch";
 import wrapperFetchJsonResponse from "../wrapper-fetch-json-response";
 import { RequestConfigType } from "./types/request-config";
 

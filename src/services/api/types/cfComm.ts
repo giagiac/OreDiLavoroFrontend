@@ -1,9 +1,6 @@
-import { ArticoliCosti } from "./articoliCosti";
+import { ArticoliCostiCfComm } from "./articoli-costi-cf-comm";
 
 export type CfComm = {
-  isOpen: boolean;
-
-  // ----------------------
   NOTE_SEDE?: string;
   RIFERIMENTO_SEDE?: string;
   E_MAIL_SEDE?: string;
@@ -19,5 +16,5 @@ export type CfComm = {
   NUM_SEDE: string;
   // ----------------------
 
-  articoliCosti?: ArticoliCosti | null;
+  articoliCostiCfComm?: Array<ArticoliCostiCfComm> | undefined;
 };

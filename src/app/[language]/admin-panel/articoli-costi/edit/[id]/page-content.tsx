@@ -26,7 +26,7 @@ import { useParams } from "next/navigation";
 import { Role, RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
 
-type EditUserFormData = {
+export type EditUserFormData = {
   email: string;
   firstName: string;
   lastName: string;

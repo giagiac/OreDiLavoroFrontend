@@ -37,7 +37,7 @@ import React, {
 } from "react";
 import FormCreateEdit from "./create/page-content-cf";
 import CfCommPage from "./page-content-cf-comm";
-import { useGetCfQuery } from "./queries/queries";
+import { useGetCfQuery } from "./queries/queries-cf";
 
 type CfKeys = keyof Cf;
 
@@ -345,8 +345,8 @@ function Cfs() {
                     style={{
                       backgroundColor:
                         index % 2 == 0
-                          ? theme.palette.grey[50]
-                          : theme.palette.grey[100],
+                          ? theme.palette.divider
+                          : theme.palette.background.paper,
                     }}
                   >
                     <TableCell colSpan={4} style={{ borderBottom: "none" }}>

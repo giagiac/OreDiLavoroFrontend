@@ -20,23 +20,27 @@ function AdminPanel() {
       <Grid container spacing={3} pt={3}>
         <Grid textAlign={{ xs: "right" }} size={12}>
           <Typography variant="h4" gutterBottom>
-            🎉 {t("title")}
+            🎉 {t("title")} 🎉
           </Typography>
           <Typography variant="h3" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`} 🎉
+            {`${user?.firstName} ${user?.lastName}`}
           </Typography>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {t("titleNext")}
           </Typography>
         </Grid>
         <Grid size={12}>
           <Grid
-            spacing={2}
             container
-            direction="column"
-            sx={{
-              justifyContent: "center",
-              alignItems: "center",
+            spacing={2}
+            mb={3}
+            mt={3}
+            justifyContent="center"
+            alignItems="center"
+            style={{
+              height: "50vh",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -45,9 +49,9 @@ function AdminPanel() {
                 variant="contained"
                 color="secondary"
                 size="large"
-                style={{ height: 80 }}
-                onClick={() => router.push("/hours-create-edit/hours")}
-                endIcon={"🆕 ✍🏻"}
+                style={{ height: 80, fontSize: "1.5rem" }}
+                onClick={() => router.push("/hours/manage")}
+                endIcon={"✍🏻"}
               >
                 {t("createEdit")}
               </Button>
@@ -58,8 +62,8 @@ function AdminPanel() {
                 variant="contained"
                 color="primary"
                 size="large"
-                style={{ height: 80 }}
-                onClick={() => router.push("/hours-history/commesse")}
+                style={{ height: 80, fontSize: "1.5rem" }}
+                onClick={() => router.push("/hours-history/orp-eff-cicli-esec")}
                 endIcon={"🔒"}
               >
                 {t("history")}

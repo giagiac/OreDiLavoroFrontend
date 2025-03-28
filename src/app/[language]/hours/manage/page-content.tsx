@@ -1,11 +1,37 @@
 "use client";
 
+import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
+import Link from "@/components/link";
+import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
+import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/epsNestjsOrpEffCicliEsec";
 import { RoleEnum } from "@/services/api/types/role";
+import { SortEnum, SortGeneric } from "@/services/api/types/sort-type";
+import { User } from "@/services/api/types/user";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Table, TableBody, TableHead } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
+import Grow from "@mui/material/Grow";
+import LinearProgress from "@mui/material/LinearProgress";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import { styled } from "@mui/material/styles";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   PropsWithChildren,
   useCallback,
@@ -13,37 +39,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { useGetUsersQuery, usersQueryKeys } from "./queries/queries";
-import { TableVirtuoso } from "react-virtuoso";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import Avatar from "@mui/material/Avatar";
-import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
-import TableComponents from "@/components/table/table-components";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import { User } from "@/services/api/types/user";
-import Link from "@/components/link";
-import useAuth from "@/services/auth/use-auth";
-import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
-import { useDeleteUsersService } from "@/services/api/services/users";
-import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import UserFilter from "./user-filter";
-import { useRouter, useSearchParams } from "next/navigation";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import { UserFilterType, UserSortType } from "./user-filter-types";
-import { SortEnum } from "@/services/api/types/sort-type";
+import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
+import {
+  epsNestjsOrpEffCicliEsecQueryKeys,
+  useGetEpsNestjsOrpEffCicliEsecQuery,
+} from "./queries/queries";
+import { FilterItem } from "@/services/api/types/filter";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 
-type UsersKeys = keyof User;
+type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -52,12 +57,12 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
 function TableSortCellWrapper(
   props: PropsWithChildren<{
     width?: number;
-    orderBy: UsersKeys;
+    orderBy: EpsNestjsOrpEffCicliEsecKeys;
     order: SortEnum;
-    column: UsersKeys;
+    column: EpsNestjsOrpEffCicliEsecKeys;
     handleRequestSort: (
       event: React.MouseEvent<unknown>,
-      property: UsersKeys
+      property: EpsNestjsOrpEffCicliEsecKeys
     ) => void;
   }>
 ) {
@@ -81,11 +86,13 @@ function Actions({ user }: { user: User }) {
   const [open, setOpen] = useState(false);
   const { user: authUser } = useAuth();
   const { confirmDialog } = useConfirmDialog();
-  const fetchUserDelete = useDeleteUsersService();
+  const fetchUserDelete = useDeleteEpsNestjsOrpEffCicliEsecService();
   const queryClient = useQueryClient();
   const anchorRef = useRef<HTMLDivElement>(null);
   const canDelete = user.id !== authUser?.id;
-  const { t: tUsers } = useTranslation("admin-panel-users");
+  const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
+    "admin-panel-epsNestjsOrpEffCicliEsec"
+  );
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -104,8 +111,12 @@ function Actions({ user }: { user: User }) {
 
   const handleDelete = async () => {
     const isConfirmed = await confirmDialog({
-      title: tUsers("admin-panel-users:confirm.delete.title"),
-      message: tUsers("admin-panel-users:confirm.delete.message"),
+      title: tEpsNestjsOrpEffCicliEsec(
+        "admin-panel-epsNestjsOrpEffCicliEsec:confirm.delete.title"
+      ),
+      message: tEpsNestjsOrpEffCicliEsec(
+        "admin-panel-epsNestjsOrpEffCicliEsec:confirm.delete.message"
+      ),
     });
 
     if (isConfirmed) {
@@ -115,8 +126,8 @@ function Actions({ user }: { user: User }) {
       const searchParamsFilter = searchParams.get("filter");
       const searchParamsSort = searchParams.get("sort");
 
-      let filter: UserFilterType | undefined = undefined;
-      let sort: UserSortType | undefined = {
+      let filter: EpsNestjsOrpEffCicliEsecFilterType | undefined = undefined;
+      let sort: SortGeneric<EpsNestjsOrpEffCicliEsec> | undefined = {
         order: SortEnum.DESC,
         orderBy: "id",
       };
@@ -131,9 +142,11 @@ function Actions({ user }: { user: User }) {
 
       const previousData = queryClient.getQueryData<
         InfiniteData<{ nextPage: number; data: User[] }>
-      >(usersQueryKeys.list().sub.by({ sort, filter }).key);
+      >(epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({ sort, filter }).key);
 
-      await queryClient.cancelQueries({ queryKey: usersQueryKeys.list().key });
+      await queryClient.cancelQueries({
+        queryKey: epsNestjsOrpEffCicliEsecQueryKeys.list().key,
+      });
 
       const newData = {
         ...previousData,
@@ -144,7 +157,7 @@ function Actions({ user }: { user: User }) {
       };
 
       queryClient.setQueryData(
-        usersQueryKeys.list().sub.by({ sort, filter }).key,
+        epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({ sort, filter }).key,
         newData
       );
 
@@ -159,9 +172,11 @@ function Actions({ user }: { user: User }) {
       size="small"
       variant="contained"
       LinkComponent={Link}
-      href={`/admin-panel/users/edit/${user.id}`}
+      href={`/admin-panel/epsNestjsOrpEffCicliEsec/edit/${user.id}`}
     >
-      {tUsers("admin-panel-users:actions.edit")}
+      {tEpsNestjsOrpEffCicliEsec(
+        "admin-panel-epsNestjsOrpEffCicliEsec:actions.edit"
+      )}
     </Button>
   );
 
@@ -222,7 +237,9 @@ function Actions({ user }: { user: User }) {
                       }}
                       onClick={handleDelete}
                     >
-                      {tUsers("admin-panel-users:actions.delete")}
+                      {tEpsNestjsOrpEffCicliEsec(
+                        "admin-panel-epsNestjsOrpEffCicliEsec:actions.delete"
+                      )}
                     </MenuItem>
                   )}
                 </MenuList>
@@ -235,14 +252,16 @@ function Actions({ user }: { user: User }) {
   );
 }
 
-function Users() {
-  const { t: tUsers } = useTranslation("admin-panel-users");
+function UserHours() {
+  const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
+    "admin-panel-epsNestjsOrpEffCicliEsec"
+  );
   const { t: tRoles } = useTranslation("admin-panel-roles");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
-    orderBy: UsersKeys;
+    orderBy: EpsNestjsOrpEffCicliEsecKeys;
   }>(() => {
     const searchParamsSort = searchParams.get("sort");
     if (searchParamsSort) {
@@ -253,7 +272,7 @@ function Users() {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: UsersKeys
+    property: EpsNestjsOrpEffCicliEsecKeys
   ) => {
     const isAsc = orderBy === property && order === SortEnum.ASC;
     const searchParams = new URLSearchParams(window.location.search);
@@ -273,14 +292,19 @@ function Users() {
   const filter = useMemo(() => {
     const searchParamsFilter = searchParams.get("filter");
     if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter) as UserFilterType;
+      return JSON.parse(searchParamsFilter) as Array<
+        FilterItem<EpsNestjsOrpEffCicliEsec>
+      >;
     }
 
     return undefined;
   }, [searchParams]);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useGetUsersQuery({ filter, sort: { order, orderBy } });
+    useGetEpsNestjsOrpEffCicliEsecQuery({
+      filters: filter,
+      sort: { order, orderBy },
+    });
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -289,7 +313,9 @@ function Users() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as User[]) ?? ([] as User[]);
+      (data?.pages.flatMap(
+        (page) => page?.data
+      ) as EpsNestjsOrpEffCicliEsec[]) ?? ([] as EpsNestjsOrpEffCicliEsec[]);
 
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
@@ -300,100 +326,95 @@ function Users() {
         <Grid container spacing={3} size={{ xs: 12 }}>
           <Grid size="grow">
             <Typography variant="h3">
-              {tUsers("admin-panel-users:title")}
+              {tEpsNestjsOrpEffCicliEsec(
+                "admin-panel-epsNestjsOrpEffCicliEsec:title"
+              )}
             </Typography>
           </Grid>
           <Grid container size="auto" wrap="nowrap" spacing={2}>
-            <Grid size="auto">
-              <UserFilter />
-            </Grid>
+            <Grid size="auto"></Grid>
             <Grid size="auto">
               <Button
                 variant="contained"
                 LinkComponent={Link}
-                href="/admin-panel/users/create"
+                href="/admin-panel/epsNestjsOrpEffCicliEsec/create"
                 color="success"
               >
-                {tUsers("admin-panel-users:actions.create")}
+                {tEpsNestjsOrpEffCicliEsec(
+                  "admin-panel-epsNestjsOrpEffCicliEsec:actions.create"
+                )}
               </Button>
             </Grid>
           </Grid>
         </Grid>
 
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableVirtuoso
-            style={{ height: 500 }}
-            data={result}
-            components={TableComponents}
-            endReached={handleScroll}
-            overscan={20}
-            useWindowScroll
-            increaseViewportBy={400}
-            fixedHeaderContent={() => (
-              <>
-                <TableRow>
-                  <TableCell style={{ width: 50 }}></TableCell>
-                  <TableSortCellWrapper
-                    width={100}
-                    orderBy={orderBy}
-                    order={order}
-                    column="id"
-                    handleRequestSort={handleRequestSort}
-                  >
-                    {tUsers("admin-panel-users:table.column1")}
-                  </TableSortCellWrapper>
-                  <TableCell style={{ width: 200 }}>
-                    {tUsers("admin-panel-users:table.column2")}
-                  </TableCell>
-                  <TableSortCellWrapper
-                    orderBy={orderBy}
-                    order={order}
-                    column="email"
-                    handleRequestSort={handleRequestSort}
-                  >
-                    {tUsers("admin-panel-users:table.column3")}
-                  </TableSortCellWrapper>
-
-                  <TableCell style={{ width: 80 }}>
-                    {tUsers("admin-panel-users:table.column4")}
-                  </TableCell>
-                  <TableCell style={{ width: 130 }}></TableCell>
-                </TableRow>
-                {isFetchingNextPage && (
-                  <TableRow>
-                    <TableCellLoadingContainer colSpan={6}>
-                      <LinearProgress />
-                    </TableCellLoadingContainer>
-                  </TableRow>
-                )}
-              </>
-            )}
-            itemContent={(index, user) => (
-              <>
-                <TableCell style={{ width: 50 }}>
-                  <Avatar
-                    alt={user?.firstName + " " + user?.lastName}
-                    src={user?.photo?.path}
-                  />
-                </TableCell>
-                <TableCell style={{ width: 100 }}>{user?.id}</TableCell>
+          <Table>
+            {/* <TableHead>
+              <TableRow>
+                <TableCell style={{ width: 50 }}></TableCell>
+                <TableSortCellWrapper
+                  width={100}
+                  orderBy={orderBy}
+                  order={order}
+                  column="id"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column1")}
+                </TableSortCellWrapper>
                 <TableCell style={{ width: 200 }}>
-                  {user?.firstName} {user?.lastName}
+                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column2")}
                 </TableCell>
-                <TableCell>{user?.email}</TableCell>
+                <TableSortCellWrapper
+                  orderBy={orderBy}
+                  order={order}
+                  column="email"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column3")}
+                </TableSortCellWrapper>
                 <TableCell style={{ width: 80 }}>
-                  {tRoles(`role.${user?.role?.id}`)}
+                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column4")}
                 </TableCell>
-                <TableCell style={{ width: 130 }}>
-                  {!!user && <Actions user={user} />}
-                </TableCell>
-              </>
-            )}
-          />
+                <TableCell style={{ width: 130 }}></TableCell>
+              </TableRow>
+            </TableHead> */}
+            <TableBody>
+              {result.map((epsNestjsOrpEffCicliEsec, index) => (
+                <TableRow key={epsNestjsOrpEffCicliEsec.id}>
+                  <TableCell style={{ width: 100 }}>
+                    {epsNestjsOrpEffCicliEsec.id}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {isFetchingNextPage && (
+                <TableRow>
+                  <TableCellLoadingContainer colSpan={6}>
+                    <LinearProgress />
+                  </TableCellLoadingContainer>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </Grid>
       </Grid>
+      <Fab
+        color="primary"
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+        onClick={() =>
+          router.push("manage/start")
+        }
+      >
+        <AddIcon />
+      </Fab>
     </Container>
   );
 }
 
-export default withPageRequiredAuth(Users, { roles: [RoleEnum.ADMIN] });
+export default withPageRequiredAuth(UserHours, { roles: [RoleEnum.ADMIN] });

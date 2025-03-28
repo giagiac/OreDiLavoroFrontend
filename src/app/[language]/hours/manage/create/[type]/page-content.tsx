@@ -1,26 +1,27 @@
 "use client";
 
+import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
+import FormSelectInput from "@/components/form/select/form-select";
+import FormTextInput from "@/components/form/text-input/form-text-input";
+import Link from "@/components/link";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { usePostUserService } from "@/services/api/services/users";
+import { FileEntity } from "@/services/api/types/file-entity";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { Role, RoleEnum } from "@/services/api/types/role";
+import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import { useTranslation } from "@/services/i18n/client";
+import useLeavePage from "@/services/leave-page/use-leave-page";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Box from "@mui/material/Box";
+import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import Button from "@mui/material/Button";
-import { useForm, FormProvider, useFormState } from "react-hook-form";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import FormTextInput from "@/components/form/text-input/form-text-input";
+import { useParams, useRouter } from "next/navigation";
+import { FormProvider, useForm, useFormState } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
-import { useSnackbar } from "@/hooks/use-snackbar";
-import Link from "@/components/link";
-import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
-import { FileEntity } from "@/services/api/types/file-entity";
-import useLeavePage from "@/services/leave-page/use-leave-page";
-import Box from "@mui/material/Box";
-import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
-import { useTranslation } from "@/services/i18n/client";
-import { usePostUserService } from "@/services/api/services/users";
-import { useRouter } from "next/navigation";
-import { Role, RoleEnum } from "@/services/api/types/role";
-import FormSelectInput from "@/components/form/select/form-select";
 
 type CreateFormData = {
   email: string;
@@ -99,6 +100,11 @@ function CreateUserFormActions() {
 }
 
 function FormCreateUser() {
+  const params = useParams<{ type: string }>();
+  const type = params.type;
+
+  console.log(type);
+
   const router = useRouter();
   const fetchPostUser = usePostUserService();
   const { t } = useTranslation("admin-panel-users-create");
@@ -148,8 +154,49 @@ function FormCreateUser() {
 
   return (
     <FormProvider {...methods}>
-      <Container maxWidth="xs">
+      <Container maxWidth="md">
         <form onSubmit={onSubmit} autoComplete="create-new-user">
+          <Grid
+            container
+            spacing={2}
+            mb={3}
+            mt={3}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid size={{ xs: 12 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                style={{ height: 50, fontSize: "1.5rem" }}
+                onClick={() => {
+                  switch (type) {
+                    case "in_sede":
+                      router.push("/hours/manage/start");
+                      break;
+                    case "in_giornata":
+                    case "in_giornata_dopo_21":
+                      router.push("/hours/manage/step1_FuoriSede");
+                      break;
+                    case "fuori_sede_andata":
+                    case "fuori_sede_ritorno":
+                    case "ancora_in_missione_5":
+                    case "ancora_in_missione_10":
+                    case "ancora_in_missione_15":
+                    case "ancora_in_missione_20":
+                      router.push("/hours/manage/step2_FuoriSede");
+                      break;
+                    default:
+                      break;
+                  }
+                }}
+                startIcon={<ArrowBackTwoToneIcon />}
+              >
+                ... FINIRE CON OPZ
+              </Button>
+            </Grid>
+          </Grid>
           <Grid container spacing={2} mb={3} mt={3}>
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6">

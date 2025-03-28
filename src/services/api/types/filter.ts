@@ -3,6 +3,10 @@ export type FilterItem<T> = {
   value: string;
 };
 
+export type GenericFilterType<T> = {
+  filters?: Array<FilterItem<T>>;
+};
+
 export type OthersFiltersItem = {
   key: string;
   value: string;

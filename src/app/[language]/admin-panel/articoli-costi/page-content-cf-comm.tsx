@@ -50,7 +50,7 @@ export default function CfCommPage(cf: Cf) {
 
   return (
     <Container maxWidth="xl">
-      <Table style={{ height: 500, backgroundColor: theme.palette.grey[50] }}>
+      <Table>
         {isFetchingNextPage && (
           <TableHead>
             <TableRow>
@@ -61,7 +61,7 @@ export default function CfCommPage(cf: Cf) {
           </TableHead>
         )}
         <TableBody>
-          {result.map((cfComm) => {
+          {result.map((cfComm, index) => {
             return (
               <TableRow key={cfComm.CF_COMM_ID}>
                 <TableCell colSpan={4} >
@@ -69,7 +69,7 @@ export default function CfCommPage(cf: Cf) {
                     style={{
                       borderCollapse: "separate",
                       borderBottom: "none",
-                      padding: "none",
+                      padding: "none"
                     }}
                   >
                     <TableBody>

@@ -1,5 +1,6 @@
-import { Decimal } from "decimal.js";
-import { ArticoliCostiCfComm } from "./articoli-costi-cf-comm";
+import Decimal from "decimal.js";
+import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
+import { OrpEffCicli } from "./orp-eff-cicli";
 import { Operatori } from "./operatori";
 
 export type EpsNestjsOrpEffCicliEsec = {
@@ -22,5 +23,7 @@ export type EpsNestjsOrpEffCicliEsec = {
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
   
+  orpEffCicliEsec?: OrpEffCicliEsec | null;
+  orpEffCicli?: OrpEffCicli | null;
   operatori?: Operatori | null;
 };

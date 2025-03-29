@@ -1,18 +1,17 @@
+import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
-import { SortGeneric } from "@/services/api/types/sort-type";
+import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  EpsNestjsOrpEffCicliEsecFilterType,
-  EpsNestjsOrpEffCicliEsecSortType,
+  OrpEffCicliFilterType,
+  OrpEffCicliSortType,
   OthersFiltersType,
-} from "../user-filter-types";
-import { useGetEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
-import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+} from "../orp-eff-cicli-filter-types";
 
-export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(
-  ["EpsNestjsOrpEffCicliEsec"],
+export const orpEffCicliQueryKeys = createQueryKeys(
+  ["OrpEffCicli"],
   {
     list: () => ({
       key: [],
@@ -22,8 +21,8 @@ export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(
           filter,
           othersFilters,
         }: {
-          filter: EpsNestjsOrpEffCicliEsecFilterType | undefined;
-          sort?: EpsNestjsOrpEffCicliEsecSortType | undefined;
+          filter: OrpEffCicliFilterType | undefined;
+          sort?: OrpEffCicliSortType | undefined;
           othersFilters?: OthersFiltersType | undefined;
         }) => ({
           key: [sort, filter, othersFilters],
@@ -33,19 +32,19 @@ export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(
   }
 );
 
-export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
+export const useGetOrpEffCicliQuery = ({
   sort,
   filters,
   othersFilters,
 }: {
-  sort?: EpsNestjsOrpEffCicliEsecSortType | undefined;
-  filters?: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> | undefined;
+  sort?: OrpEffCicliSortType | undefined;
+  filters?: Array<FilterItem<OrpEffCicli>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
-  const fetch = useGetEpsNestjsOrpEffCicliEsecService();
+  const fetch = useGetOrpEffCicliService();
 
   const query = useInfiniteQuery({
-    queryKey: epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({
+    queryKey: orpEffCicliQueryKeys.list().sub.by({
       sort,
       filter: { filters },
       othersFilters: { filters: othersFilters },
@@ -69,7 +68,6 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
         return {
           data: data.data,
           nextPage: data.hasNextPage ? pageParam + 1 : undefined,
-          totale: data.totale,
         };
       }
     },

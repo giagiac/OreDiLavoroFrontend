@@ -1,16 +1,14 @@
 "use client";
 
-import { usePostUserService } from "@/services/api/services/users";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useTranslation } from "@/services/i18n/client";
+import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import UndoIcon from "@mui/icons-material/Undo";
-import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 function FormCreateUser() {
   const { user } = useAuth();
 
@@ -85,7 +83,7 @@ function FormCreateUser() {
                 <Button
                   fullWidth
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
                   onClick={() => router.push("/hours/manage/step2_FuoriSede")}

@@ -32,6 +32,7 @@
     "@types/node": "20.14.10",
     "@types/react": "19.0.7",
     "@types/react-dom": "19.0.3",
+    "@yudiel/react-qr-scanner": "^2.2.1",
     "accept-language": "^3.0.18",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",

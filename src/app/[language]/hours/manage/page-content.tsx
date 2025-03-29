@@ -3,7 +3,8 @@
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import Link from "@/components/link";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
-import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/epsNestjsOrpEffCicliEsec";
+import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { FilterItem } from "@/services/api/types/filter";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum, SortGeneric } from "@/services/api/types/sort-type";
 import { User } from "@/services/api/types/user";
@@ -11,13 +12,14 @@ import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
+import AddIcon from "@mui/icons-material/Add";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Table, TableBody, TableHead } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
+import { Table, TableBody } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Container from "@mui/material/Container";
+import Fab from "@mui/material/Fab";
 import Grid from "@mui/material/Grid2";
 import Grow from "@mui/material/Grow";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -31,7 +33,7 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   PropsWithChildren,
   useCallback,
@@ -39,14 +41,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
 import {
   epsNestjsOrpEffCicliEsecQueryKeys,
   useGetEpsNestjsOrpEffCicliEsecQuery,
 } from "./queries/queries";
-import { FilterItem } from "@/services/api/types/filter";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
+import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -407,9 +406,7 @@ function UserHours() {
           left: "50%",
           transform: "translateX(-50%)",
         }}
-        onClick={() =>
-          router.push("manage/start")
-        }
+        onClick={() => router.push("manage/start")}
       >
         <AddIcon />
       </Fab>

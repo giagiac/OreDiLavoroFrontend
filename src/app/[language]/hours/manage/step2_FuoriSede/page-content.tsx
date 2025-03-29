@@ -47,7 +47,7 @@ function FormCreateUser() {
               <Grid size={{ xs: 12 }}>
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   style={{ height: 50, fontSize: "1.5rem" }}
                   onClick={() => router.push("/hours/manage/step1_FuoriSede")}
@@ -60,7 +60,7 @@ function FormCreateUser() {
                 <Button
                   fullWidth
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
                   onClick={() =>
@@ -75,7 +75,7 @@ function FormCreateUser() {
                 <Button
                   fullWidth
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
                   onClick={() =>
@@ -90,7 +90,7 @@ function FormCreateUser() {
                 <Button
                   fullWidth
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
                   onClick={() => setShowMissionPanel(!showMissionPanel)}

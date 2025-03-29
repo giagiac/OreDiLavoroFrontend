@@ -1,4 +1,4 @@
-import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/epsNestjsOrpEffCicliEsec";
+import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { SortEnum } from "@/services/api/types/sort-type";
 

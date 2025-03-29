@@ -1,8 +1,5 @@
 "use client";
 
-import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
-import FormSelectInput from "@/components/form/select/form-select";
-import FormTextInput from "@/components/form/text-input/form-text-input";
 import Link from "@/components/link";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostUserService } from "@/services/api/services/users";
@@ -13,15 +10,36 @@ import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useTranslation } from "@/services/i18n/client";
 import useLeavePage from "@/services/leave-page/use-leave-page";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Box from "@mui/material/Box";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
+import CameraAltTwoToneIcon from "@mui/icons-material/CameraAltTwoTone";
+import {
+  FilledInput,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  Typography,
+} from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
+import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { FormProvider, useForm, useFormState } from "react-hook-form";
 import * as yup from "yup";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
+import { SortEnum } from "@/services/api/types/sort-type";
+import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
+import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
+import { NumericKeypad } from "@/components/numeric-keypad";
+
+type OrpEffCicliKeys = keyof OrpEffCicli;
 
 type CreateFormData = {
   email: string;
@@ -152,6 +170,100 @@ function FormCreateUser() {
     }
   });
 
+  let prepareLink = "/hours/manage/start";
+  let prepareText = "In sede";
+  let buttonColor: "primary" | "secondary" = "secondary"; // Customizable button color
+
+  switch (type) {
+    case "in_giornata":
+      prepareLink = "/hours/manage/step1_FuoriSede";
+      prepareText = "In giornata";
+      buttonColor = "primary";
+      break;
+    case "in_giornata_dopo_21":
+      prepareLink = "/hours/manage/step1_FuoriSede";
+      prepareText = "In giornata dopo le 21:00";
+      buttonColor = "primary";
+      break;
+    case "fuori_sede_andata":
+      prepareText = "Fuori sede andata";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+    case "fuori_sede_ritorno":
+      prepareText = "Fuori sede ritorno";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+    case "ancora_in_missione_5":
+      prepareText = "Ancora in missione 5 Km";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+    case "ancora_in_missione_10":
+      prepareText = "Ancora in missione 10 Km";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+    case "ancora_in_missione_15":
+      prepareText = "Ancora in missione 15 Km";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+    case "ancora_in_missione_20":
+      prepareText = "Ancora in missione 20 Km";
+      prepareLink = "/hours/manage/step2_FuoriSede";
+      buttonColor = "primary";
+      break;
+  }
+
+  const [codiceBreveValue, setCodiceBreve] = useState("2414014-1");
+  const [multipleScannerDetected, setMultipleScannerDetected] =
+    useState<String | null>(null);
+
+  const handleCustomInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setCodiceBreve(event.target.value);
+  };
+
+  const [isScannerOpen, setScannerOpen] = useState(false);
+
+  const handleOpenScanner = () => setScannerOpen(true);
+  const handleCloseScanner = () => setScannerOpen(false);
+
+  const [{ order, orderBy }, setSort] = useState<{
+    order: SortEnum;
+    orderBy: OrpEffCicliKeys;
+  }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
+
+  const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
+    { columnName: "CODICE_BREVE", value: codiceBreveValue },
+  ]);
+
+  const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
+    []
+  );
+
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useGetOrpEffCicliQuery({
+      sort: { order, orderBy },
+      filters,
+      othersFilters,
+    });
+
+  const result = useMemo(() => {
+    const result =
+      (data?.pages.flatMap((page) => page?.data) as OrpEffCicli[]) ??
+      ([] as OrpEffCicli[]);
+
+    return removeDuplicatesFromArrayObjects(result, "DOC_RIGA_ID");
+  }, [data, filters]);
+
+  console.log("data", result);
+
+  const [tempoOperatore, setTempoOperatore] = useState("00:00");
+
   return (
     <FormProvider {...methods}>
       <Container maxWidth="md">
@@ -167,113 +279,110 @@ function FormCreateUser() {
             <Grid size={{ xs: 12 }}>
               <Button
                 variant="contained"
-                color="primary"
                 size="large"
                 style={{ height: 50, fontSize: "1.5rem" }}
+                color={buttonColor} // Use customizable button color
                 onClick={() => {
-                  switch (type) {
-                    case "in_sede":
-                      router.push("/hours/manage/start");
-                      break;
-                    case "in_giornata":
-                    case "in_giornata_dopo_21":
-                      router.push("/hours/manage/step1_FuoriSede");
-                      break;
-                    case "fuori_sede_andata":
-                    case "fuori_sede_ritorno":
-                    case "ancora_in_missione_5":
-                    case "ancora_in_missione_10":
-                    case "ancora_in_missione_15":
-                    case "ancora_in_missione_20":
-                      router.push("/hours/manage/step2_FuoriSede");
-                      break;
-                    default:
-                      break;
-                  }
+                  router.push(prepareLink);
                 }}
                 startIcon={<ArrowBackTwoToneIcon />}
               >
-                ... FINIRE CON OPZ
+                {prepareText}
               </Button>
             </Grid>
           </Grid>
           <Grid container spacing={2} mb={3} mt={3}>
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">
-                {t("admin-panel-users-create:title")}
-              </Typography>
+              <FormControl sx={{}} variant="outlined" fullWidth>
+                <InputLabel htmlFor="filled-adornment-codce-breve">
+                  Codice Breve
+                </InputLabel>
+                <FilledInput
+                  id="filled-adornment-codce-breve"
+                  value={codiceBreveValue}
+                  onChange={handleCustomInputChange}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleOpenScanner}>
+                        <CameraAltTwoToneIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <FormAvatarInput<CreateFormData> name="photo" testId="photo" />
+              <Dialog
+                open={isScannerOpen}
+                onClose={handleCloseScanner}
+                fullWidth
+              >
+                <DialogContent>
+                  <Scanner
+                    onScan={(result) => {
+                      if (result.length == 1) {
+                        setCodiceBreve(result[0].rawValue);
+                        setFilters([
+                          {
+                            columnName: "CODICE_BREVE",
+                            value: result[0].rawValue,
+                          },
+                        ]);
+                        handleCloseScanner();
+                        setMultipleScannerDetected(null);
+                      } else if (result.length > 1) {
+                        {
+                          setMultipleScannerDetected(
+                            result.map((item) => item.rawValue).join(", ")
+                          );
+                        }
+                      }
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    gutterBottom
+                    sx={{ mt: 2 }}
+                  >
+                    {multipleScannerDetected}
+                  </Typography>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseScanner} color="primary">
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormTextInput<CreateFormData>
-                name="email"
-                testId="new-user-email"
-                autoComplete="new-user-email"
-                label={t("admin-panel-users-create:inputs.email.label")}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormTextInput<CreateFormData>
-                name="password"
-                type="password"
-                testId="new-user-password"
-                autoComplete="new-user-password"
-                label={t("admin-panel-users-create:inputs.password.label")}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormTextInput<CreateFormData>
-                name="passwordConfirmation"
-                testId="new-user-password-confirmation"
-                label={t(
-                  "admin-panel-users-create:inputs.passwordConfirmation.label"
-                )}
-                type="password"
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormTextInput<CreateFormData>
-                name="firstName"
-                testId="first-name"
-                label={t("admin-panel-users-create:inputs.firstName.label")}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormTextInput<CreateFormData>
-                name="lastName"
-                testId="last-name"
-                label={t("admin-panel-users-create:inputs.lastName.label")}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <FormSelectInput<CreateFormData, Pick<Role, "id">>
-                name="role"
-                testId="role"
-                label={t("admin-panel-users-create:inputs.role.label")}
-                options={[
-                  {
-                    id: RoleEnum.ADMIN,
-                  },
-                  {
-                    id: RoleEnum.USER,
-                  },
-                ]}
-                keyValue="id"
-                renderOption={(option) =>
-                  t(`admin-panel-users-create:inputs.role.options.${option.id}`)
-                }
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
+            {result.map((item) => (
+              <Grid size={{ xs: 12 }} key={item.DOC_RIGA_ID}>
+                <Typography variant="h4" gutterBottom textAlign="center">
+                  {item?.DOC_ID} · {item?.orpEff?.COD_ART}
+                </Typography>
+                <Typography variant="body1" gutterBottom textAlign="center">
+                  {item?.orpEff?.DES_PROD}
+                </Typography>
+                <Typography variant="body1" gutterBottom textAlign="center">
+                  {item?.DES_CICLO?.replace(item?.orpEff?.DES_PROD || "", "")}
+                </Typography>
+                <Typography variant="caption" gutterBottom textAlign="right">
+                  {"hh:mm"}
+                </Typography>
+                <Typography variant="h1" gutterBottom textAlign="center">
+                  {tempoOperatore}
+                </Typography>
+                <NumericKeypad/>
+              </Grid>
+            ))}
+            {result.length == 0 && (
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h3" gutterBottom>
+                  Non sono stati trovati risultati
+                </Typography>
+              </Grid>
+            )}
+            {/* <Grid size={{ xs: 12 }}>
               <CreateUserFormActions />
               <Box ml={1} component="span">
                 <Button
@@ -285,7 +394,7 @@ function FormCreateUser() {
                   {t("admin-panel-users-create:actions.cancel")}
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </form>
       </Container>

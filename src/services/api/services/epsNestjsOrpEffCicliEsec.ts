@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { API_URL } from "../config";
-import { EpsNestjsOrpEffCicliEsec } from "../types/epsNestjsOrpEffCicliEsec";
+import { EpsNestjsOrpEffCicliEsec } from "../types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "../types/filter";
 import { InfinityPaginationType } from "../types/infinity-pagination";
 import { SortEnum } from "../types/sort-type";

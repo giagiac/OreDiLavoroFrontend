@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getServerTranslation } from "@/services/i18n";
-import ArticoliCosti from "./page-content-cf";
+import TargaMezzi from "./page-content";
 
 type Props = {
   params: Promise<{ language: string }>;
@@ -14,10 +14,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   );
 
   return {
-    title: "Articoli Costi",
+    title: "Targa Mezzi",
   };
 }
 
 export default function Page() {
-  return <ArticoliCosti />;
+  return <TargaMezzi />;
 }

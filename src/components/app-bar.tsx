@@ -126,6 +126,16 @@ function ResponsiveAppBar() {
                       {t("common:navigation.articoliCosti")}
                     </Typography>
                   </MenuItem>,
+                  <MenuItem
+                    key="targaMezzi"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/admin-panel/targa-mezzi"
+                  >
+                    <Typography textAlign="center">
+                      {"Targa mezzi"}
+                    </Typography>
+                  </MenuItem>,
                   // mobile-menu-items,
                 ]}
               {!!user?.role && [
@@ -216,6 +226,14 @@ function ResponsiveAppBar() {
                     href="/admin-panel/articoli-costi"
                   >
                     {t("common:navigation.articoliCosti")}
+                  </Button>
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                    component={Link}
+                    href="/admin-panel/targa-mezzi"
+                  >
+                    {"Targa mezzi"}
                   </Button>
                 </>
               )}

@@ -18,6 +18,7 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  Stack,
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -37,7 +38,7 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { NumericKeypad } from "@/components/numeric-keypad";
+import { NumericKeypad } from "@/components/numeric-keypad-ore";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -262,8 +263,6 @@ function FormCreateUser() {
 
   console.log("data", result);
 
-  const [tempoOperatore, setTempoOperatore] = useState("00:00");
-
   return (
     <FormProvider {...methods}>
       <Container maxWidth="md">
@@ -366,13 +365,23 @@ function FormCreateUser() {
                 <Typography variant="body1" gutterBottom textAlign="center">
                   {item?.DES_CICLO?.replace(item?.orpEff?.DES_PROD || "", "")}
                 </Typography>
-                <Typography variant="caption" gutterBottom textAlign="right">
-                  {"hh:mm"}
-                </Typography>
-                <Typography variant="h1" gutterBottom textAlign="center">
-                  {tempoOperatore}
-                </Typography>
-                <NumericKeypad/>
+                <NumericKeypad
+                  onNumberChange={(value) => {
+                    // setTempoOreOperatore(value);
+                  }}
+                />
+                <Button
+                style={{ width: "100%", height: 50, fontSize: "1.5rem" }}
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    router.push(
+                      `/hours/manage`
+                    );
+                  }}
+                >
+                  CONFERMA
+                </Button>
               </Grid>
             ))}
             {result.length == 0 && (

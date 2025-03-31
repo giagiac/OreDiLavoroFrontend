@@ -46,6 +46,7 @@ import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
 } from "./queries/queries";
 import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
+import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -398,17 +399,30 @@ function UserHours() {
         </Grid>
       </Grid>
       <Fab
+        color="secondary"
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: 16,
+          left: "52%",
+          transform: "translateX(-40%)",
+        }}
+        onClick={() => router.push("manage/start")}
+      >
+        <AddIcon />
+      </Fab>
+      <Fab
         color="primary"
         aria-label="add"
         style={{
           position: "fixed",
           bottom: 16,
-          left: "50%",
-          transform: "translateX(-50%)",
+          right: "52%",
+          transform: "translateX(-40%)",
         }}
-        onClick={() => router.push("manage/start")}
+        onClick={() => router.push("/hours/manage/step1_KmAutista")}
       >
-        <AddIcon />
+        <AirportShuttleTwoToneIcon />
       </Fab>
     </Container>
   );

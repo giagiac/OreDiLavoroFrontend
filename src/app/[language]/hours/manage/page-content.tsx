@@ -14,7 +14,7 @@ import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicat
 import { useTranslation } from "@/services/i18n/client";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Table, TableBody } from "@mui/material";
+import { Table, TableBody, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
@@ -332,7 +332,6 @@ function UserHours() {
             </Typography>
           </Grid>
           <Grid container size="auto" wrap="nowrap" spacing={2}>
-            <Grid size="auto"></Grid>
             <Grid size="auto">
               <Button
                 variant="contained"
@@ -350,35 +349,6 @@ function UserHours() {
 
         <Grid size={{ xs: 12 }} mb={2}>
           <Table>
-            {/* <TableHead>
-              <TableRow>
-                <TableCell style={{ width: 50 }}></TableCell>
-                <TableSortCellWrapper
-                  width={100}
-                  orderBy={orderBy}
-                  order={order}
-                  column="id"
-                  handleRequestSort={handleRequestSort}
-                >
-                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column1")}
-                </TableSortCellWrapper>
-                <TableCell style={{ width: 200 }}>
-                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column2")}
-                </TableCell>
-                <TableSortCellWrapper
-                  orderBy={orderBy}
-                  order={order}
-                  column="email"
-                  handleRequestSort={handleRequestSort}
-                >
-                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column3")}
-                </TableSortCellWrapper>
-                <TableCell style={{ width: 80 }}>
-                  {tEpsNestjsOrpEffCicliEsec("admin-panel-epsNestjsOrpEffCicliEsec:table.column4")}
-                </TableCell>
-                <TableCell style={{ width: 130 }}></TableCell>
-              </TableRow>
-            </TableHead> */}
             <TableBody>
               {result.map((epsNestjsOrpEffCicliEsec, index) => (
                 <TableRow key={epsNestjsOrpEffCicliEsec.id}>
@@ -404,25 +374,14 @@ function UserHours() {
         style={{
           position: "fixed",
           bottom: 16,
-          left: "52%",
-          transform: "translateX(-40%)",
+          left: "50%",
+          transform: "translateX(-50%)",
         }}
         onClick={() => router.push("manage/start")}
       >
-        <AddIcon />
-      </Fab>
-      <Fab
-        color="primary"
-        aria-label="add"
-        style={{
-          position: "fixed",
-          bottom: 16,
-          right: "52%",
-          transform: "translateX(-40%)",
-        }}
-        onClick={() => router.push("/hours/manage/step1_KmAutista")}
-      >
-        <AirportShuttleTwoToneIcon />
+        <Tooltip title="In sede - fuori sede" arrow open>
+          <AddIcon />
+        </Tooltip>
       </Fab>
     </Container>
   );

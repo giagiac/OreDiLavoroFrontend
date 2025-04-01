@@ -39,7 +39,11 @@ export const NumericKeypadKm = ({
     <Grid mt={4} container spacing={1}>
       <Grid container size={{ xs: 12 }} justifyContent="center">
         <Stack direction="column">
-          <Paper style={{ borderRadius: 5 }} elevation={3} sx={{ paddingLeft: 3, paddingRight: 3 }}>
+          <Paper
+            style={{ borderRadius: 5 }}
+            elevation={3}
+            sx={{ paddingLeft: 3, paddingRight: 3 }}
+          >
             <Typography variant="h1" textAlign="center">
               {currentValue.toString().padStart(4, "0")}
             </Typography>
@@ -54,6 +58,7 @@ export const NumericKeypadKm = ({
               return (
                 <Grid key={number}>
                   <Button
+                    color="info"
                     style={{ fontSize: "3rem", width: "5rem", height: "4rem" }}
                     variant="contained"
                     onClick={() => handleNumberClick(number)}
@@ -68,6 +73,7 @@ export const NumericKeypadKm = ({
         <Grid container size={{ xs: 12 }} justifyContent="center">
           <Grid>
             <Button
+              color="info"
               style={{ fontSize: "3rem", width: "5rem", height: "4rem" }}
               variant="contained"
               onClick={() => handleNumberClick(0)}
@@ -77,6 +83,7 @@ export const NumericKeypadKm = ({
           </Grid>
           <Grid>
             <Button
+              color="info"
               style={{ width: "10.5rem", height: "4rem", fontSize: "1.5rem" }}
               variant="contained"
               onClick={handleClearClick}

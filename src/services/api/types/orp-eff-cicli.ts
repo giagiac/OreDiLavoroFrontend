@@ -13,7 +13,7 @@ export type OrpEffCicli = {
   DOC_ID: string;
   AZIENDA_ID?: number | null;
 
-  orpEff?: OrpEff | null;
+  orpEff: OrpEff;
   linkOrpOrd?: Array<LinkOrpOrd> | null;
   orpEffCicliEsec?: OrpEffCicliEsec | null;
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsec | null;

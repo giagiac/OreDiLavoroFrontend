@@ -1,12 +1,16 @@
 "use client";
 
-import Link from "@/components/link";
+import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostUserService } from "@/services/api/services/users";
 import { FileEntity } from "@/services/api/types/file-entity";
+import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
 import { Role, RoleEnum } from "@/services/api/types/role";
+import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import useLeavePage from "@/services/leave-page/use-leave-page";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,27 +22,20 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Stack,
-  Typography,
+  Typography
 } from "@mui/material";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid2";
-import { Scanner } from "@yudiel/react-qr-scanner";
-import { useParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { FormProvider, useForm, useFormState } from "react-hook-form";
-import * as yup from "yup";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import Grid from "@mui/material/Grid2";
+import { Scanner } from "@yudiel/react-qr-scanner";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { FormProvider, useForm, useFormState } from "react-hook-form";
+import * as yup from "yup";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
-import { SortEnum } from "@/services/api/types/sort-type";
-import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
-import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
-import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { NumericKeypad } from "@/components/numeric-keypad-ore";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -120,9 +117,9 @@ function CreateUserFormActions() {
 
 function FormCreateUser() {
   const params = useParams<{ type: string }>();
-  const type = params.type;
+  const searchParams = useSearchParams();
 
-  console.log(type);
+  const type = params.type;
 
   const router = useRouter();
   const fetchPostUser = usePostUserService();
@@ -173,7 +170,7 @@ function FormCreateUser() {
 
   let prepareLink = "/hours/manage/start";
   let prepareText = "In sede";
-  let buttonColor: "primary" | "secondary" = "secondary"; // Customizable button color
+  let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
 
   switch (type) {
     case "in_giornata":
@@ -216,16 +213,34 @@ function FormCreateUser() {
       prepareLink = "/hours/manage/step2_FuoriSede";
       buttonColor = "primary";
       break;
+    case "step1_KmAutista":
+      prepareText = "Km Autista";
+      prepareLink = "/hours/manage/step1_KmAutista";
+      buttonColor = "info";
+      break;
   }
 
   const [codiceBreveValue, setCodiceBreve] = useState("2414014-1");
   const [multipleScannerDetected, setMultipleScannerDetected] =
     useState<String | null>(null);
 
-  const handleCustomInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setCodiceBreve(event.target.value);
+  const handleCustomInputChange = (event: any) => {
+    const target = event.target as HTMLInputElement;
+
+    if (event.key === "Enter") {
+      // Logica per gestire l'invio a capo
+      console.log("Invio a capo rilevato:", target.value);
+      setFilters([
+        {
+          columnName: "CODICE_BREVE",
+          value: target.value,
+          id: Math.random(),
+        },
+      ]);
+      return;
+    }
+
+    setCodiceBreve(target.value);
   };
 
   const [isScannerOpen, setScannerOpen] = useState(false);
@@ -239,14 +254,14 @@ function FormCreateUser() {
   }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
 
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
-    { columnName: "CODICE_BREVE", value: codiceBreveValue },
+    { columnName: "CODICE_BREVE", value: codiceBreveValue, id: Math.random() },
   ]);
 
   const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
     []
   );
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isFetched } =
     useGetOrpEffCicliQuery({
       sort: { order, orderBy },
       filters,
@@ -261,7 +276,10 @@ function FormCreateUser() {
     return removeDuplicatesFromArrayObjects(result, "DOC_RIGA_ID");
   }, [data, filters]);
 
-  console.log("data", result);
+  const kmAutista = () => {
+    const COD_ART = searchParams.get("COD_ART");
+    const KM = searchParams.get("KM");
+  };
 
   return (
     <FormProvider {...methods}>
@@ -299,7 +317,8 @@ function FormCreateUser() {
                 <FilledInput
                   id="filled-adornment-codce-breve"
                   value={codiceBreveValue}
-                  onChange={handleCustomInputChange}
+                  onChange={(e) => handleCustomInputChange(e)} // Passa esplicitamente l'evento
+                  onKeyDown={(e) => handleCustomInputChange(e)} // Passa esplicitamente l'evento
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton onClick={handleOpenScanner}>
@@ -325,6 +344,7 @@ function FormCreateUser() {
                           {
                             columnName: "CODICE_BREVE",
                             value: result[0].rawValue,
+                            id: Math.random()
                           },
                         ]);
                         handleCloseScanner();
@@ -354,56 +374,74 @@ function FormCreateUser() {
                 </DialogActions>
               </Dialog>
             </Grid>
-            {result.map((item) => (
-              <Grid size={{ xs: 12 }} key={item.DOC_RIGA_ID}>
-                <Typography variant="h4" gutterBottom textAlign="center">
-                  {item?.DOC_ID} · {item?.orpEff?.COD_ART}
-                </Typography>
-                <Typography variant="body1" gutterBottom textAlign="center">
-                  {item?.orpEff?.DES_PROD}
-                </Typography>
-                <Typography variant="body1" gutterBottom textAlign="center">
-                  {item?.DES_CICLO?.replace(item?.orpEff?.DES_PROD || "", "")}
-                </Typography>
-                <NumericKeypad
-                  onNumberChange={(value) => {
-                    // setTempoOreOperatore(value);
-                  }}
-                />
-                <Button
-                style={{ width: "100%", height: 50, fontSize: "1.5rem" }}
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    router.push(
-                      `/hours/manage`
-                    );
-                  }}
-                >
-                  CONFERMA
-                </Button>
-              </Grid>
-            ))}
-            {result.length == 0 && (
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="h3" gutterBottom>
-                  Non sono stati trovati risultati
-                </Typography>
-              </Grid>
+            {isFetched && (
+              <>
+                {result.length == 0 && (
+                  <Grid size={{ xs: 12 }} textAlign="center">
+                    <Typography variant="h3" color="error">
+                      Nessuna commessa trovata
+                    </Typography>
+                  </Grid>
+                )}
+                {result.length > 0 &&
+                  result[0].orpEff != null &&
+                  result[0].orpEff.STATUS == 2 && (
+                    <Grid size={{ xs: 12 }} textAlign="center">
+                      <Typography variant="h3" color="error">
+                        Commessa chiusa
+                      </Typography>
+                    </Grid>
+                  )}
+                {/* DETTAGLIO COMMESSE - possono essere liste - ma improbabile */}
+                {result.length > 0 &&
+                  result[0].orpEff != null &&
+                  result[0].orpEff.STATUS != 2 &&
+                  result.map((item) => (
+                    <Grid size={{ xs: 12 }} key={item.DOC_RIGA_ID}>
+                      <Typography variant="h4" gutterBottom textAlign="center">
+                        {item?.DOC_ID} · {item?.orpEff?.COD_ART}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        textAlign="center"
+                      >
+                        {item?.orpEff?.DES_PROD}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        textAlign="center"
+                      >
+                        {item?.DES_CICLO?.replace(
+                          item?.orpEff?.DES_PROD || "",
+                          ""
+                        )}
+                      </Typography>
+                      <NumericKeypad
+                        onNumberChange={(value) => {
+                          // setTempoOreOperatore(value);
+                        }}
+                      />
+                      <Button
+                        style={{
+                          width: "100%",
+                          height: 50,
+                          fontSize: "1.5rem",
+                        }}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          router.push(`/hours/manage`);
+                        }}
+                      >
+                        CONFERMA
+                      </Button>
+                    </Grid>
+                  ))}
+              </>
             )}
-            {/* <Grid size={{ xs: 12 }}>
-              <CreateUserFormActions />
-              <Box ml={1} component="span">
-                <Button
-                  variant="contained"
-                  color="inherit"
-                  LinkComponent={Link}
-                  href="/admin-panel/users"
-                >
-                  {t("admin-panel-users-create:actions.cancel")}
-                </Button>
-              </Box>
-            </Grid> */}
+            {/* COMMESSA CHIUSA... */}
           </Grid>
         </form>
       </Container>

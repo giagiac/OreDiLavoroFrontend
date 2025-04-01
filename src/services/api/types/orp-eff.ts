@@ -10,6 +10,8 @@ export type OrpEff = {
   AZIENDA_ID?: number | null;
   DES_PROD: string | null;
   COD_ART: string | null;
+  STATUS?: number | null;
+
   orpEffCicli?: OrpEffCicli | null;
   x1TrasCodici?: X1TrasCodici | null;
 };

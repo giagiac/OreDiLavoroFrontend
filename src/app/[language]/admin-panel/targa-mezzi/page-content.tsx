@@ -1,17 +1,20 @@
 "use client";
 
-import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
+import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import ClearIcon from "@mui/icons-material/Clear";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import LinkIcon from "@mui/icons-material/Link";
-import { TableHead, useTheme } from "@mui/material";
+import {
+  Paper,
+  Stack,
+  TableContainer,
+  TableHead,
+  useTheme,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
@@ -24,8 +27,6 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, {
@@ -35,10 +36,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useGetTargaMezziQuery } from "./queries/queries-eps-nestjs-targa-mezzi";
 import FormCreateEdit from "./create/page-content";
-import { useGetTargaMezziQuery } from "./queries/queries-targa-mezzi";
+import { ArtAna } from "@/services/api/types/art-ana";
+import { ButtonDelete } from "./button-delete";
 
-type TargaMezziKeys = keyof TargaMezzi;
+type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -47,12 +50,12 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
 function TableSortFilterCellWrapper(
   props: PropsWithChildren<{
     width?: number | string;
-    orderBy: TargaMezziKeys;
+    orderBy: EpsNestjsTargaMezziKeys;
     order: SortEnum;
-    column: TargaMezziKeys;
+    column: EpsNestjsTargaMezziKeys;
     handleRequestSort: (
       event: React.MouseEvent<unknown>,
-      property: TargaMezziKeys
+      property: EpsNestjsTargaMezziKeys
     ) => void;
     filters: Array<FilterItem<TargaMezzi>>;
     handleRequestFilter: (prop: FilterItem<TargaMezzi>) => void;
@@ -129,6 +132,8 @@ function TableSortFilterCellWrapper(
 }
 
 function TargaMezziPage() {
+  const theme = useTheme();
+
   const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -153,32 +158,32 @@ function TargaMezziPage() {
     }
   );
 
-  const handleRequestOthersFilters = (
-    event: React.MouseEvent<HTMLElement>,
-    newOthersFilters: string[]
-  ) => {
-    const searchParams = new URLSearchParams(window.location.search);
+  // const handleRequestOthersFilters = (
+  //   event: React.MouseEvent<HTMLElement>,
+  //   newOthersFilters: string[]
+  // ) => {
+  //   const searchParams = new URLSearchParams(window.location.search);
 
-    const converted = newOthersFilters.map((it) => {
-      return { key: it, value: "true" };
-    });
+  //   const converted = newOthersFilters.map((it) => {
+  //     return { key: it, value: "true" };
+  //   });
 
-    searchParams.set("othersFilters", JSON.stringify(converted));
+  //   searchParams.set("othersFilters", JSON.stringify(converted));
 
-    setOthersFilters(converted);
+  //   setOthersFilters(converted);
 
-    router.push(window.location.pathname + "?" + searchParams.toString());
-  };
+  //   router.push(window.location.pathname + "?" + searchParams.toString());
+  // };
 
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
-    orderBy: TargaMezziKeys;
+    orderBy: EpsNestjsTargaMezziKeys;
   }>(() => {
     const searchParamsSort = searchParams.get("sort");
     if (searchParamsSort) {
       return JSON.parse(searchParamsSort);
     }
-    return { order: SortEnum.ASC, orderBy: "COD_ART" };
+    return { order: SortEnum.ASC, orderBy: "createdAt" };
   });
 
   const [filters, setFilters] = useState<Array<FilterItem<TargaMezzi>>>(() => {
@@ -191,7 +196,7 @@ function TargaMezziPage() {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: TargaMezziKeys
+    property: EpsNestjsTargaMezziKeys
   ) => {
     const isAsc = orderBy === property && order === SortEnum.ASC;
     const searchParams = new URLSearchParams(window.location.search);
@@ -234,7 +239,7 @@ function TargaMezziPage() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
     useGetTargaMezziQuery({ sort: { order, orderBy }, filters, othersFilters });
 
   const handleScroll = useCallback(() => {
@@ -250,106 +255,85 @@ function TargaMezziPage() {
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
   }, [data, searchParams]);
 
-  interface ItemDetail {
-    [key: string]: string;
-  }
-
-  const [open, setOpen] = useState<ItemDetail>({});
-
-  const handleOpen = (id: string) => {
-    setOpen(
-      (prevOpen) =>
-        ({
-          ...prevOpen,
-          [id]: !prevOpen[id],
-        }) as ItemDetail
-    );
-  };
-
-  const theme = useTheme();
-
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="md">
       <Grid container spacing={3} pt={3}>
         <Grid container spacing={3} size={{ xs: 12 }}>
           <Grid size="grow">
-            <Typography variant="h3">{tArticoliCosti("title")}</Typography>
-          </Grid>
-          <Grid container size="auto" wrap="nowrap" spacing={2}>
-            <Grid size="auto">
-              <ToggleButtonGroup
-                value={othersFilters.map((it) => it.key)}
-                onChange={handleRequestOthersFilters}
-                aria-label="join others tables"
-              >
-                <ToggleButton value="join" aria-label="join">
-                  <LinkIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
+            <Typography variant="h3">{"Targa mezzi"}</Typography>
           </Grid>
         </Grid>
-
         <Grid size={{ xs: 12 }} mb={2}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ width: "10%" }} />
-                <TableSortFilterCellWrapper
-                  width={"10%"}
-                  orderBy={orderBy}
-                  order={order}
-                  column="COD_ART"
-                  filters={filters}
-                  handleRequestSort={handleRequestSort}
-                  handleRequestFilter={handleRequestFilter}
-                >
-                  {"Codice articoli"}
-                </TableSortFilterCellWrapper>
-              </TableRow>
-              {isFetchingNextPage && (
+          <FormCreateEdit
+            onChangeCallback={(artAna: ArtAna) => {
+              console.log(artAna);
+              refetch();
+            }}
+          />
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
                 <TableRow>
-                  <TableCellLoadingContainer colSpan={4}>
-                    <LinearProgress />
-                  </TableCellLoadingContainer>
-                </TableRow>
-              )}
-            </TableHead>
-            <TableBody style={{ borderBottom: "none" }}>
-              {result.map((targaMezzi, index) => {
-                return (
-                  <TableRow
-                    key={targaMezzi.COD_ART}
-                    style={{
-                      backgroundColor:
-                        index % 2 == 0
-                          ? theme.palette.divider
-                          : theme.palette.background.paper,
-                    }}
+                  <TableSortFilterCellWrapper
+                    orderBy={orderBy}
+                    order={order}
+                    column="COD_ART"
+                    filters={filters}
+                    handleRequestSort={handleRequestSort}
+                    handleRequestFilter={handleRequestFilter}
                   >
-                    <TableCell colSpan={4} style={{ borderBottom: "none" }}>
-                      <Table
-                        style={{
-                          borderCollapse: "separate",
-                          borderBottom: "none",
-                        }}
-                      >
-                        <TableBody>
-                          <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                            <TableCell
-                              style={{ width: "10%", textAlign: "right" }}
-                            >
-                              {targaMezzi?.COD_ART}
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableCell>
+                    {"Codice articoli"}
+                  </TableSortFilterCellWrapper>
+                </TableRow>
+                {isFetchingNextPage && (
+                  <TableRow>
+                    <TableCellLoadingContainer>
+                      <LinearProgress />
+                    </TableCellLoadingContainer>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                )}
+              </TableHead>
+              <TableBody
+                style={{
+                  borderBottom: "none",
+                  borderCollapse: "collapse",
+                }}
+              >
+                {result.map((targaMezzi, index) => {
+                  return (
+                    <TableRow
+                      key={targaMezzi.COD_ART}
+                      style={{
+                        backgroundColor:
+                          index % 2 == 0
+                            ? theme.palette.divider
+                            : theme.palette.background.paper,
+                      }}
+                    >
+                      <TableCell>
+                        <Grid container direction="row">
+                          <Grid size={{ xs: 11 }}>
+                            <Typography variant="body2">
+                              {targaMezzi?.COD_ART} ·{" "}
+                              {targaMezzi.artAna?.DES_ART}
+                            </Typography>
+                          </Grid>
+                          <Grid size={{ xs: 1 }}>
+                            <ButtonDelete
+                              targaMezzi={targaMezzi}
+                              refetch={() => {
+                                refetch();
+                              }}
+                            />
+                          </Grid>
+                        </Grid>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
           <Grid mt={2} textAlign={"center"}>
             <Grid>
               <Button variant="contained" onClick={() => handleScroll()}>

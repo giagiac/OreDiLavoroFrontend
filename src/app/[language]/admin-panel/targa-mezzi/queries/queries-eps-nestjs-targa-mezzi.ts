@@ -5,44 +5,46 @@ import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  TargaMezziFilterType,
-  TargaMezziSortType,
+  EpsNestjsTargaMezziFilterType,
+  EpsNestjsTargaMezziSortType,
   OthersFiltersType,
-} from "../targa-mezzi-filter-types";
+} from "../eps-nestjs-targa-mezzi-filter-types";
 
-export const cfsQueryKeys = createQueryKeys(["TargaMezzi"], {
-  list: () => ({
-    key: [],
-    sub: {
-      by: ({
-        sort,
-        filter,
-        othersFilters,
-      }: {
-        filter: TargaMezziFilterType | undefined;
-        sort?: TargaMezziSortType | undefined;
-        othersFilters?: OthersFiltersType | undefined;
-      }) => ({
-        key: [sort, filter, othersFilters],
-      }),
-    },
-  }),
-});
+export const epsNestjsTargaMezziQueryKeys = createQueryKeys(
+  ["EpsNestjsTargaMezzi"],
+  {
+    list: () => ({
+      key: [],
+      sub: {
+        by: ({
+          sort,
+          filter,
+          othersFilters,
+        }: {
+          filter: EpsNestjsTargaMezziFilterType | undefined;
+          sort?: EpsNestjsTargaMezziSortType | undefined;
+          othersFilters?: OthersFiltersType | undefined;
+        }) => ({
+          key: [sort, filter, othersFilters],
+        }),
+      },
+    }),
+  }
+);
 
-export const 
-useGetTargaMezziQuery = ({
+export const useGetTargaMezziQuery = ({
   sort,
   filters,
   othersFilters,
 }: {
-  sort?: TargaMezziSortType | undefined;
+  sort?: EpsNestjsTargaMezziSortType | undefined;
   filters?: Array<FilterItem<TargaMezzi>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
   const fetch = useGetTargaMezziService();
 
   const query = useInfiniteQuery({
-    queryKey: cfsQueryKeys.list().sub.by({
+    queryKey: epsNestjsTargaMezziQueryKeys.list().sub.by({
       sort,
       filter: { filters },
       othersFilters: { filters: othersFilters },

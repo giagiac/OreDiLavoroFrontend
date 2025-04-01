@@ -69,6 +69,20 @@ function AdminPanel() {
                 {t("history")}
               </Button>
             </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <hr />
+              <Button
+                fullWidth
+                variant="contained"
+                color="info"
+                size="large"
+                style={{ height: 80, fontSize: "1.5rem" }}
+                onClick={() => router.push("/hours/manage/step1_KmAutista")}
+                endIcon={"🚗"}
+              >
+                {"Km Autista"}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

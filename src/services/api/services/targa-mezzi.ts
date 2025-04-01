@@ -26,7 +26,7 @@ export function useGetTargaMezziService() {
 
   return useCallback(
     (data: TargaMezziRequest, requestConfig?: RequestConfigType) => {
-      const requestUrl = new URL(`${API_URL}/v1/cf`);
+      const requestUrl = new URL(`${API_URL}/v1/eps-nestjs-targa-mezzis`);
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
@@ -46,6 +46,52 @@ export function useGetTargaMezziService() {
         method: "GET",
         ...requestConfig,
       }).then(wrapperFetchJsonResponse<TargaMezziResponse>);
+    },
+    [fetch]
+  );
+}
+
+export type TargaMezziPatchRequest = {
+  COD_ART: TargaMezzi["COD_ART"];
+  data: Partial<Pick<TargaMezzi, "COD_ART">>;
+};
+
+export type TargaMezziPatchResponse = TargaMezzi;
+
+export function usePatchTargaMezziService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: TargaMezziPatchRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(`${API_URL}/v1/eps-nestjs-targa-mezzis/${data.COD_ART}`, {
+        method: "PATCH",
+        body: JSON.stringify(data.data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<TargaMezziPatchResponse>);
+    },
+    [fetch]
+  );
+}
+
+export type TargaMezziDeleteRequest = {
+  id: TargaMezzi["id"];
+};
+
+export function useDeleteTargaMezziService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: TargaMezziDeleteRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(`${API_URL}/v1/eps-nestjs-targa-mezzis/${data.id}`, {
+        method: "DELETE",
+        ...requestConfig,
+      })
     },
     [fetch]
   );

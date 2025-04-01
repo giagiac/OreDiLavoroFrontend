@@ -35,11 +35,6 @@ function FormCreateUser() {
               mt={3}
               justifyContent="center"
               alignItems="center"
-              style={{
-                height: "50vh",
-                display: "flex",
-                flexDirection: "column",
-              }}
             >
               <Grid size={{ xs: 12 }}>
                 <Button

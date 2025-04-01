@@ -80,6 +80,7 @@ export const NumericKeypad = ({
               return (
                 <Grid key={number}>
                   <Button
+                    color="info"
                     style={{ fontSize: "3rem", width: "5rem", height: "4rem" }}
                     variant="contained"
                     onClick={() => handleNumberClick(number)}
@@ -94,6 +95,7 @@ export const NumericKeypad = ({
         <Grid container size={{ xs: 12 }} justifyContent="center">
           <Grid>
             <Button
+              color="info"
               style={{ fontSize: "3rem", width: "5rem", height: "4rem" }}
               variant="contained"
               onClick={() => handleNumberClick(0)}
@@ -103,6 +105,7 @@ export const NumericKeypad = ({
           </Grid>
           <Grid>
             <Button
+              color="info"
               style={{ width: "10.5rem", height: "4rem", fontSize: "1.5rem" }}
               variant="contained"
               onClick={handleClearClick}
@@ -122,6 +125,7 @@ export const NumericKeypad = ({
             {[15, 30, 45].map((minute) => (
               <Grid key={minute}>
                 <Button
+                  color="info"
                   style={{ fontSize: "1.5rem", width: "5rem", height: "4rem" }}
                   variant="contained"
                   onClick={() => handleMinuteClick(minute)}

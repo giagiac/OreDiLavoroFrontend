@@ -7,6 +7,7 @@ import { SortEnum } from "../types/sort-type";
 import useFetch from "../use-fetch";
 import wrapperFetchJsonResponse from "../wrapper-fetch-json-response";
 import { RequestConfigType } from "./types/request-config";
+import { TipoTrasferta } from "../types/orp-eff-cicli";
 
 export type EpsNestjsOrpEffCicliEsecsRequest = {
   page: number;
@@ -30,7 +31,9 @@ export function useGetEpsNestjsOrpEffCicliEsecService() {
       data: EpsNestjsOrpEffCicliEsecsRequest,
       requestConfig?: RequestConfigType
     ) => {
-      const requestUrl = new URL(`${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`);
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`
+      );
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
@@ -63,7 +66,9 @@ export function useGetEpsNestjsOrpEffCicliEsecsService() {
       data: EpsNestjsOrpEffCicliEsecsRequest,
       requestConfig?: RequestConfigType
     ) => {
-      const requestUrl = new URL(`${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`);
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`
+      );
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
@@ -106,6 +111,45 @@ export function useDeleteEpsNestjsOrpEffCicliEsecService() {
         method: "DELETE",
         ...requestConfig,
       }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecDeleteResponse>);
+    },
+    [fetch]
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+export type EpsNestjsOrpEffCicliEsecPostRequest = {
+    // OBBLIGATORI
+    tipoTrasferta: string;
+    TEMPO_OPERATORE: string;
+    // Documento
+    DOC_RIGA_ID: string;
+    DOC_ID: string;
+    AZIENDA_ID: number;
+  
+    // SEZIONE DEDICATA a KM AUTISTA
+    COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+    KM?: string | null;
+  
+    // EXTRA
+    NOTE?: string | null;
+};
+
+export type EpsNestjsOrpEffCicliEsecPostResponse = EpsNestjsOrpEffCicliEsec;
+
+export function usePostEpsNestjsOrpEffCicliEsecService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecPostRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(`${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecPostResponse>);
     },
     [fetch]
   );

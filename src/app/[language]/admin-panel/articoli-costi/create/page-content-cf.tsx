@@ -232,7 +232,6 @@ export default function FormCreateEdit(props: { cf: Cf }) {
 
   return (
     <FormProvider {...methods}>
-      {/* <form onSubmit={onSubmit}> */}
       <form>
         <Grid container>
           <Grid size={{ xs: 12 }}>
@@ -262,7 +261,9 @@ export default function FormCreateEdit(props: { cf: Cf }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([{ columnName: "COD_ART", value }]);
+                      setFilters([
+                        { columnName: "COD_ART", value, id: Math.random() },
+                      ]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>
@@ -274,9 +275,6 @@ export default function FormCreateEdit(props: { cf: Cf }) {
               ))}
             </Grid>
           </Grid>
-          {/* <Grid size={{ xs: 1 }} padding={0.5}>
-            <button type="submit">Submit</button>
-          </Grid> */}
         </Grid>
       </form>
     </FormProvider>
@@ -294,8 +292,10 @@ function Label(props: { artAna?: ArtAna | null }) {
       <Stack direction="row" spacing={2}>
         {artAna.artCosti?.map((it, index) => (
           <Fragment key={index}>
-            <Typography variant="subtitle1">{it.COD_TIPO_COST}</Typography>
-            <Typography variant="body1">{it.COSTO_ART}</Typography>
+            <Typography
+              fontSize={11}
+              variant="subtitle1"
+            >{`${it.COD_TIPO_COST}:${it.COSTO_ART}`}</Typography>
           </Fragment>
         ))}
       </Stack>

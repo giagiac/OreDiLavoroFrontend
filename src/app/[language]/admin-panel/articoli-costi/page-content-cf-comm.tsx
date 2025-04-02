@@ -17,7 +17,7 @@ import { useMemo } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import FormCreateEdit from "./create/page-content-cf-comm";
 import { useGetCfCommQuery } from "./queries/queries-cf-comm";
-import { TableHead } from "@mui/material";
+import { Paper, TableContainer, TableHead } from "@mui/material";
 
 type CfCommKeys = keyof CfComm;
 
@@ -49,112 +49,64 @@ export default function CfCommPage(cf: Cf) {
   const theme = useTheme();
 
   return (
-    <Container maxWidth="xl">
-      <Table>
-        {isFetchingNextPage && (
-          <TableHead>
-            <TableRow>
-              <TableCellLoadingContainer colSpan={4}>
-                <LinearProgress />
-              </TableCellLoadingContainer>
-            </TableRow>
-          </TableHead>
-        )}
-        <TableBody>
-          {result.map((cfComm, index) => {
-            return (
-              <TableRow key={cfComm.CF_COMM_ID}>
-                <TableCell colSpan={4} >
-                  <Table
-                    style={{
-                      borderCollapse: "separate",
-                      borderBottom: "none",
-                      padding: "none"
-                    }}
-                  >
-                    <TableBody>
-                      <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
-                        <TableCell style={{ width: "10%", textAlign: "left" }}>
-                          {cfComm?.NUM_SEDE}
-                        </TableCell>
-                        <TableCell style={{ width: "45%", textAlign: "left" }}>
-                          {cfComm?.DES_SEDE}
-                        </TableCell>
-                        <TableCell style={{ width: "45%", textAlign: "left" }}>
-                          {cfComm?.INDI_SEDE}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell
-                          colSpan={4}
-                          padding="none"
-                          style={{ borderBottom: "none" }}
-                        >
-                          <FormCreateEdit cfComm={cfComm} />
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-
-      {/* <TableVirtuoso
-        style={{ height: 500, backgroundColor: theme.palette.grey[50] }}
-        data={result}
-        components={TableComponents}
-        useWindowScroll
-        fixedHeaderContent={() => (
-          <>
-            {isFetchingNextPage && (
+    <TableContainer component={Paper}>
+        <Table size="small">
+          {isFetchingNextPage && (
+            <TableHead>
               <TableRow>
                 <TableCellLoadingContainer colSpan={4}>
                   <LinearProgress />
                 </TableCellLoadingContainer>
               </TableRow>
-            )}
-          </>
-        )}
-        itemContent={(index, cfComm) => {
-          return (
-            <TableCell colSpan={4} key={cfComm.CF_COMM_ID}>
-              <Table
-                style={{
-                  borderCollapse: "separate",
-                  borderBottom: "none",
-                  padding: "none",
-                }}
-              >
-                <TableBody>
-                  <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
-                    <TableCell style={{ width: "10%", textAlign: "left" }}>
-                      {cfComm?.NUM_SEDE}
-                    </TableCell>
-                    <TableCell style={{ width: "45%", textAlign: "left" }}>
-                      {cfComm?.DES_SEDE}
-                    </TableCell>
-                    <TableCell style={{ width: "45%", textAlign: "left" }}>
-                      {cfComm?.INDI_SEDE}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      padding="none"
-                      style={{ borderBottom: "none" }}
+            </TableHead>
+          )}
+          <TableBody>
+            {result.map((cfComm, index) => {
+              return (
+                <TableRow key={cfComm.CF_COMM_ID}>
+                  <TableCell colSpan={4}>
+                    <Table
+                      style={{
+                        borderCollapse: "separate",
+                        borderBottom: "none",
+                        padding: "none",
+                      }}
                     >
-                      <FormCreateEdit cfComm={cfComm} />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableCell>
-          );
-        }}
-      /> */}
-    </Container>
+                      <TableBody>
+                        <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
+                          <TableCell
+                            style={{ width: "10%", textAlign: "left" }}
+                          >
+                            {cfComm?.NUM_SEDE}
+                          </TableCell>
+                          <TableCell
+                            style={{ width: "45%", textAlign: "left" }}
+                          >
+                            {cfComm?.DES_SEDE}
+                          </TableCell>
+                          <TableCell
+                            style={{ width: "45%", textAlign: "left" }}
+                          >
+                            {cfComm?.INDI_SEDE}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell
+                            colSpan={4}
+                            padding="none"
+                            style={{ borderBottom: "none" }}
+                          >
+                            <FormCreateEdit cfComm={cfComm} />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
   );
 }

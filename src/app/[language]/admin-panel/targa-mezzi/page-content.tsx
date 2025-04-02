@@ -227,7 +227,7 @@ function TargaMezziPage() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value }];
+      oldFilter = [...oldFilter, { columnName, value, id:Math.random() }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto

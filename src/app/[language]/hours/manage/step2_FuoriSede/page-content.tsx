@@ -38,11 +38,6 @@ function FormCreateUser() {
               spacing={2}
               mb={3}
               mt={3}
-              style={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-              }}
             >
               <Grid size={{ xs: 12 }}>
                 <Button

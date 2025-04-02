@@ -47,6 +47,8 @@ import {
 } from "./queries/queries";
 import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
+import DomainAddTwoToneIcon from "@mui/icons-material/DomainAddTwoTone";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -323,38 +325,18 @@ function UserHours() {
   return (
     <Container maxWidth="xl">
       <Grid container spacing={3} pt={3}>
-        <Grid container spacing={3} size={{ xs: 12 }}>
-          <Grid size="grow">
-            <Typography variant="h3">
-              {tEpsNestjsOrpEffCicliEsec(
-                "admin-panel-epsNestjsOrpEffCicliEsec:title"
-              )}
-            </Typography>
-          </Grid>
-          <Grid container size="auto" wrap="nowrap" spacing={2}>
-            <Grid size="auto">
-              <Button
-                variant="contained"
-                LinkComponent={Link}
-                href="/admin-panel/epsNestjsOrpEffCicliEsec/create"
-                color="success"
-              >
-                {tEpsNestjsOrpEffCicliEsec(
-                  "admin-panel-epsNestjsOrpEffCicliEsec:actions.create"
-                )}
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid size={{ xs: 12 }} mb={2}>
+        <Grid size={{ xs: 12 }} mb={50}>
           <Table>
             <TableBody>
               {result.map((epsNestjsOrpEffCicliEsec, index) => (
                 <TableRow key={epsNestjsOrpEffCicliEsec.id}>
-                  <TableCell style={{ width: 100 }}>
-                    {epsNestjsOrpEffCicliEsec.id}
+                  <TableCell>{epsNestjsOrpEffCicliEsec.id}</TableCell>
+                  <TableCell>
+                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
+                      (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                    )}
                   </TableCell>
+                  <TableCell>{epsNestjsOrpEffCicliEsec.DOC_RIGA_ID}</TableCell>
                 </TableRow>
               ))}
               {isFetchingNextPage && (
@@ -369,7 +351,7 @@ function UserHours() {
         </Grid>
       </Grid>
       <Fab
-        color="secondary"
+        color="info"
         aria-label="add"
         style={{
           position: "fixed",
@@ -377,10 +359,40 @@ function UserHours() {
           left: "50%",
           transform: "translateX(-50%)",
         }}
-        onClick={() => router.push("manage/start")}
+        onClick={() => router.push("/hours/manage/step1_KmAutista")}
       >
-        <Tooltip title="In sede - fuori sede" arrow open>
-          <AddIcon />
+        <Tooltip title="Km Autista" arrow open>
+          <AirportShuttleTwoToneIcon />
+        </Tooltip>
+      </Fab>
+      <Fab
+        color="primary"
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: 16,
+          right: 10,
+          transform: "translateX(-50%)",
+        }}
+        onClick={() => router.push("/hours/manage/step1_FuoriSede")}
+      >
+        <Tooltip title="Fuori sede" arrow open>
+          <FlightTakeoffTwoToneIcon />
+        </Tooltip>
+      </Fab>
+      <Fab
+        color="secondary"
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: 16,
+          right: 100,
+          transform: "translateX(-50%)",
+        }}
+        onClick={() => router.push("/hours/manage/create/in_sede")}
+      >
+        <Tooltip title="In sede" arrow open>
+          <DomainAddTwoToneIcon />
         </Tooltip>
       </Fab>
     </Container>

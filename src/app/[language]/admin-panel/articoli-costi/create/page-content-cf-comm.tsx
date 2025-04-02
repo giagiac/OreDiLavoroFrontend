@@ -231,13 +231,16 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
 
   return (
     <FormProvider {...methods}>
-      {/* <form onSubmit={onSubmit}> */}
       <form>
         <Grid container>
           <Grid size={{ xs: 12 }}>
             <Grid container>
               {articoliEdit.map((it) => (
-                <Grid key={`${it.TIPO_COSTO+cfComm.CF_COMM_ID}`} size={{ xs: 3 }} padding={0.5}>
+                <Grid
+                  key={`${it.TIPO_COSTO + cfComm.CF_COMM_ID}`}
+                  size={{ xs: 3 }}
+                  padding={0.5}
+                >
                   <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
                     name={`${it.TIPO_COSTO}`}
                     label={`${it.TIPO_COSTO}`}
@@ -257,7 +260,9 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([{ columnName: "COD_ART", value }]);
+                      setFilters([
+                        { columnName: "COD_ART", value, id: Math.random() },
+                      ]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>
@@ -269,9 +274,6 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
               ))}
             </Grid>
           </Grid>
-          {/* <Grid size={{ xs: 1 }} padding={0.5}>
-            <button type="submit">Submit</button>
-          </Grid> */}
         </Grid>
       </form>
     </FormProvider>
@@ -286,11 +288,13 @@ function Label(props: { artAna?: ArtAna | null }) {
     artAna.artCosti?.length > 0
   ) {
     return (
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={1}>
         {artAna.artCosti?.map((it, index) => (
           <Fragment key={index}>
-            <Typography variant="subtitle1">{it.COD_TIPO_COST}</Typography>
-            <Typography variant="body1">{it.COSTO_ART}</Typography>
+            <Typography
+              fontSize={11}
+              variant="subtitle1"
+            >{`${it.COD_TIPO_COST}:${it.COSTO_ART}`}</Typography>
           </Fragment>
         ))}
       </Stack>

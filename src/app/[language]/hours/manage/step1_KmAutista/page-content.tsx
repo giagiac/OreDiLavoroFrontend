@@ -1,6 +1,5 @@
 "use client";
 
-import { ButtonDelete } from "@/app/[language]/admin-panel/targa-mezzi/button-delete";
 import { useGetTargaMezziQuery } from "@/app/[language]/admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
 import { NumericKeypadKm } from "@/components/numeric-keypad-km";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
@@ -9,6 +8,8 @@ import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
+import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
+import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 import {
   Button,
   Paper,
@@ -24,7 +25,6 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
@@ -126,7 +126,7 @@ function FormCreateUser() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value }];
+      oldFilter = [...oldFilter, { columnName, value, id: Math.random() }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
@@ -159,19 +159,30 @@ function FormCreateUser() {
   return (
     <Container maxWidth="md">
       <Grid container pt={3}>
-        <Grid textAlign={{ xs: "right" }} size={12}>
+        <Grid size={{ xs: 12 }}>
+          <Button
+            variant="contained"
+            color="info"
+            size="large"
+            style={{ height: 50, fontSize: "1.5rem" }}
+            onClick={() => router.push("/hours/manage")}
+            startIcon={<ArrowBackTwoToneIcon />}
+          >
+            KM Autista
+          </Button>
+        </Grid>
+        {/* <Grid textAlign={{ xs: "right" }} size={12}>
           <Typography variant="h3" gutterBottom>
             {`${user?.firstName} ${user?.lastName}`}
           </Typography>
           <Typography variant="h4">Aggiungi solo i Km Autista</Typography>
-        </Grid>
+        </Grid> */}
         <Grid size={12}>
           <Container maxWidth="sm">
             <Grid container justifyContent="center" alignItems="center">
               <Grid size={{ xs: 12 }}>
                 <NumericKeypadKm
                   onChange={(value) => {
-                    console.log(value);
                     setKm(value);
                   }}
                 />

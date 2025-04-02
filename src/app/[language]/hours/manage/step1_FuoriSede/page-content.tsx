@@ -19,9 +19,9 @@ function FormCreateUser() {
     <Container maxWidth="md">
       <Grid container spacing={3} pt={3}>
         <Grid textAlign={{ xs: "right" }} size={12}>
-          <Typography variant="h3" gutterBottom>
+          {/* <Typography variant="h3" gutterBottom>
             {`${user?.firstName} ${user?.lastName}`}
-          </Typography>
+          </Typography> */}
           <Typography variant="h4" gutterBottom>
             che tipo di trasferta hai fatto?
           </Typography>
@@ -42,7 +42,7 @@ function FormCreateUser() {
                   color="primary"
                   size="large"
                   style={{ height: 50, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/start")}
+                  onClick={() => router.push("/hours/manage")}
                   startIcon={<ArrowBackTwoToneIcon />}
                 >
                   Fuori sede

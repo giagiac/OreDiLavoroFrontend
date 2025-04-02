@@ -31,7 +31,6 @@ import { styled } from "@mui/material/styles";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Typography from "@mui/material/Typography";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -49,6 +48,16 @@ import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 import DomainAddTwoToneIcon from "@mui/icons-material/DomainAddTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
+import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Stack,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -336,7 +345,22 @@ function UserHours() {
                       (it) => it.ordCliRighe?.cf.RAG_SOC_CF
                     )}
                   </TableCell>
+                  <TableCell>
+                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
+                      (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                    )}
+                  </TableCell>
+                  {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd &&
+                    renderOrdCliTrasAccordion(
+                      epsNestjsOrpEffCicliEsec.orpEffCicli.linkOrpOrd
+                    )}
                   <TableCell>{epsNestjsOrpEffCicliEsec.DOC_RIGA_ID}</TableCell>
+                  <TableCell>
+                    {epsNestjsOrpEffCicliEsec.TEMPO_OPERATORE?.toString()}
+                  </TableCell>
+                  <TableCell>
+                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.orpEff.DES_PROD}
+                  </TableCell>
                 </TableRow>
               ))}
               {isFetchingNextPage && (
@@ -397,6 +421,28 @@ function UserHours() {
       </Fab>
     </Container>
   );
+}
+
+function renderOrdCliTrasAccordion(linkOrpOrd:Array<LinkOrpOrd>) {
+  return linkOrpOrd?.map((it, index) => {
+    const ordCliTras = it.ordCliRighe?.ordCliTras || {} as OrdCliTras;
+    return (
+      <Accordion key={index}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography>{ordCliTras.DES_DEST_MERCE || "No Title"}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack spacing={2}>
+            {(Object.keys(ordCliTras) as (keyof OrdCliTras)[]).map((key) => (
+              <Typography key={key}>
+                <strong>{key}:</strong> {ordCliTras[key]}
+              </Typography>
+            ))}
+          </Stack>
+        </AccordionDetails>
+      </Accordion>
+    );
+  });
 }
 
 export default withPageRequiredAuth(UserHours, { roles: [RoleEnum.ADMIN] });

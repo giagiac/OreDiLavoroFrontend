@@ -23,7 +23,7 @@ function FormCreateUser() {
             {`${user?.firstName} ${user?.lastName}`}
           </Typography> */}
           <Typography variant="h4" gutterBottom>
-            che tipo di trasferta hai fatto?
+            Sei rientrato?
           </Typography>
         </Grid>
         <Grid size={12}>

@@ -24,11 +24,11 @@ function FormCreateUser() {
     <Container maxWidth="md">
       <Grid container spacing={3} pt={3}>
         <Grid textAlign={{ xs: "right" }} size={12}>
-          <Typography variant="h3" gutterBottom>
+          {/* <Typography variant="h3" gutterBottom>
             {`${user?.firstName} ${user?.lastName}`}
-          </Typography>
+          </Typography> */}
           <Typography variant="h4" gutterBottom>
-            che tipo di trasferta hai fatto?
+            Sei rientrato?
           </Typography>
         </Grid>
         <Grid size={12}>
@@ -91,7 +91,7 @@ function FormCreateUser() {
                   onClick={() => setShowMissionPanel(!showMissionPanel)}
                   endIcon={"↔"}
                 >
-                  Ancora in missione
+                  Ancora in trasferta
                 </Button>
                 <div
                   style={{

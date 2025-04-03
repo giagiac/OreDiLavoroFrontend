@@ -205,7 +205,7 @@ function FormCreateUser() {
                       key={targaMezzi.COD_ART}
                       style={{
                         backgroundColor:
-                          index % 2 == 0
+                          Number(targaMezzi.id) % 2 == 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}

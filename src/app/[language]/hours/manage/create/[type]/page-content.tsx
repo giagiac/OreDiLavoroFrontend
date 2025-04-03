@@ -2,7 +2,7 @@
 
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
-import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
+import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
@@ -86,22 +86,22 @@ function FormCreateUser() {
       buttonColor = "primary";
       break;
     case "ancora_in_missione_5":
-      prepareText = "Ancora in missione 5 Km";
+      prepareText = "Ancora in trasferta 5 Km";
       prepareLink = "/hours/manage/step2_FuoriSede";
       buttonColor = "primary";
       break;
     case "ancora_in_missione_10":
-      prepareText = "Ancora in missione 10 Km";
+      prepareText = "Ancora in trasferta 10 Km";
       prepareLink = "/hours/manage/step2_FuoriSede";
       buttonColor = "primary";
       break;
     case "ancora_in_missione_15":
-      prepareText = "Ancora in missione 15 Km";
+      prepareText = "Ancora in trasferta 15 Km";
       prepareLink = "/hours/manage/step2_FuoriSede";
       buttonColor = "primary";
       break;
     case "ancora_in_missione_20":
-      prepareText = "Ancora in missione 20 Km";
+      prepareText = "Ancora in trasferta 20 Km";
       prepareLink = "/hours/manage/step2_FuoriSede";
       buttonColor = "primary";
       break;
@@ -331,13 +331,15 @@ function FormCreateUser() {
           </Grid>
           {isFetched && (
             <>
-              {result.length == 0 && codiceBreveValue.length > 0 && enterPressed && (
-                <Grid size={{ xs: 12 }} textAlign="center">
-                  <Typography variant="h3" color="error">
-                    Nessuna commessa trovata
-                  </Typography>
-                </Grid>
-              )}
+              {result.length == 0 &&
+                codiceBreveValue.length > 0 &&
+                enterPressed && (
+                  <Grid size={{ xs: 12 }} textAlign="center">
+                    <Typography variant="h3" color="error">
+                      Nessuna commessa trovata
+                    </Typography>
+                  </Grid>
+                )}
               {result.length == 0 && codiceBreveValue.length == 0 && (
                 <Grid size={{ xs: 12 }} textAlign="center">
                   <Typography variant="h4" color="info">
@@ -349,7 +351,7 @@ function FormCreateUser() {
                 result[0].orpEff != null &&
                 result[0].orpEff.STATUS == 2 && (
                   <Grid size={{ xs: 12 }} textAlign="center">
-                    <Typography variant="h3" color="error">
+                    <Typography variant="h3" color="warning">
                       Commessa chiusa
                     </Typography>
                   </Grid>

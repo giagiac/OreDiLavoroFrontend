@@ -2,35 +2,41 @@
 
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { useSnackbar } from "@/hooks/use-snackbar";
-import { useDeleteTargaMezziService } from "@/services/api/services/targa-mezzi";
-import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import ClearIcon from "@mui/icons-material/Clear";
 import Button from "@mui/material/Button";
 
-export function ButtonDelete({
-  targaMezzi,
+export function ButtonDeleteConfirm<T>({
+  item,
   refetch,
+  useDeleteService,
+  confirmTitle,
+  confirmMessage,
+  successMessage,
 }: {
-  targaMezzi: TargaMezzi;
+  item: T;
   refetch: () => void;
+  useDeleteService: () => (params: { id: string }) => Promise<void>;
+  confirmTitle: string;
+  confirmMessage: string;
+  successMessage: string;
 }) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const fetchPostTargaMezzi = useDeleteTargaMezziService();
+  const fetchDeleteService = useDeleteService();
 
   const { confirmDialog } = useConfirmDialog();
 
-  const handleDelete = async (targaMezzi: TargaMezzi) => {
+  const handleDelete = async (item: T & { id: string }) => {
     const isConfirmed = await confirmDialog({
-      title: "Targa mezzi",
-      message: "Vuoi confermare la cancellazione?",
+      title: confirmTitle,
+      message: confirmMessage,
     });
 
     if (isConfirmed) {
-      await fetchPostTargaMezzi({
-        id: targaMezzi.id,
+      await fetchDeleteService({
+        id: item.id,
       });
-      enqueueSnackbar("Articolo rimosso", {
+      enqueueSnackbar(successMessage, {
         variant: "success",
       });
       refetch();
@@ -40,7 +46,7 @@ export function ButtonDelete({
   return (
     <Button
       onClick={() => {
-        handleDelete(targaMezzi);
+        handleDelete(item as any);
       }}
     >
       <ClearIcon />

@@ -40,6 +40,8 @@ import { useGetTargaMezziQuery } from "./queries/queries-eps-nestjs-targa-mezzi"
 import FormCreateEdit from "./create/page-content";
 import { ArtAna } from "@/services/api/types/art-ana";
 import { ButtonDelete } from "./button-delete";
+import { ButtonDeleteConfirm } from "@/components/confirm-dialog/confirm-dialog-delete";
+import { useDeleteTargaMezziService } from "@/services/api/services/targa-mezzi";
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
@@ -227,7 +229,7 @@ function TargaMezziPage() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value, id:Math.random() }];
+      oldFilter = [...oldFilter, { columnName, value, id: Math.random() }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
@@ -254,6 +256,8 @@ function TargaMezziPage() {
 
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
   }, [data, searchParams]);
+
+  // const fetchPostTargaMezzi = useDeleteTargaMezziService();
 
   return (
     <Container maxWidth="md">
@@ -305,7 +309,7 @@ function TargaMezziPage() {
                       key={targaMezzi.COD_ART}
                       style={{
                         backgroundColor:
-                          index % 2 == 0
+                          Number(targaMezzi.id) % 2 == 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}
@@ -319,6 +323,22 @@ function TargaMezziPage() {
                             </Typography>
                           </Grid>
                           <Grid size={{ xs: 1 }}>
+                            {/* // TODO: 
+                            <ButtonDeleteConfirm
+                              item={targaMezzi}
+                              refetch={() => {
+                                refetch();
+                              }}
+                              useDeleteService={() =>
+                                (params: { id: string }) => {
+                                  return fetchPostTargaMezzi({
+                                    id: params.id,
+                                  });
+                                }}
+                              confirmTitle={"Confermi l'eliminazione"}
+                              confirmMessage={"Vuoi confermare?"}
+                              successMessage={"Articolo cancellato"}
+                            /> */}
                             <ButtonDelete
                               targaMezzi={targaMezzi}
                               refetch={() => {

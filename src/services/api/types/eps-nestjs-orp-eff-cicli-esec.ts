@@ -22,6 +22,8 @@ export type EpsNestjsOrpEffCicliEsec = {
   NUM_RIGA?: number | null;
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
+
+  TEMPO_OPERATORE_SESSANTESIMI?: String | null;
   
   orpEffCicliEsec?: OrpEffCicliEsec | null;
   orpEffCicli?: OrpEffCicli | null;

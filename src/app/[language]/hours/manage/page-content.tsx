@@ -1,63 +1,53 @@
 "use client";
 
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
-import Link from "@/components/link";
-import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
+import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
 import { RoleEnum } from "@/services/api/types/role";
-import { SortEnum, SortGeneric } from "@/services/api/types/sort-type";
-import { User } from "@/services/api/types/user";
-import useAuth from "@/services/auth/use-auth";
+import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Table, TableBody, Tooltip } from "@mui/material";
+import { DeleteForeverTwoTone } from "@mui/icons-material";
+import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
+import DomainAddTwoToneIcon from "@mui/icons-material/DomainAddTwoTone";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Table,
+  TableBody,
+  TableContainer,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Container from "@mui/material/Container";
 import Fab from "@mui/material/Fab";
-import Grid from "@mui/material/Grid2";
-import Grow from "@mui/material/Grow";
 import LinearProgress from "@mui/material/LinearProgress";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
 import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
 import { styled } from "@mui/material/styles";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  Fragment,
   PropsWithChildren,
   useCallback,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import {
-  epsNestjsOrpEffCicliEsecQueryKeys,
-  useGetEpsNestjsOrpEffCicliEsecQuery,
-} from "./queries/queries";
-import { EpsNestjsOrpEffCicliEsecFilterType } from "./user-filter-types";
-import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
-import DomainAddTwoToneIcon from "@mui/icons-material/DomainAddTwoTone";
-import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
-import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Stack,
-  Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
+import useAuth from "@/services/auth/use-auth";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -90,176 +80,6 @@ function TableSortCellWrapper(
         {props.children}
       </TableSortLabel>
     </TableCell>
-  );
-}
-
-function Actions({ user }: { user: User }) {
-  const [open, setOpen] = useState(false);
-  const { user: authUser } = useAuth();
-  const { confirmDialog } = useConfirmDialog();
-  const fetchUserDelete = useDeleteEpsNestjsOrpEffCicliEsecService();
-  const queryClient = useQueryClient();
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const canDelete = user.id !== authUser?.id;
-  const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
-    "admin-panel-epsNestjsOrpEffCicliEsec"
-  );
-
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event: Event) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const handleDelete = async () => {
-    const isConfirmed = await confirmDialog({
-      title: tEpsNestjsOrpEffCicliEsec(
-        "admin-panel-epsNestjsOrpEffCicliEsec:confirm.delete.title"
-      ),
-      message: tEpsNestjsOrpEffCicliEsec(
-        "admin-panel-epsNestjsOrpEffCicliEsec:confirm.delete.message"
-      ),
-    });
-
-    if (isConfirmed) {
-      setOpen(false);
-
-      const searchParams = new URLSearchParams(window.location.search);
-      const searchParamsFilter = searchParams.get("filter");
-      const searchParamsSort = searchParams.get("sort");
-
-      let filter: EpsNestjsOrpEffCicliEsecFilterType | undefined = undefined;
-      let sort: SortGeneric<EpsNestjsOrpEffCicliEsec> | undefined = {
-        order: SortEnum.DESC,
-        orderBy: "id",
-      };
-
-      if (searchParamsFilter) {
-        filter = JSON.parse(searchParamsFilter);
-      }
-
-      if (searchParamsSort) {
-        sort = JSON.parse(searchParamsSort);
-      }
-
-      const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: User[] }>
-      >(epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({ sort, filter }).key);
-
-      await queryClient.cancelQueries({
-        queryKey: epsNestjsOrpEffCicliEsecQueryKeys.list().key,
-      });
-
-      const newData = {
-        ...previousData,
-        pages: previousData?.pages.map((page) => ({
-          ...page,
-          data: page?.data.filter((item) => item.id !== user.id),
-        })),
-      };
-
-      queryClient.setQueryData(
-        epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({ sort, filter }).key,
-        newData
-      );
-
-      await fetchUserDelete({
-        id: user.id,
-      });
-    }
-  };
-
-  const mainButton = (
-    <Button
-      size="small"
-      variant="contained"
-      LinkComponent={Link}
-      href={`/admin-panel/epsNestjsOrpEffCicliEsec/edit/${user.id}`}
-    >
-      {tEpsNestjsOrpEffCicliEsec(
-        "admin-panel-epsNestjsOrpEffCicliEsec:actions.edit"
-      )}
-    </Button>
-  );
-
-  return (
-    <>
-      {[!canDelete].every(Boolean) ? (
-        mainButton
-      ) : (
-        <ButtonGroup
-          variant="contained"
-          ref={anchorRef}
-          aria-label="split button"
-          size="small"
-        >
-          {mainButton}
-
-          <Button
-            size="small"
-            aria-controls={open ? "split-button-menu" : undefined}
-            aria-expanded={open ? "true" : undefined}
-            aria-label="select merge strategy"
-            aria-haspopup="menu"
-            onClick={handleToggle}
-          >
-            <ArrowDropDownIcon />
-          </Button>
-        </ButtonGroup>
-      )}
-      <Popper
-        sx={{
-          zIndex: 1,
-        }}
-        open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom",
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList id="split-button-menu" autoFocusItem>
-                  {canDelete && (
-                    <MenuItem
-                      sx={{
-                        bgcolor: "error.main",
-                        color: `var(--mui-palette-common-white)`,
-                        "&:hover": {
-                          bgcolor: "error.light",
-                        },
-                      }}
-                      onClick={handleDelete}
-                    >
-                      {tEpsNestjsOrpEffCicliEsec(
-                        "admin-panel-epsNestjsOrpEffCicliEsec:actions.delete"
-                      )}
-                    </MenuItem>
-                  )}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </>
   );
 }
 
@@ -311,7 +131,7 @@ function UserHours() {
     return undefined;
   }, [searchParams]);
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
     useGetEpsNestjsOrpEffCicliEsecQuery({
       filters: filter,
       sort: { order, orderBy },
@@ -331,64 +151,126 @@ function UserHours() {
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
+  const { user } = useAuth();
+
+  const theme = useTheme();
+
+  const { enqueueSnackbar } = useSnackbar();
+  const { confirmDialog } = useConfirmDialog();
+  const fetchEpsNestjsOrpEffCicliEsecDelete =
+    useDeleteEpsNestjsOrpEffCicliEsecService();
+
+  const onDelete = async (id: string) => {
+    const isConfirmed = await confirmDialog({
+      title: "Ore commessa",
+      message: "Vuoi confermare la cancellazione?",
+    });
+
+    if (isConfirmed) {
+      await fetchEpsNestjsOrpEffCicliEsecDelete({
+        id,
+      });
+      enqueueSnackbar("Ore commessa eliminate!", {
+        variant: "success",
+      });
+      refetch();
+    }
+  };
+
   return (
     <Container maxWidth="xl">
-      <Grid container spacing={3} pt={3}>
-        <Grid size={{ xs: 12 }} mb={50}>
-          <Table>
-            <TableBody>
-              {result.map((epsNestjsOrpEffCicliEsec, index) => (
-                <TableRow key={epsNestjsOrpEffCicliEsec.id}>
-                  <TableCell>{epsNestjsOrpEffCicliEsec.id}</TableCell>
-                  <TableCell>
-                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
-                      (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                    )}
+      <TableContainer
+        component={Paper}
+        style={{ marginTop: 20, marginBottom: 200 }}
+      >
+        <Table size="small">
+          <TableBody>
+            {result.map((epsNestjsOrpEffCicliEsec, index) => (
+              <Fragment key={epsNestjsOrpEffCicliEsec.id}>
+                <TableRow
+                  sx={{ "& td": { border: 0 } }}
+                  style={{
+                    backgroundColor:
+                      Number(epsNestjsOrpEffCicliEsec.id) % 2 == 0
+                        ? theme.palette.divider
+                        : theme.palette.background.paper,
+                    width: "100%",
+                  }}
+                >
+                  <TableCell style={{ width: 200 }}>
+                    <Button
+                      onClick={() => {
+                        onDelete(epsNestjsOrpEffCicliEsec.id);
+                      }}
+                      variant="contained"
+                      endIcon={<DeleteForeverTwoTone />}
+                    >
+                      {epsNestjsOrpEffCicliEsec.id}
+                    </Button>
                   </TableCell>
                   <TableCell>
-                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
-                      (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                    )}
+                    <Typography variant="body1">
+                      {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
+                        (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                      )}
+                    </Typography>
                   </TableCell>
-                  {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd &&
-                    renderOrdCliTrasAccordion(
-                      epsNestjsOrpEffCicliEsec.orpEffCicli.linkOrpOrd
-                    )}
+                  <TableCell style={{ width: 200 }}>
+                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd &&
+                      renderOrdCliTrasAccordion(
+                        epsNestjsOrpEffCicliEsec.orpEffCicli.linkOrpOrd
+                      )}
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  style={{
+                    backgroundColor:
+                      Number(epsNestjsOrpEffCicliEsec.id) % 2 == 0
+                        ? theme.palette.divider
+                        : theme.palette.background.paper,
+                  }}
+                >
                   <TableCell>{epsNestjsOrpEffCicliEsec.DOC_RIGA_ID}</TableCell>
-                  <TableCell>
-                    {epsNestjsOrpEffCicliEsec.TEMPO_OPERATORE?.toString()}
-                  </TableCell>
                   <TableCell>
                     {epsNestjsOrpEffCicliEsec.orpEffCicli?.orpEff.DES_PROD}
                   </TableCell>
+                  <TableCell>
+                    <Typography variant="h4" textAlign={"right"}>
+                      {epsNestjsOrpEffCicliEsec.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                    </Typography>
+                  </TableCell>
                 </TableRow>
-              ))}
-              {isFetchingNextPage && (
-                <TableRow>
-                  <TableCellLoadingContainer colSpan={6}>
-                    <LinearProgress />
-                  </TableCellLoadingContainer>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Grid>
-      </Grid>
-      <Fab
-        color="info"
-        aria-label="add"
-        style={{
-          position: "fixed",
-          bottom: 16,
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-        onClick={() => router.push("/hours/manage/step1_KmAutista")}
-      >
-        <Tooltip title="Km Autista" arrow open>
-          <AirportShuttleTwoToneIcon />
-        </Tooltip>
-      </Fab>
+              </Fragment>
+            ))}
+            {isFetchingNextPage && (
+              <TableRow>
+                <TableCellLoadingContainer colSpan={6}>
+                  <LinearProgress />
+                </TableCellLoadingContainer>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
+        user?.role?.id as RoleEnum
+      ) && (
+        <Fab
+          color="info"
+          aria-label="add"
+          style={{
+            position: "fixed",
+            bottom: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+          onClick={() => router.push("/hours/manage/step1_KmAutista")}
+        >
+          <Tooltip title="Km Autista" arrow open>
+            <AirportShuttleTwoToneIcon />
+          </Tooltip>
+        </Fab>
+      )}
       <Fab
         color="primary"
         aria-label="add"
@@ -423,26 +305,46 @@ function UserHours() {
   );
 }
 
-function renderOrdCliTrasAccordion(linkOrpOrd:Array<LinkOrpOrd>) {
+function renderOrdCliTrasAccordion(linkOrpOrd: Array<LinkOrpOrd>) {
   return linkOrpOrd?.map((it, index) => {
-    const ordCliTras = it.ordCliRighe?.ordCliTras || {} as OrdCliTras;
+    const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
     return (
-      <Accordion key={index}>
+      <Accordion key={index} variant="elevation" style={{ margin: 2 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>{ordCliTras.DES_DEST_MERCE || "No Title"}</Typography>
+          <Typography color="primary">
+            {ordCliTras.NUM_DEST} · {ordCliTras.DES_DEST_MERCE || "No Title"}
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Stack spacing={2}>
-            {(Object.keys(ordCliTras) as (keyof OrdCliTras)[]).map((key) => (
-              <Typography key={key}>
-                <strong>{key}:</strong> {ordCliTras[key]}
-              </Typography>
-            ))}
-          </Stack>
+          <Table size="small">
+            <TableBody>
+              {(Object.keys(ordCliTras) as (keyof OrdCliTras)[]).map((key) => {
+                const value = ordCliTras[key];
+                if (
+                  value == null ||
+                  key === "DES_DEST_MERCE" ||
+                  key === "NUM_DEST"
+                )
+                  return null;
+                return (
+                  <TableRow key={key}>
+                    <TableCell align="left">
+                      <Typography variant="caption">{key}</Typography>
+                    </TableCell>
+                    <TableCell align="left" style={{ width: 300 }}>
+                      <Typography variant="subtitle2">{value}</Typography>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </AccordionDetails>
       </Accordion>
     );
   });
 }
 
-export default withPageRequiredAuth(UserHours, { roles: [RoleEnum.ADMIN] });
+export default withPageRequiredAuth(UserHours, {
+  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA],
+});

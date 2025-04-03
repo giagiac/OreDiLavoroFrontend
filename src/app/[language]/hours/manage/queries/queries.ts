@@ -8,7 +8,7 @@ import {
   EpsNestjsOrpEffCicliEsecSortType,
   OthersFiltersType,
 } from "../user-filter-types";
-import { useGetEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
+import { useGetEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 
 export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(

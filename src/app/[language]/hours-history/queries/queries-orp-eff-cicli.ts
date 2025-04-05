@@ -1,46 +1,50 @@
-import { useGetCfCommService } from "@/services/api/services/cfComm";
+import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { CfCommFilterType, CfCommSortType } from "../cf-comm-filter-types";
-import { OthersFiltersType } from "../cf-filter-types";
-import { CfComm } from "@/services/api/types/cfComm";
+import {
+  OrpEffCicliFilterType,
+  OrpEffCicliSortType,
+  OthersFiltersType,
+} from "../orp-eff-cicli-filter-types";
 
-export const cfCommQueryKeys = createQueryKeys(["CfComm"], {
-  list: () => ({
-    key: [],
-    sub: {
-      by: ({
-        sort,
-        filter,
-        othersFilters,
-      }: {
-        filter: CfCommFilterType | undefined;
-        sort?: CfCommSortType | undefined;
-        othersFilters?: OthersFiltersType | undefined;
-      }) => ({
-        key: [sort, filter, othersFilters],
-      }),
-    },
-  }),
-});
+export const orpEffCicliQueryKeys = createQueryKeys(
+  ["OrpEffCicli"],
+  {
+    list: () => ({
+      key: [],
+      sub: {
+        by: ({
+          sort,
+          filter,
+          othersFilters,
+        }: {
+          filter: OrpEffCicliFilterType | undefined;
+          sort?: OrpEffCicliSortType | undefined;
+          othersFilters?: OthersFiltersType | undefined;
+        }) => ({
+          key: [sort, filter, othersFilters],
+        }),
+      },
+    }),
+  }
+);
 
-export const useGetCfCommQuery = ({
+export const useGetOrpEffCicliQuery = ({
   sort,
   filters,
   othersFilters,
 }: {
-  sort?: CfCommSortType | undefined;
-  filters?: Array<FilterItem<CfComm>> | undefined;
+  sort?: OrpEffCicliSortType | undefined;
+  filters?: Array<FilterItem<OrpEffCicli>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
-  const fetch = useGetCfCommService();
+  const fetch = useGetOrpEffCicliService();
 
   const query = useInfiniteQuery({
-    refetchOnWindowFocus: true,
-    retry: 3,
-    queryKey: cfCommQueryKeys.list().sub.by({
+    queryKey: orpEffCicliQueryKeys.list().sub.by({
       sort,
       filter: { filters },
       othersFilters: { filters: othersFilters },
@@ -50,9 +54,9 @@ export const useGetCfCommQuery = ({
       const { status, data } = await fetch(
         {
           page: pageParam,
-          limit: 50,
-          sort: sort ? [sort] : undefined,
+          limit: 10,
           filters,
+          sort: sort ? [sort] : undefined,
           othersFilters,
         },
         {

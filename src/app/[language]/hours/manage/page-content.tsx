@@ -5,11 +5,11 @@ import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
-import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
@@ -22,9 +22,12 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Stack,
   Table,
   TableBody,
   TableContainer,
+  TableHead,
   Tooltip,
   Typography,
   useTheme,
@@ -39,6 +42,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import {
   Fragment,
   PropsWithChildren,
@@ -47,7 +51,7 @@ import {
   useState,
 } from "react";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import useAuth from "@/services/auth/use-auth";
+import imageLogo from "../../../../../public/emotions.png";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -131,11 +135,17 @@ function UserHours() {
     return undefined;
   }, [searchParams]);
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
-    useGetEpsNestjsOrpEffCicliEsecQuery({
-      filters: filter,
-      sort: { order, orderBy },
-    });
+  const {
+    data,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    fetchNextPage,
+    refetch,
+  } = useGetEpsNestjsOrpEffCicliEsecQuery({
+    filters: filter,
+    sort: { order, orderBy },
+  });
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -184,14 +194,33 @@ function UserHours() {
         style={{ marginTop: 20, marginBottom: 200 }}
       >
         <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" colSpan={4}>
+                <Stack
+                  textAlign="center"
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="baseline"
+                  spacing={2}
+                >
+                  <Typography variant="h6">
+                    <em>{data?.targetDateInizio}</em>
+                  </Typography>
+                  <Typography variant="h2">{data?.totale}</Typography>
+                </Stack>
+              </TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
-            {result.map((epsNestjsOrpEffCicliEsec, index) => (
-              <Fragment key={epsNestjsOrpEffCicliEsec.id}>
+            {result.map((epsNestjsOrpEffCicliEsec) => (
+              <Fragment key={epsNestjsOrpEffCicliEsec?.id}>
                 <TableRow
                   sx={{ "& td": { border: 0 } }}
                   style={{
                     backgroundColor:
-                      Number(epsNestjsOrpEffCicliEsec.id) % 2 == 0
+                      epsNestjsOrpEffCicliEsec?.id != undefined &&
+                      parseFloat(epsNestjsOrpEffCicliEsec?.id) % 2 == 0
                         ? theme.palette.divider
                         : theme.palette.background.paper,
                     width: "100%",
@@ -200,43 +229,43 @@ function UserHours() {
                   <TableCell style={{ width: 200 }}>
                     <Button
                       onClick={() => {
-                        onDelete(epsNestjsOrpEffCicliEsec.id);
+                        onDelete(epsNestjsOrpEffCicliEsec?.id);
                       }}
                       variant="contained"
                       endIcon={<DeleteForeverTwoTone />}
                     >
-                      {epsNestjsOrpEffCicliEsec.id}
+                      {epsNestjsOrpEffCicliEsec?.id}
                     </Button>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body1">
-                      {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd?.map(
+                      {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
                         (it) => it.ordCliRighe?.cf.RAG_SOC_CF
                       )}
                     </Typography>
                   </TableCell>
                   <TableCell style={{ width: 200 }}>
-                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.linkOrpOrd &&
+                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
                       renderOrdCliTrasAccordion(
-                        epsNestjsOrpEffCicliEsec.orpEffCicli.linkOrpOrd
+                        epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
                       )}
                   </TableCell>
                 </TableRow>
                 <TableRow
                   style={{
                     backgroundColor:
-                      Number(epsNestjsOrpEffCicliEsec.id) % 2 == 0
+                      Number(epsNestjsOrpEffCicliEsec?.id) % 2 == 0
                         ? theme.palette.divider
                         : theme.palette.background.paper,
                   }}
                 >
-                  <TableCell>{epsNestjsOrpEffCicliEsec.DOC_RIGA_ID}</TableCell>
+                  <TableCell>{epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}</TableCell>
                   <TableCell>
-                    {epsNestjsOrpEffCicliEsec.orpEffCicli?.orpEff.DES_PROD}
+                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
                   </TableCell>
                   <TableCell>
                     <Typography variant="h4" textAlign={"right"}>
-                      {epsNestjsOrpEffCicliEsec.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                      {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -252,6 +281,25 @@ function UserHours() {
           </TableBody>
         </Table>
       </TableContainer>
+      {result.length == 0 && isLoading == false && (
+        <Container maxWidth="sm">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="30vh"
+            textAlign="center"
+          >
+            <Typography variant="h2">
+              Nessuna registrazione effettuata!</Typography>
+            <Image
+              src={imageLogo}
+              alt="No records image"
+              height={200}
+            />
+          </Box>
+        </Container>
+      )}
       {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
         user?.role?.id as RoleEnum
       ) && (

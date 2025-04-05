@@ -252,26 +252,14 @@ function FormEditUser() {
                   {
                     id: RoleEnum.USER,
                   },
+                  {
+                    id: RoleEnum.AUTISTA,
+                  },
                 ]}
                 keyValue="id"
                 renderOption={(option) =>
                   t(`admin-panel-users-edit:inputs.role.options.${option.id}`)
                 }
-              />
-              <FormSelectInput<EditUserFormData, Pick<Role, "name">>
-                name="firstName"
-                testId="name"
-                label={t("admin-panel-users-edit:inputs.role.label")}
-                options={[
-                  {
-                    name: `${RoleEnum.ADMIN}`,
-                  },
-                  {
-                    name: `${RoleEnum.USER}`,
-                  },
-                ]}
-                keyValue="name"
-                renderOption={(option) => option.name}
               />
             </Grid>
 

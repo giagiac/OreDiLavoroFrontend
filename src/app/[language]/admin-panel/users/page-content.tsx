@@ -320,7 +320,7 @@ function Users() {
           </Grid>
         </Grid>
         <Grid size={{ xs: 12 }} mb={2}>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell style={{ width: 50 }}></TableCell>

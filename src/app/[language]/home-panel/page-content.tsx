@@ -8,7 +8,9 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import imageWorker from "../../../../public/worker_pause.png";
 
 function AdminPanel() {
   const router = useRouter();
@@ -18,7 +20,10 @@ function AdminPanel() {
   return (
     <Container maxWidth="md">
       <Grid container spacing={3} pt={3}>
-        <Grid textAlign={{ xs: "right" }} size={12}>
+        <Grid textAlign={{ xs: "right" }} size={6}>
+          <Image src={imageWorker} alt="No records image" height={200} />
+        </Grid>
+        <Grid textAlign={{ xs: "right" }} size={6}>
           <Typography variant="h4" gutterBottom>
             🎉 {t("title")} 🎉
           </Typography>
@@ -58,7 +63,9 @@ function AdminPanel() {
                 color="primary"
                 size="large"
                 style={{ height: 80, fontSize: "1.5rem" }}
-                onClick={() => router.push("/hours-history/orp-eff-cicli-esec")}
+                onClick={() => {
+                  router.push(`/hours-history`);
+                }}
                 endIcon={"🔒"}
               >
                 {t("history")}

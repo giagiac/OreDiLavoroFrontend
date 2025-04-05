@@ -27,9 +27,9 @@ import "dayjs/locale/it";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { useGetUsersQuery } from "./queries/queries";
-import UserFilter from "./user-filter";
-import { UserFilterType } from "./user-filter-types";
+import { useGetUsersQuery } from "./hours-history/orp-eff-cicli-esec/queries/queries";
+import UserFilter from "./hours-history/orp-eff-cicli-esec/user-filter";
+import { UserFilterType } from "./hours-history/orp-eff-cicli-esec/user-filter-types";
 
 type UsersKeys = keyof User;
 

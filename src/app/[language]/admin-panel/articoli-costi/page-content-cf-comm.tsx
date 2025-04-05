@@ -21,11 +21,6 @@ import { Paper, TableContainer, TableHead } from "@mui/material";
 
 type CfCommKeys = keyof CfComm;
 
-export type FilterItem = {
-  columnName: CfCommKeys;
-  value: string;
-};
-
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
 }));
@@ -35,7 +30,7 @@ export default function CfCommPage(cf: Cf) {
 
   const { data, isFetchingNextPage } = useGetCfCommQuery({
     sort: { order: SortEnum.ASC, orderBy: "NUM_SEDE" },
-    filters: [{ columnName: "COD_CF", value: cf.COD_CF }],
+    filters: [{ columnName: "COD_CF", value: cf.COD_CF, id: Math.random() }],
   });
 
   const result = useMemo(() => {

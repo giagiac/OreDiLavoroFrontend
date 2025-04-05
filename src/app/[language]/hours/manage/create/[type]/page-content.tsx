@@ -28,9 +28,12 @@ import DialogContent from "@mui/material/DialogContent";
 import Grid from "@mui/material/Grid2";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import { FullPageLoader } from "@/components/full-page-loader";
+import TargaMezziTable from "../../targa-mezzi-table";
+import useAuth from "@/services/auth/use-auth";
+import { RoleEnum } from "@/services/api/types/role";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -39,7 +42,7 @@ const CODICE_BREVE_DEFAULT = ""; // 2414014-1
 
 type CreateFormData = {
   // OBBLIGATORI
-  tipoTrasferta: string;
+  TIPO_TRASFERTA: string;
   TEMPO_OPERATORE: string;
   // Documento
   DOC_RIGA_ID: string;
@@ -58,6 +61,8 @@ function FormCreateUser() {
   const params = useParams<{ type: string }>();
   const searchParams = useSearchParams();
 
+  const { user } = useAuth();
+
   const tipoTrasferta = params.type;
 
   let prepareLink = "/hours/manage";
@@ -65,6 +70,13 @@ function FormCreateUser() {
   let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
 
   switch (tipoTrasferta) {
+    case "in_sede":
+      prepareLink = "/hours/manage";
+      prepareText = "In sede";
+      buttonColor = "secondary";
+      break;
+    // da qui in poi sono tutte
+    // FUORI SEDE
     case "in_giornata":
       prepareLink = "/hours/manage/step1_FuoriSede";
       prepareText = "In giornata";
@@ -205,7 +217,7 @@ function FormCreateUser() {
     }
 
     const formData: CreateFormData = {
-      tipoTrasferta: tipoTrasferta,
+      TIPO_TRASFERTA: tipoTrasferta,
 
       TEMPO_OPERATORE: tempoOreOperatore,
       // Documento
@@ -224,7 +236,7 @@ function FormCreateUser() {
       (Object.keys(data.errors) as Array<keyof CreateFormData>).forEach(
         (key) => {
           // TODO: GESTIONE ERRORI
-          enqueueSnackbar(`${key}`, {
+          enqueueSnackbar(`${key} - ${data.errors[key]}`, {
             variant: "error",
           });
         }
@@ -232,7 +244,7 @@ function FormCreateUser() {
       return;
     }
     if (status === HTTP_CODES_ENUM.CREATED) {
-      enqueueSnackbar(t("admin-panel-users-create:alerts.user.success"), {
+      enqueueSnackbar("Ore commessa aggiunte", {
         variant: "success",
       });
 
@@ -361,39 +373,81 @@ function FormCreateUser() {
                 result[0].orpEff != null &&
                 result[0].orpEff.STATUS != 2 &&
                 result.map((item) => (
-                  <Grid size={{ xs: 12 }} key={item.DOC_RIGA_ID}>
-                    <Typography variant="h4" gutterBottom textAlign="center">
-                      {item?.DOC_ID} · {item?.orpEff?.COD_ART}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom textAlign="center">
-                      {item?.orpEff?.DES_PROD}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom textAlign="center">
-                      {item?.DES_CICLO?.replace(
-                        item?.orpEff?.DES_PROD || "",
-                        ""
-                      )}
-                    </Typography>
-                    <NumericKeypad
-                      onNumberChange={(value) => {
-                        setTempoOreOperatore(value);
-                      }}
-                    />
-                    <Button
-                      style={{
-                        width: "100%",
-                        height: 50,
-                        fontSize: "1.5rem",
-                      }}
-                      variant="contained"
-                      color="primary"
-                      onClick={async () => {
-                        await onSubmit();
-                      }}
-                    >
-                      CONFERMA
-                    </Button>
-                  </Grid>
+                  <Fragment key={item.DOC_RIGA_ID}>
+                    <Grid size={{ xs: 12 }}>
+                      <Typography variant="h4" gutterBottom textAlign="center">
+                        {item?.DOC_ID} · {item?.orpEff?.COD_ART}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        textAlign="center"
+                      >
+                        {item?.orpEff?.DES_PROD}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        textAlign="center"
+                      >
+                        {item?.DES_CICLO?.replace(
+                          item?.orpEff?.DES_PROD || "",
+                          ""
+                        )}
+                      </Typography>
+                      <NumericKeypad
+                        onNumberChange={(value) => {
+                          setTempoOreOperatore(value);
+                        }}
+                      />
+                      <Grid size={{ xs: 12 }}>
+                        {user?.role?.id === RoleEnum.AUTISTA &&
+                        tipoTrasferta != "in_sede" &&
+                        tipoTrasferta != "step1_KmAutista" ? (
+                          <TargaMezziTable
+                            storageKey="TARGA_MEZZI_DEFAULT"
+                            onTargaSelection={async (COD_ART) => {
+                              await onSubmit();
+                            }}
+                            actionButton={(onClick) => (
+                              <Button
+                                style={{
+                                  width: "100%",
+                                  height: 50,
+                                  fontSize: "1.5rem",
+                                }}
+                                fullWidth
+                                size="large"
+                                variant="contained"
+                                onClick={onClick} // Usa la funzione onClick passata
+                              >
+                                CONFERMA
+                              </Button>
+                            )}
+                          />
+                        ) : (
+                          <Button
+                            style={{
+                              width: "100%",
+                              height: 50,
+                              fontSize: "1.5rem",
+                            }}
+                            sx={{
+                              height: 90,
+                            }}
+                            fullWidth
+                            size="large"
+                            variant="contained"
+                            onClick={async () => {
+                              await onSubmit();
+                            }} // Usa la funzione onClick passata
+                          >
+                            CONFERMA
+                          </Button>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Fragment>
                 ))}
             </>
           )}

@@ -7,6 +7,7 @@ export type EpsNestjsOrpEffCicliEsec = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  
   APP_REQ3_SYNCED?: number | null;
   TEMPO_MINUTI_OP?: Decimal | null;
   TEMPO_MINUTI_MACC?: Decimal | null;
@@ -22,6 +23,7 @@ export type EpsNestjsOrpEffCicliEsec = {
   NUM_RIGA?: number | null;
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
+  TIPO_TRASFERTA: string;
 
   TEMPO_OPERATORE_SESSANTESIMI?: String | null;
   

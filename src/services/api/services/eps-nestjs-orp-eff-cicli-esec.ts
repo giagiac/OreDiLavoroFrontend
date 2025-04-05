@@ -21,44 +21,12 @@ export type EpsNestjsOrpEffCicliEsecsRequest = {
 };
 
 export type EpsNestjsOrpEffCicliEsecsResponse =
-  InfinityPaginationType<EpsNestjsOrpEffCicliEsec> & { totale: number };
+  InfinityPaginationType<EpsNestjsOrpEffCicliEsec> & {
+    totale: String;
+    targetDateInizio: String;
+  };
 
 export function useGetEpsNestjsOrpEffCicliEsecService() {
-  const fetch = useFetch();
-
-  return useCallback(
-    (
-      data: EpsNestjsOrpEffCicliEsecsRequest,
-      requestConfig?: RequestConfigType
-    ) => {
-      const requestUrl = new URL(
-        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`
-      );
-      requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
-      if (data.filters) {
-        requestUrl.searchParams.append("filters", JSON.stringify(data.filters));
-      }
-      if (data.sort) {
-        requestUrl.searchParams.append("sort", JSON.stringify(data.sort));
-      }
-      if (data.othersFilters) {
-        requestUrl.searchParams.append(
-          "othersFilters",
-          JSON.stringify(data.othersFilters)
-        );
-      }
-
-      return fetch(requestUrl, {
-        method: "GET",
-        ...requestConfig,
-      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
-    },
-    [fetch]
-  );
-}
-
-export function useGetEpsNestjsOrpEffCicliEsecsService() {
   const fetch = useFetch();
 
   return useCallback(
@@ -119,20 +87,20 @@ export function useDeleteEpsNestjsOrpEffCicliEsecService() {
 // -----------------------------------------------------------------------------
 
 export type EpsNestjsOrpEffCicliEsecPostRequest = {
-    // OBBLIGATORI
-    tipoTrasferta: string;
-    TEMPO_OPERATORE: string;
-    // Documento
-    DOC_RIGA_ID: string;
-    DOC_ID: string;
-    AZIENDA_ID: number;
-  
-    // SEZIONE DEDICATA a KM AUTISTA
-    COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
-    KM?: string | null;
-  
-    // EXTRA
-    NOTE?: string | null;
+  // OBBLIGATORI
+  TIPO_TRASFERTA: string;
+  TEMPO_OPERATORE: string;
+  // Documento
+  DOC_RIGA_ID: string;
+  DOC_ID: string;
+  AZIENDA_ID: number;
+
+  // SEZIONE DEDICATA a KM AUTISTA
+  COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+  KM?: string | null;
+
+  // EXTRA
+  NOTE?: string | null;
 };
 
 export type EpsNestjsOrpEffCicliEsecPostResponse = EpsNestjsOrpEffCicliEsec;

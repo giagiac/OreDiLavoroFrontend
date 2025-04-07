@@ -16,5 +16,9 @@ export type CfComm = {
   NUM_SEDE: string;
   // ----------------------
 
+  X_CIVICO_NUMERO?: string;
+  X_FRAZIONE?:string,
+  X_ZONA?:string
+
   articoliCostiCfComm?: Array<ArticoliCostiCfComm> | undefined;
 };

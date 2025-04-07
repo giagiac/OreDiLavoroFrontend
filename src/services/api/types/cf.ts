@@ -7,6 +7,13 @@ export type Cf = {
   RAG_SOC_CF_INT?: string;
   RAG_SOC_CF?: string;
   COD_CF: string;
+
+  PROVINCIA_CF?: string | null,
+  COMUNE_CF: string | null,
+  CAP_CF: string | null,
+  INDI_CF: string | null,
+  STATO_CF: string | null,
+  REGIONE: string | null,
   
   articoliCostiCf?: Array<ArticoliCostiCf> | undefined;
 };

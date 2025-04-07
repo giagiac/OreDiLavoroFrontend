@@ -1,18 +1,21 @@
 # Extensive React Boilerplate
 
+# Rif images
+
+- https://icons8.com/photos/t/worker--transparent
+
 [![image](https://github.com/brocoders/extensive-react-boilerplate/assets/72293912/052e74be-7de0-4a4a-92a6-e6a4b68fd4b5)](https://github.com/new?template_name=extensive-react-boilerplate&template_owner=brocoders)
 
 **Belongs to the [bc boilerplates](https://bcboilerplates.com/) ecosystem**
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Extensive React Boilerplate](#extensive-react-boilerplate)
-  - [Description](#description)
-  - [Getting Started](#getting-started)
-  - [Features](#features)
-  - [Screenshots](#screenshots)
-  - [Contributors](#contributors)
-  - [Support](#support)
+- [Description](#description)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Contributors](#contributors)
+- [Support](#support)
 
 ## Description
 
@@ -38,7 +41,7 @@ npm run dev
 
 - [x] Next.js
 - [x] TypeScript
-- [x] [i18n](https://react.i18next.com/) (based on https://github.com/i18next/next-13-app-dir-i18next-example)
+- [x] [i18n](https://react.i18next.com/) (based on <https://github.com/i18next/next-13-app-dir-i18next-example>)
 - [x] [Material UI](https://mui.com/). Supports dark mode.
 - [x] [React Hook Form](https://react-hook-form.com/)
 - [x] React Query

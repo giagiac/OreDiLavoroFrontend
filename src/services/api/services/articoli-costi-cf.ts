@@ -41,7 +41,7 @@ export function usePatchArticoliCostiCfService() {
 
   return useCallback(
     (data: ArticoliCostiCfPatchRequest, requestConfig?: RequestConfigType) => {
-      return fetch(`${API_URL}/v1/articoli-costi-cf/${data.COD_CF}`, {
+      return fetch(`${API_URL}/v1/articoli-costi-cf`, {
         method: "PATCH",
         body: JSON.stringify(data.data),
         ...requestConfig,

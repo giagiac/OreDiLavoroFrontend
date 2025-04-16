@@ -40,23 +40,6 @@ const useValidationSchema = () => {
   });
 };
 
-function CreateUserFormActions() {
-  const { t } = useTranslation("admin-panel-users-create");
-  const { isSubmitting, isDirty } = useFormState();
-  useLeavePage(isDirty);
-
-  return (
-    <Button
-      variant="contained"
-      color="primary"
-      type="submit"
-      disabled={isSubmitting}
-    >
-      {t("admin-panel-users-create:actions.submit")}
-    </Button>
-  );
-}
-
 export default function FormCreateEdit(props: { cf: Cf }) {
   const [cf, setCf] = useState(props.cf);
 
@@ -191,7 +174,6 @@ export default function FormCreateEdit(props: { cf: Cf }) {
           variant: "success",
         }
       );
-      // router.push("/admin-panel/users");
     }
   };
 
@@ -261,9 +243,7 @@ export default function FormCreateEdit(props: { cf: Cf }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([
-                        { columnName: "COD_ART", value, id: Math.random() },
-                      ]);
+                      setFilters([{ columnName: "COD_ART", value, id: 0 }]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>

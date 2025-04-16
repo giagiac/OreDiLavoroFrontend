@@ -41,30 +41,12 @@ const useValidationSchema = () => {
   });
 };
 
-function CreateUserFormActions() {
-  const { t } = useTranslation("admin-panel-users-create");
-  const { isSubmitting, isDirty } = useFormState();
-  useLeavePage(isDirty);
-
-  return (
-    <Button
-      variant="contained"
-      color="primary"
-      type="submit"
-      disabled={isSubmitting}
-    >
-      {t("admin-panel-users-create:actions.submit")}
-    </Button>
-  );
-}
-
 export default function FormCreateEdit(props: { cfComm: CfComm }) {
   const [cfComm, setCfComm] = useState(props.cfComm);
 
   // const router = useRouter();
   const fetchPostArticoliCostiCfComm = usePatchArticoliCostiCfCommService();
   const { t } = useTranslation("admin-panel-users-create");
-  const validationSchema = useValidationSchema();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -193,11 +175,8 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
           variant: "success",
         }
       );
-      // router.push("/admin-panel/users");
     }
   };
-
-  // Array<ArticoliCostiCfComm>
 
   const articoliEdit = [
     cfComm.articoliCostiCfComm?.find(
@@ -260,9 +239,7 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([
-                        { columnName: "COD_ART", value, id: Math.random() },
-                      ]);
+                      setFilters([{ columnName: "COD_ART", value, id: 0 }]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>

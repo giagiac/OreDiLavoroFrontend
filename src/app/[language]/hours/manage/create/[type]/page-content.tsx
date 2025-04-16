@@ -1,12 +1,15 @@
 "use client";
 
+import { FullPageLoader } from "@/components/full-page-loader";
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
+import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
@@ -30,10 +33,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
-import { FullPageLoader } from "@/components/full-page-loader";
 import TargaMezziTable from "../../targa-mezzi-table";
-import useAuth from "@/services/auth/use-auth";
-import { RoleEnum } from "@/services/api/types/role";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -51,7 +51,7 @@ type CreateFormData = {
 
   // SEZIONE DEDICATA a KM AUTISTA
   COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
-  KM?: string | null;
+  KM?: number | null;
 
   // EXTRA
   NOTE?: string | null;
@@ -139,7 +139,7 @@ function FormCreateUser() {
         {
           columnName: "CODICE_BREVE",
           value: target.value,
-          id: Math.random(),
+          id: 0,
         },
       ]);
       setEnterPressed(true);
@@ -161,7 +161,7 @@ function FormCreateUser() {
     orderBy: OrpEffCicliKeys;
   }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
-    { columnName: "CODICE_BREVE", value: codiceBreveValue, id: Math.random() },
+    { columnName: "CODICE_BREVE", value: codiceBreveValue, id: 0 },
   ]);
   const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
     []
@@ -199,15 +199,13 @@ function FormCreateUser() {
     setFilters(() => {
       const newValue = "";
       setCodiceBreve(newValue);
-      return [
-        { columnName: "CODICE_BREVE", value: newValue, id: Math.random() },
-      ];
+      return [{ columnName: "CODICE_BREVE", value: newValue, id: 0 }];
     });
   };
 
-  const onSubmit = async () => {
-    const COD_ART = searchParams.get("COD_ART");
-    const KM = searchParams.get("KM");
+  const onSubmit = async (COD_ART?: string) => {
+    const selected_COD_ART = searchParams.get("COD_ART") || COD_ART;
+    const KM: number = parseFloat(searchParams.get("KM") || "0");
 
     if (tempoOreOperatore == TEMPO_OPERATORE_DEFAULT) {
       enqueueSnackbar(`Non hai impostato il tempo operatore`, {
@@ -225,7 +223,7 @@ function FormCreateUser() {
       DOC_ID: result[0].DOC_ID,
       AZIENDA_ID: result[0].AZIENDA_ID,
       // SEZIONE DEDICATA a KM AUTISTA
-      COD_ART: COD_ART, // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+      COD_ART: selected_COD_ART, // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
       KM: KM,
       // EXTRA
       NOTE: "",
@@ -311,7 +309,7 @@ function FormCreateUser() {
                         {
                           columnName: "CODICE_BREVE",
                           value: result[0].rawValue,
-                          id: Math.random(),
+                          id: 0,
                         },
                       ]);
                       handleCloseScanner();
@@ -404,27 +402,27 @@ function FormCreateUser() {
                         {user?.role?.id === RoleEnum.AUTISTA &&
                         tipoTrasferta != "in_sede" &&
                         tipoTrasferta != "step1_KmAutista" ? (
-                          <TargaMezziTable
-                            storageKey="TARGA_MEZZI_DEFAULT"
-                            onTargaSelection={async (COD_ART) => {
-                              await onSubmit();
-                            }}
-                            actionButton={(onClick) => (
-                              <Button
-                                style={{
-                                  width: "100%",
-                                  height: 50,
-                                  fontSize: "1.5rem",
-                                }}
-                                fullWidth
-                                size="large"
-                                variant="contained"
-                                onClick={onClick} // Usa la funzione onClick passata
-                              >
-                                CONFERMA
-                              </Button>
-                            )}
-                          />
+                          <>
+                            <TargaMezziTable
+                              children={(COD_ART) => (
+                                <Button
+                                  style={{
+                                    width: "100%",
+                                    height: 50,
+                                    fontSize: "1.5rem",
+                                  }}
+                                  fullWidth
+                                  size="large"
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await onSubmit(COD_ART); // è UN AUTISTA
+                                  }} // Usa la funzione onClick passata
+                                >
+                                  CONFERMA
+                                </Button>
+                              )}
+                            />
+                          </>
                         ) : (
                           <Button
                             style={{
@@ -439,8 +437,8 @@ function FormCreateUser() {
                             size="large"
                             variant="contained"
                             onClick={async () => {
-                              await onSubmit();
-                            }} // Usa la funzione onClick passata
+                              await onSubmit(); // NON è un AUTISTA
+                            }}
                           >
                             CONFERMA
                           </Button>

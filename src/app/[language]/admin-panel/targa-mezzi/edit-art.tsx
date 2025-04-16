@@ -14,10 +14,7 @@ export type EditArtAnaFormData = {
   COD_ART?: string | undefined;
 };
 
-function EditArt(props: {
-  onSubmit: () => void;
-}) {
-
+function EditArt(props: { onSubmit: () => void }) {
   const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
     []
   );
@@ -60,7 +57,7 @@ function EditArt(props: {
       searchPlaceholder="Search options..."
       search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
       onSearchChange={(value) => {
-        setFilters([{ columnName: "COD_ART", value }]);
+        setFilters([{ columnName: "COD_ART", value, id: 0 }]);
       }}
       onEndReached={handleScroll}
       onChangeCallback={(value) => console.log(value)}

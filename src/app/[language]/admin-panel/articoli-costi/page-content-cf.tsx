@@ -223,7 +223,7 @@ function Cfs() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value, id: Math.random() }];
+      oldFilter = [...oldFilter, { columnName, value, id: 0 }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
@@ -338,7 +338,7 @@ function Cfs() {
                   </TableRow>
                 )}
               </TableHead>
-              <TableBody style={{ borderBottom: "none" }}>
+              <TableBody>
                 {result.map((cf, index) => {
                   return (
                     <TableRow
@@ -350,7 +350,7 @@ function Cfs() {
                             : theme.palette.background.paper,
                       }}
                     >
-                      <TableCell colSpan={4} style={{ borderBottom: "none" }}>
+                      <TableCell colSpan={4}>
                         <Table
                           style={{
                             borderCollapse: "separate",
@@ -361,7 +361,7 @@ function Cfs() {
                             <TableRow
                               sx={{ "& > *": { borderBottom: "unset" } }}
                             >
-                              <TableCell style={{ width: "10%" }}>
+                              <TableCell style={{ width: "10%", border: "none" }}>
                                 {cf.articoliCostiCf && (
                                   <IconButton
                                     aria-label="expand row"
@@ -377,27 +377,28 @@ function Cfs() {
                                 )}
                               </TableCell>
                               <TableCell
-                                style={{ width: "10%", textAlign: "right" }}
+                                style={{ width: "10%", textAlign: "right", border: "none" }}
                               >
                                 <Typography variant="subtitle2">
-                                {cf?.COD_CF}
+                                  {cf?.COD_CF}
                                 </Typography>
                               </TableCell>
                               <TableCell
-                                style={{ width: "30%", textAlign: "right" }}
+                                style={{ width: "30%", textAlign: "right", border: "none" }}
                               >
                                 {cf?.RAG_SOC_CF}
                               </TableCell>
                               <TableCell
-                                style={{ width: "50%", textAlign: "right" }}
+                                style={{ width: "50%", textAlign: "right", border: "none" }}
                               >
                                 {cf?.P_IVA_CF}
                               </TableCell>
                             </TableRow>
-                            <TableRow
-                              sx={{ "& > *": { borderBottom: "unset" } }}
-                            >
-                              <TableCell colSpan={4} padding="none">
+                            <TableRow>
+                              <TableCell
+                                colSpan={4}
+                                padding="none"
+                              >
                                 <FormCreateEdit cf={cf} />
                               </TableCell>
                             </TableRow>

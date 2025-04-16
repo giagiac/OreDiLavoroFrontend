@@ -97,7 +97,7 @@ export type EpsNestjsOrpEffCicliEsecPostRequest = {
 
   // SEZIONE DEDICATA a KM AUTISTA
   COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
-  KM?: string | null;
+  KM?: number | null;
 
   // EXTRA
   NOTE?: string | null;

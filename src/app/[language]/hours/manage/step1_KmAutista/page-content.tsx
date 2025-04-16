@@ -47,13 +47,7 @@ function FormCreateUser() {
         </Grid>
         <Grid size={12} pt={3}>
           <TargaMezziTable
-            storageKey="TARGA_MEZZI_DEFAULT_KM_AUTISTA"
-            onTargaSelection={(COD_ART) => {
-              router.push(
-                `/hours/manage/create/step1_KmAutista?COD_ART=${COD_ART}&KM=${km}`
-              );
-            }}
-            actionButton={(onClick) => (
+            children={(COD_ART) => (
               <Button
                 style={{
                   width: "100%",
@@ -63,12 +57,16 @@ function FormCreateUser() {
                 fullWidth
                 size="large"
                 variant="contained"
-                onClick={onClick} // Usa la funzione onClick passata
+                onClick={async () => {
+                  router.push(
+                    `/hours/manage/create/step1_KmAutista?COD_ART=${COD_ART}&KM=${km}`
+                  );
+                }} // Usa la funzione onClick passata
               >
                 <ForwardTwoToneIcon />
               </Button>
             )}
-          />
+          ></TargaMezziTable>
         </Grid>
       </Grid>
     </Container>

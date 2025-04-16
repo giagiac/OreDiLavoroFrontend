@@ -1,5 +1,9 @@
 "use client";
 
+import TipoTrasfertaComponent, {
+  backgroundColorsDark,
+  backgroundColorsLight,
+} from "@/components/tipo-trasferta";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
@@ -11,38 +15,37 @@ import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import useLanguage from "@/services/i18n/use-language";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
+  Button,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Stack,
   Table,
   TableBody,
-  TableContainer,
-  TableHead,
   Typography,
   useTheme,
 } from "@mui/material";
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid2";
 import LinearProgress from "@mui/material/LinearProgress";
-import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/it";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, PropsWithChildren, useMemo, useState } from "react";
-import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import imageLogo from "../../../../public/emotions.png";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import imageLogo from "../../../../public/emotions.png";
+import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -50,38 +53,14 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
 }));
 
-function TableSortCellWrapper(
-  props: PropsWithChildren<{
-    width?: number;
-    orderBy: EpsNestjsOrpEffCicliEsecKeys;
-    order: SortEnum;
-    column: EpsNestjsOrpEffCicliEsecKeys;
-    handleRequestSort: (
-      event: React.MouseEvent<unknown>,
-      property: EpsNestjsOrpEffCicliEsecKeys
-    ) => void;
-  }>
-) {
-  return (
-    <TableCell
-      style={{ width: props.width }}
-      sortDirection={props.orderBy === props.column ? props.order : false}
-    >
-      <TableSortLabel
-        active={props.orderBy === props.column}
-        direction={props.orderBy === props.column ? props.order : SortEnum.ASC}
-        onClick={(event) => props.handleRequestSort(event, props.column)}
-      >
-        {props.children}
-      </TableSortLabel>
-    </TableCell>
-  );
-}
-
 function UserHours() {
   const [dateSelected, setDateSelected] = useState<Dayjs | null>(
     dayjs().subtract(1, "day")
   );
+
+  const [open, setOpen] = useState(false); // Moved here
+  const [selectedOrdCliTras, setSelectedOrdCliTras] =
+    useState<OrdCliTras | null>(null); // Moved here
 
   const { t } = useTranslation("hours-history");
 
@@ -112,7 +91,7 @@ function UserHours() {
       {
         columnName: "DATA_INIZIO",
         value: dateSelected?.format("YYYY-MM-DD") || "",
-        id: Math.random(),
+        id: 0,
       },
     ] as Array<FilterItem<EpsNestjsOrpEffCicliEsec>>;
   }, [searchParams]);
@@ -141,7 +120,7 @@ function UserHours() {
       {
         columnName,
         value,
-        id: Math.random(),
+        id: 0,
       },
     ];
 
@@ -164,162 +143,194 @@ function UserHours() {
 
   const theme = useTheme();
 
+  const handleOpen = (ordCliTras: OrdCliTras) => {
+    setSelectedOrdCliTras(ordCliTras);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedOrdCliTras(null);
+  };
+
+  const renderOrdCliTrasDialog = (linkOrpOrd: Array<LinkOrpOrd>) => {
+    return (
+      <>
+        {linkOrpOrd?.map((it, index) => {
+          const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
+          return (
+            <Button
+              key={index}
+              variant="outlined"
+              onClick={() => handleOpen(ordCliTras)}
+              fullWidth
+            >
+              {ordCliTras.NUM_DEST} · {ordCliTras.DES_DEST_MERCE || "No Title"}
+            </Button>
+          );
+        })}
+
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+          <DialogTitle>
+            {selectedOrdCliTras?.NUM_DEST} ·{" "}
+            {selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}
+          </DialogTitle>
+          <DialogContent>
+            <Table size="small">
+              <TableBody>
+                {(
+                  Object.keys(selectedOrdCliTras || {}) as (keyof OrdCliTras)[]
+                ).map((key) => {
+                  const value = selectedOrdCliTras?.[key];
+                  if (
+                    value == null ||
+                    key === "DES_DEST_MERCE" ||
+                    key === "NUM_DEST"
+                  )
+                    return null;
+                  return (
+                    <TableRow key={key}>
+                      <TableCell align="left">
+                        <Typography variant="caption">{key}</Typography>
+                      </TableCell>
+                      <TableCell align="left" style={{ width: 300 }}>
+                        <Typography variant="subtitle2">{value}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Chiudi
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    );
+  };
+
   return (
     <Container maxWidth="xl">
-      <TableContainer
-        component={Paper}
+      <Grid
+        container
+        spacing={2}
         style={{ marginTop: 20, marginBottom: 200 }}
+        justifyContent="center"
       >
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={4}>
-                <Stack
-                  textAlign="center"
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={2}
-                >
-                  <LocalizationProvider
-                    dateAdapter={AdapterDayjs}
-                    adapterLocale={language}
-                  >
-                    <DatePicker
-                      label={t("hours-history:formInputs.dateFilter.label")}
-                      format="ddd DD MMM YYYY"
-                      value={dateSelected}
-                      onChange={(newValue) => {
-                        setDateSelected(newValue);
-                        handleRequestFilter(
-                          newValue?.format("YYYY-MM-DD") || ""
-                        );
-                      }}
-                      maxDate={dayjs().subtract(1, "day")} // Imposta maxDate a ieri
-                    />
-                  </LocalizationProvider>
-                  <Typography variant="h2">{data?.totale}</Typography>
-                </Stack>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {result.map((epsNestjsOrpEffCicliEsec) => (
-              <Fragment key={epsNestjsOrpEffCicliEsec?.id}>
-                <TableRow
-                  sx={{ "& td": { border: 0 } }}
-                  style={{
-                    backgroundColor:
-                      epsNestjsOrpEffCicliEsec?.id != undefined &&
-                      parseFloat(epsNestjsOrpEffCicliEsec?.id) % 2 == 0
-                        ? theme.palette.divider
-                        : theme.palette.background.paper,
-                    width: "100%",
-                  }}
-                >
-                  <TableCell></TableCell>
-                  <TableCell>
-                    <Typography variant="body1">
-                      {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
-                        (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                      )}
-                    </Typography>
-                  </TableCell>
-                  <TableCell style={{ width: 200 }}>
-                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-                      renderOrdCliTrasAccordion(
-                        epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-                      )}
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  style={{
-                    backgroundColor:
-                      Number(epsNestjsOrpEffCicliEsec?.id) % 2 == 0
-                        ? theme.palette.divider
-                        : theme.palette.background.paper,
-                  }}
-                >
-                  <TableCell>{epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}</TableCell>
-                  <TableCell>
-                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h4" textAlign={"right"}>
-                      {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </Fragment>
-            ))}
-            {isFetchingNextPage && (
-              <TableRow>
-                <TableCellLoadingContainer colSpan={6}>
-                  <LinearProgress />
-                </TableCellLoadingContainer>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {result.length == 0 && isLoading == false && (
-        <Container maxWidth="sm">
-          <Box
-            display="flex"
+        <Grid size={{ xs: 12 }}>
+          <Stack
+            textAlign="center"
+            direction="row"
             justifyContent="center"
             alignItems="center"
-            height="30vh"
-            textAlign="center"
+            spacing={2}
           >
-            <Typography variant="h2">
-              Nessuna registrazione effettuata!
-            </Typography>
-            <Image src={imageLogo} alt="No records image" height={200} />
-          </Box>
-        </Container>
-      )}
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={language}
+            >
+              <DatePicker
+                label={t("hours-history:formInputs.dateFilter.label")}
+                format="ddd DD MMM YYYY"
+                value={dateSelected}
+                onChange={(newValue) => {
+                  setDateSelected(newValue);
+                  handleRequestFilter(newValue?.format("YYYY-MM-DD") || "");
+                }}
+                maxDate={dayjs().subtract(1, "day")}
+              />
+            </LocalizationProvider>
+            <Typography variant="h2">{data?.totale}</Typography>
+          </Stack>
+        </Grid>
+
+        {result.map((epsNestjsOrpEffCicliEsec) => (
+          <Grid
+            container
+            size={{ xs: 12, sm: 6, md: 4 }}
+            key={epsNestjsOrpEffCicliEsec?.id}
+            justifyContent="center"
+          >
+            <Card
+              style={{
+                padding: 16,
+                borderRadius: 8,
+                border: `2px solid ${
+                  theme.palette.mode === "dark"
+                    ? backgroundColorsDark[
+                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
+                      ]
+                    : backgroundColorsLight[
+                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
+                      ]
+                }`,
+              }}
+            >
+              <Grid size={{ xs: 12 }}>
+                <TipoTrasfertaComponent
+                  tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="body1">
+                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
+                    (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                  )}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
+                  renderOrdCliTrasDialog(
+                    epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
+                  )}
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="caption">
+                  {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="body2">
+                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="h4" textAlign="right">
+                  {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                </Typography>
+              </Grid>
+            </Card>
+          </Grid>
+        ))}
+
+        {isFetchingNextPage && (
+          <Grid size={{ xs: 12 }}>
+            <LinearProgress />
+          </Grid>
+        )}
+
+        {result.length === 0 && !isLoading && (
+          <Grid size={{ xs: 12 }}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="30vh"
+              textAlign="center"
+            >
+              <Typography variant="h2">
+                Nessuna registrazione effettuata!
+              </Typography>
+              <Image src={imageLogo} alt="No records image" height={200} />
+            </Box>
+          </Grid>
+        )}
+      </Grid>
     </Container>
   );
-}
-
-function renderOrdCliTrasAccordion(linkOrpOrd: Array<LinkOrpOrd>) {
-  return linkOrpOrd?.map((it, index) => {
-    const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
-    return (
-      <Accordion key={index} variant="elevation" style={{ margin: 2 }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography color="primary">
-            {ordCliTras.NUM_DEST} · {ordCliTras.DES_DEST_MERCE || "No Title"}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Table size="small">
-            <TableBody>
-              {(Object.keys(ordCliTras) as (keyof OrdCliTras)[]).map((key) => {
-                const value = ordCliTras[key];
-                if (
-                  value == null ||
-                  key === "DES_DEST_MERCE" ||
-                  key === "NUM_DEST"
-                )
-                  return null;
-                return (
-                  <TableRow key={key}>
-                    <TableCell align="left">
-                      <Typography variant="caption">{key}</Typography>
-                    </TableCell>
-                    <TableCell align="left" style={{ width: 300 }}>
-                      <Typography variant="subtitle2">{value}</Typography>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </AccordionDetails>
-      </Accordion>
-    );
-  });
 }
 
 export default withPageRequiredAuth(UserHours, {

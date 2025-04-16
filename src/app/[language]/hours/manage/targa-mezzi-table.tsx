@@ -18,31 +18,36 @@ import {
   useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
 
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
 
-interface TargaMezziTableProps {
-  storageKey: string;
-  onTargaSelection: (COD_ART: string) => void;
-  actionButton: (onClick: () => void) => React.ReactNode; // Modifica: accetta una funzione che riceve onClick
-}
-
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
-const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
-  onTargaSelection,
-  storageKey,
-  actionButton,
-}) => {
+interface TargaMezziTableProps {
+  children: (COD_ART: string) => React.ReactElement;
+}
+
+const TargaMezziTable = ({
+  children,
+}: TargaMezziTableProps) => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  let STORAGE_KEY = "TARGA_MEZZI_DEFAULT";
+
+  if (pathname.indexOf("step1_KmAutista") > -1) {
+    STORAGE_KEY = "TARGA_MEZZI_DEFAULT_KM_AUTISTA";
+  }
+
+  const targaSelected =
+    localStorage.getItem(STORAGE_KEY) || NO_TARGA_MEZZI_SELECTED;
 
   const theme = useTheme();
 
   useEffect(() => {
-    console.log("nav changed ", window.location.search);
     if (searchParams.size === 0) {
       setOthersFilters([]);
       setFilters([]);
@@ -80,8 +85,11 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
     return [];
   });
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
-    useGetTargaMezziQuery({ sort: { order, orderBy }, filters, othersFilters });
+  const { data } = useGetTargaMezziQuery({
+    sort: { order, orderBy },
+    filters,
+    othersFilters,
+  });
 
   const result = useMemo(() => {
     const result =
@@ -91,15 +99,8 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
   }, [data, searchParams]);
 
-  const [targaMezziSelected, setTargaMezziSelected] = useState<string>(
-    NO_TARGA_MEZZI_SELECTED
-  );
-  useEffect(() => {
-    const items = localStorage.getItem(storageKey) || NO_TARGA_MEZZI_SELECTED;
-    if (items) {
-      setTargaMezziSelected(items);
-    }
-  }, []);
+  const [targaMezziSelected, setTargaMezziSelected] =
+    useState<string>(targaSelected);
 
   const [isAccordionExpanded, setIsAccordionExpanded] =
     useState<boolean>(false);
@@ -110,7 +111,7 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
         <Accordion
           expanded={isAccordionExpanded}
           onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
-          sx={{p:1}}
+          sx={{ p: 1 }}
         >
           <AccordionSummary
             sx={{
@@ -154,7 +155,7 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
                       fullWidth
                       onClick={() => {
                         localStorage.setItem(
-                          storageKey,
+                          STORAGE_KEY,
                           NO_TARGA_MEZZI_SELECTED
                         );
                         setTargaMezziSelected(NO_TARGA_MEZZI_SELECTED);
@@ -189,7 +190,7 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
                           fullWidth
                           onClick={() => {
                             localStorage.setItem(
-                              storageKey,
+                              STORAGE_KEY,
                               targaMezzi.COD_ART
                             );
                             setTargaMezziSelected(targaMezzi.COD_ART);
@@ -206,10 +207,9 @@ const TargaMezziTable: React.FC<TargaMezziTableProps> = ({
             </Table>
           </AccordionDetails>
         </Accordion>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        {/* Passa la funzione onClick al bottone */}
-        {actionButton(() => onTargaSelection(targaMezziSelected))}
+        <Grid>
+        {children(targaMezziSelected)}
+        </Grid>
       </Grid>
     </Grid>
   );

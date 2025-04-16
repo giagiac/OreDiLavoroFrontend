@@ -136,7 +136,7 @@ export default function FormCreateEdit({
           searchPlaceholder="Search options..."
           search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
           onSearchChange={(value) => {
-            setFilters([{ columnName: "COD_ART", value, id: Math.random() }]);
+            setFilters([{ columnName: "COD_ART", value, id: 0 }]);
           }}
           onEndReached={handleScroll}
           onChangeCallback={async (artAna) => {

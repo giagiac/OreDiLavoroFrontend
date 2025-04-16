@@ -1,5 +1,6 @@
 "use client";
 
+import { ArtAna } from "@/services/api/types/art-ana";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
@@ -8,13 +9,7 @@ import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import ClearIcon from "@mui/icons-material/Clear";
-import {
-  Paper,
-  Stack,
-  TableContainer,
-  TableHead,
-  useTheme,
-} from "@mui/material";
+import { Paper, TableContainer, TableHead, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
@@ -36,12 +31,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useGetTargaMezziQuery } from "./queries/queries-eps-nestjs-targa-mezzi";
-import FormCreateEdit from "./create/page-content";
-import { ArtAna } from "@/services/api/types/art-ana";
 import { ButtonDelete } from "./button-delete";
-import { ButtonDeleteConfirm } from "@/components/confirm-dialog/confirm-dialog-delete";
-import { useDeleteTargaMezziService } from "@/services/api/services/targa-mezzi";
+import FormCreateEdit from "./create/page-content";
+import { useGetTargaMezziQuery } from "./queries/queries-eps-nestjs-targa-mezzi";
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
@@ -229,7 +221,7 @@ function TargaMezziPage() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value, id: Math.random() }];
+      oldFilter = [...oldFilter, { columnName, value, id: 0 }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto

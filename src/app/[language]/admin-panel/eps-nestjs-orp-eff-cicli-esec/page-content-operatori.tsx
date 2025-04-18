@@ -275,22 +275,14 @@ function Operatoris() {
   return (
     <Container maxWidth="xl">
       <Grid container pt={3}>
-        <Grid container size={{ xs: 12 }}>
-          <Grid size="grow">
-            <Typography variant="h3">{tArticoliCosti("title")}</Typography>
-          </Grid>
-          <Grid container size="auto" wrap="nowrap">
-            <Grid size="auto">
-              <ToggleButtonGroup
-                value={othersFilters.map((it) => it.key)}
-                onChange={handleRequestOthersFilters}
-                aria-label="join others tables"
-              >
-                <ToggleButton value="join" aria-label="join">
-                  <LinkIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Grid>
+        <Grid size={{ xs: 12 }}>
+          <Grid
+            container
+            size="auto"
+            wrap="nowrap"
+            justifyContent="flex-end"
+            mb={1}
+          >
             <Grid>
               <Button
                 variant="contained"

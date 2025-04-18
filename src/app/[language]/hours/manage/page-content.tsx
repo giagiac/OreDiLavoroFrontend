@@ -64,6 +64,7 @@ import TipoTrasfertaComponent, {
 } from "@/components/tipo-trasferta";
 import Grid from "@mui/material/Grid2";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -189,12 +190,20 @@ function UserHours() {
     });
 
     if (isConfirmed) {
-      await fetchEpsNestjsOrpEffCicliEsecDelete({
+      const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      enqueueSnackbar("Ore commessa eliminate!", {
-        variant: "success",
-      });
+      debugger
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        enqueueSnackbar("Impossibile eliminare!", {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar("Ore commessa eliminate!", {
+          variant: "success",
+        });
+      }
+
       refetch();
     }
   };
@@ -299,6 +308,7 @@ function UserHours() {
           >
             <Card
               style={{
+                minWidth: "100%",
                 padding: 16,
                 borderRadius: 8,
                 border: `1px solid ${

@@ -5,7 +5,9 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import {
   Button,
+  Icon,
   Paper,
+  Stack,
   TableContainer,
   TableHead,
   ToggleButton,
@@ -23,6 +25,9 @@ import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries-eps-nestj
 import { Operatori } from "@/services/api/types/operatori";
 import Grid from "@mui/material/Grid2";
 import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import DoubleArrowTwoToneIcon from "@mui/icons-material/DoubleArrowTwoTone";
+import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -50,7 +55,13 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
 
   return (
     <>
-      <Grid container size="auto" wrap="nowrap" justifyContent="flex-end" mb={1}>
+      <Grid
+        container
+        size="auto"
+        wrap="nowrap"
+        justifyContent="flex-end"
+        mb={1}
+      >
         <Grid>
           <Button
             variant="contained"
@@ -84,7 +95,13 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
           <TableBody>
             <TableRow>
               <TableCell colSpan={4} align="right">
-                <Typography variant="h2">{data?.totale}</Typography>
+                <Stack textAlign="right" direction="column">
+                  <Typography variant="h6">{data?.targetDateInizio}</Typography>
+                  <Typography variant="subtitle2">
+                    ore totali della giornata
+                  </Typography>
+                  <Typography variant="h2">{data?.totale}</Typography>
+                </Stack>
               </TableCell>
             </TableRow>
             {result.map((epsNestjsOrpEffCicliEsec, index) => {
@@ -101,21 +118,45 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                       <TableBody>
                         <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
                           <TableCell
-                            style={{ width: "10%", textAlign: "left" }}
-                          >
-                            {epsNestjsOrpEffCicliEsec?.id}
-                          </TableCell>
-                          <TableCell
-                            style={{ width: "45%", textAlign: "left" }}
-                          >
-                            {epsNestjsOrpEffCicliEsec?.TIPO_TRASFERTA}
-                          </TableCell>
-                          <TableCell
                             style={{ width: "45%", textAlign: "left" }}
                           >
                             {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
                           </TableCell>
-                          <TableCell></TableCell>
+                          <TableCell
+                            style={{ width: "10%", textAlign: "left" }}
+                          >
+                            {
+                              epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI
+                            }
+                          </TableCell>
+                          <TableCell
+                            style={{ width: "20%", textAlign: "left" }}
+                          >
+                            <TipoTrasfertaComponent
+                              tipotrasferta={
+                                epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
+                              }
+                            >
+                              {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !=
+                                null ||
+                              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !=
+                                null ? (
+                                <Icon>
+                                  <LockTwoToneIcon />
+                                </Icon>
+                              ) : (
+                                <Button
+                                  onClick={() => {
+                                    // onDelete(epsNestjsOrpEffCicliEsec?.id);
+                                  }}
+                                  variant="contained"
+                                  endIcon={<DoubleArrowTwoToneIcon />}
+                                >
+                                  {epsNestjsOrpEffCicliEsec?.id}
+                                </Button>
+                              )}
+                            </TipoTrasfertaComponent>
+                          </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell

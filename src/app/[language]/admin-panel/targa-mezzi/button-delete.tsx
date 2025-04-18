@@ -22,7 +22,7 @@ export function ButtonDelete({
 
   const handleDelete = async (targaMezzi: TargaMezzi) => {
     const isConfirmed = await confirmDialog({
-      title: "Targa mezzi",
+      title: "Targa mezzo",
       message: "Vuoi confermare la cancellazione?",
     });
 

@@ -91,7 +91,6 @@ function UserHours() {
       {
         columnName: "DATA_INIZIO",
         value: dateSelected?.format("YYYY-MM-DD") || "",
-        id: 0,
       },
     ] as Array<FilterItem<EpsNestjsOrpEffCicliEsec>>;
   }, [searchParams]);
@@ -120,7 +119,6 @@ function UserHours() {
       {
         columnName,
         value,
-        id: 0,
       },
     ];
 
@@ -221,13 +219,7 @@ function UserHours() {
         justifyContent="center"
       >
         <Grid size={{ xs: 12 }}>
-          <Stack
-            textAlign="center"
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-          >
+          <Stack textAlign="right" direction="column" alignItems="flex-end">
             <LocalizationProvider
               dateAdapter={AdapterDayjs}
               adapterLocale={language}
@@ -243,6 +235,7 @@ function UserHours() {
                 maxDate={dayjs().subtract(1, "day")}
               />
             </LocalizationProvider>
+            <Typography variant="subtitle2">ore totali della giornata</Typography>
             <Typography variant="h2">{data?.totale}</Typography>
           </Stack>
         </Grid>

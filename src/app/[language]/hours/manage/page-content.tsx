@@ -28,6 +28,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Icon,
   Stack,
   Table,
   TableBody,
@@ -62,6 +63,8 @@ import TipoTrasfertaComponent, {
   backgroundColorsLight,
 } from "@/components/tipo-trasferta";
 import Grid from "@mui/material/Grid2";
+import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
+
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
@@ -278,15 +281,10 @@ function UserHours() {
         justifyContent="center"
       >
         <Grid size={{ xs: 12 }}>
-          <Stack
-            textAlign="center"
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-          >
-            <Typography variant="h6">
-              <em>{data?.targetDateInizio}</em>
+          <Stack textAlign="right" direction="column">
+            <Typography variant="h6">{data?.targetDateInizio}</Typography>
+            <Typography variant="subtitle2">
+              ore totali della giornata
             </Typography>
             <Typography variant="h2">{data?.totale}</Typography>
           </Stack>
@@ -318,15 +316,23 @@ function UserHours() {
                 <TipoTrasfertaComponent
                   tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
                 >
-                  <Button
-                    onClick={() => {
-                      onDelete(epsNestjsOrpEffCicliEsec?.id);
-                    }}
-                    variant="contained"
-                    endIcon={<DeleteForeverTwoTone />}
-                  >
-                    {epsNestjsOrpEffCicliEsec?.id}
-                  </Button>
+                  {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE != null ||
+                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !=
+                    null ? (
+                    <Icon>
+                      <LockTwoToneIcon />
+                    </Icon>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        onDelete(epsNestjsOrpEffCicliEsec?.id);
+                      }}
+                      variant="contained"
+                      endIcon={<DeleteForeverTwoTone />}
+                    >
+                      {epsNestjsOrpEffCicliEsec?.id}
+                    </Button>
+                  )}
                 </TipoTrasfertaComponent>
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -373,7 +379,7 @@ function UserHours() {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height="30vh"
+              height="40vh"
               textAlign="center"
             >
               <Typography variant="h2">
@@ -384,22 +390,6 @@ function UserHours() {
           </Grid>
         )}
       </Grid>
-      {result.length == 0 && isLoading == false && (
-        <Container maxWidth="sm">
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="30vh"
-            textAlign="center"
-          >
-            <Typography variant="h2">
-              Nessuna registrazione effettuata!
-            </Typography>
-            <Image src={imageLogo} alt="No records image" height={200} />
-          </Box>
-        </Container>
-      )}
       <Grid
         container
         justifyContent="center"
@@ -407,10 +397,19 @@ function UserHours() {
         mt={2}
         sx={{
           position: "fixed",
-          bottom: 0,
+          bottom: 0, // Add some space from the bottom edge
           left: 0,
-          width: "100%",
-          bgcolor: "background.paper",
+          width: "100%", // Adjust width to content
+          // Apply card-like styling with backdrop effect
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark"
+              ? "rgba(40, 40, 40, 0.25)" // Semi-transparent dark background
+              : "rgba(255, 255, 255, 0.25)", // Semi-transparent light background
+          backdropFilter: "blur(3px)", // Backdrop blur effect
+          borderRadius: (theme) => theme.shape.borderRadius, // Rounded corners like a Card
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          boxShadow: (theme) => theme.shadows[10], // Elevation effect
           zIndex: 1000,
           padding: 2,
         }}
@@ -420,6 +419,7 @@ function UserHours() {
         ) && (
           <Grid>
             <Button
+              size="large"
               variant="contained"
               color="info"
               onClick={() => router.push("/hours/manage/step1_KmAutista")}
@@ -431,6 +431,7 @@ function UserHours() {
         )}
         <Grid>
           <Button
+            size="large"
             variant="contained"
             color="primary"
             onClick={() => router.push("/hours/manage/step1_FuoriSede")}
@@ -441,6 +442,7 @@ function UserHours() {
         </Grid>
         <Grid>
           <Button
+            size="large"
             variant="contained"
             color="secondary"
             onClick={() => router.push("/hours/manage/create/in_sede")}

@@ -243,7 +243,7 @@ export default function FormCreateEdit(props: { cf: Cf }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([{ columnName: "COD_ART", value, id: 0 }]);
+                      setFilters([{ columnName: "COD_ART", value }]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>

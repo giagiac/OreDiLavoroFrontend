@@ -1,7 +1,7 @@
 "use client";
 
-import { Cf } from "@/services/api/types/cf";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import { Operatori } from "@/services/api/types/operatori";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
@@ -35,11 +35,10 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import FormCreateEdit from "./create/page-content-cf";
-import CfCommPage from "./page-content-cf-comm";
-import { useGetCfQuery } from "./queries/queries-cf";
-
-type CfKeys = keyof Cf;
+import { useGetOperatoriEsecuzioniQuery } from "./queries/queries-operatori";
+import EpsNestjsOrpEffCicliEsecPage from "./page-content-eps-nestjs-orp-eff-cicli-esec";
+import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
+type OperatoriKeys = keyof Operatori;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -48,15 +47,15 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
 function TableSortFilterCellWrapper(
   props: PropsWithChildren<{
     width?: number | string;
-    orderBy: CfKeys;
+    orderBy: OperatoriKeys;
     order: SortEnum;
-    column: CfKeys;
+    column: OperatoriKeys;
     handleRequestSort: (
       event: React.MouseEvent<unknown>,
-      property: CfKeys
+      property: OperatoriKeys
     ) => void;
-    filters: Array<FilterItem<Cf>>;
-    handleRequestFilter: (prop: FilterItem<Cf>) => void;
+    filters: Array<FilterItem<Operatori>>;
+    handleRequestFilter: (prop: FilterItem<Operatori>) => void;
   }>
 ) {
   const value =
@@ -68,7 +67,7 @@ function TableSortFilterCellWrapper(
     const currentProp = {
       value: "",
       columnName: props.column,
-    } as FilterItem<Cf>;
+    } as FilterItem<Operatori>;
     props.handleRequestFilter(currentProp);
   };
 
@@ -111,7 +110,7 @@ function TableSortFilterCellWrapper(
             const currentProp = {
               value: text,
               columnName: props.column,
-            } as FilterItem<Cf>;
+            } as FilterItem<Operatori>;
             props.handleRequestFilter(currentProp);
           }
           return false;
@@ -120,7 +119,7 @@ function TableSortFilterCellWrapper(
           const currentProp = {
             value: text,
             columnName: props.column,
-          } as FilterItem<Cf>;
+          } as FilterItem<Operatori>;
           props.handleRequestFilter(currentProp);
         }}
         value={text}
@@ -129,7 +128,7 @@ function TableSortFilterCellWrapper(
   );
 }
 
-function Cfs() {
+function Operatoris() {
   const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -139,7 +138,7 @@ function Cfs() {
     if (searchParams.size === 0) {
       setOthersFilters([]);
       setFilters([]);
-      setSort({ order: SortEnum.ASC, orderBy: "COD_CF" });
+      setSort({ order: SortEnum.ASC, orderBy: "COD_OP" });
     }
   }, [searchParams.size]);
 
@@ -173,16 +172,16 @@ function Cfs() {
 
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
-    orderBy: CfKeys;
+    orderBy: OperatoriKeys;
   }>(() => {
     const searchParamsSort = searchParams.get("sort");
     if (searchParamsSort) {
       return JSON.parse(searchParamsSort);
     }
-    return { order: SortEnum.ASC, orderBy: "COD_CF" };
+    return { order: SortEnum.ASC, orderBy: "COD_OP" };
   });
 
-  const [filters, setFilters] = useState<Array<FilterItem<Cf>>>(() => {
+  const [filters, setFilters] = useState<Array<FilterItem<Operatori>>>(() => {
     const searchParamsFilter = searchParams.get("filter");
     if (searchParamsFilter) {
       return JSON.parse(searchParamsFilter);
@@ -192,7 +191,7 @@ function Cfs() {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: CfKeys
+    property: OperatoriKeys
   ) => {
     const isAsc = orderBy === property && order === SortEnum.ASC;
     const searchParams = new URLSearchParams(window.location.search);
@@ -209,11 +208,11 @@ function Cfs() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const handleRequestFilter = (prop: FilterItem<Cf>) => {
+  const handleRequestFilter = (prop: FilterItem<Operatori>) => {
     const { value, columnName } = prop;
     const searchParams = new URLSearchParams(window.location.search);
 
-    let oldFilter: Array<FilterItem<Cf>> = JSON.parse(
+    let oldFilter: Array<FilterItem<Operatori>> = JSON.parse(
       searchParams.get("filter") || "[]"
     );
 
@@ -235,8 +234,12 @@ function Cfs() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useGetCfQuery({ sort: { order, orderBy }, filters, othersFilters });
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
+    useGetOperatoriEsecuzioniQuery({
+      sort: { order, orderBy },
+      filters,
+      othersFilters,
+    });
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -245,9 +248,10 @@ function Cfs() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Cf[]) ?? ([] as Cf[]);
+      (data?.pages.flatMap((page) => page?.data) as Operatori[]) ??
+      ([] as Operatori[]);
 
-    return removeDuplicatesFromArrayObjects(result, "COD_CF");
+    return removeDuplicatesFromArrayObjects(result, "COD_OP");
   }, [data, searchParams]);
 
   interface ItemDetail {
@@ -287,6 +291,24 @@ function Cfs() {
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
+            <Grid>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  //invalidate query
+                  refetch();
+                }}
+                sx={{
+                  minWidth: 0, // Allow button to shrink
+                  width: 48, // Set width
+                  height: 48, // Set height to match width for square shape
+                  marginLeft: 1, // Add some space from the ToggleButtonGroup
+                  padding: 0, // Remove default padding if needed
+                }}
+              >
+                <RefreshTwoToneIcon />
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
 
@@ -297,37 +319,37 @@ function Cfs() {
                 <TableRow>
                   <TableCell style={{ width: "10%" }} />
                   <TableSortFilterCellWrapper
-                    width={"10%"}
+                    width={"20%"}
                     orderBy={orderBy}
                     order={order}
-                    column="COD_CF"
+                    column="COD_OP"
                     filters={filters}
                     handleRequestSort={handleRequestSort}
                     handleRequestFilter={handleRequestFilter}
                   >
-                    {tArticoliCosti("table.column1")}
+                    Codice Operatore
                   </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
                     width={"30%"}
                     orderBy={orderBy}
                     order={order}
-                    column="RAG_SOC_CF"
+                    column="NOME_OP"
                     filters={filters}
                     handleRequestSort={handleRequestSort}
                     handleRequestFilter={handleRequestFilter}
                   >
-                    {tArticoliCosti("table.column2")}
+                    Nome Operatore
                   </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
                     width={"50%"}
                     orderBy={orderBy}
                     order={order}
-                    column="P_IVA_CF"
+                    column="X_COD_BADGE"
                     filters={filters}
                     handleRequestSort={handleRequestSort}
                     handleRequestFilter={handleRequestFilter}
                   >
-                    {tArticoliCosti("table.column3")}
+                    Codice Badge
                   </TableSortFilterCellWrapper>
                 </TableRow>
                 {isFetchingNextPage && (
@@ -339,10 +361,10 @@ function Cfs() {
                 )}
               </TableHead>
               <TableBody>
-                {result.map((cf, index) => {
+                {result.map((operatore, index) => {
                   return (
                     <TableRow
-                      key={cf.COD_CF}
+                      key={operatore.COD_OP}
                       style={{
                         backgroundColor:
                           index % 2 == 0
@@ -364,19 +386,17 @@ function Cfs() {
                               <TableCell
                                 style={{ width: "10%", border: "none" }}
                               >
-                                {cf.articoliCostiCf && (
-                                  <IconButton
-                                    aria-label="expand row"
-                                    size="small"
-                                    onClick={() => handleOpen(cf.COD_CF)}
-                                  >
-                                    {open[cf.COD_CF] ? (
-                                      <KeyboardArrowUpIcon />
-                                    ) : (
-                                      <KeyboardArrowDownIcon />
-                                    )}
-                                  </IconButton>
-                                )}
+                                <IconButton
+                                  aria-label="expand row"
+                                  size="small"
+                                  onClick={() => handleOpen(operatore.COD_OP)}
+                                >
+                                  {open[operatore.COD_OP] ? (
+                                    <KeyboardArrowUpIcon />
+                                  ) : (
+                                    <KeyboardArrowDownIcon />
+                                  )}
+                                </IconButton>
                               </TableCell>
                               <TableCell
                                 style={{
@@ -386,7 +406,7 @@ function Cfs() {
                                 }}
                               >
                                 <Typography variant="subtitle2">
-                                  {cf?.COD_CF}
+                                  {operatore?.COD_OP}
                                 </Typography>
                               </TableCell>
                               <TableCell
@@ -396,7 +416,7 @@ function Cfs() {
                                   border: "none",
                                 }}
                               >
-                                {cf?.RAG_SOC_CF}
+                                {operatore?.NOME_OP}
                               </TableCell>
                               <TableCell
                                 style={{
@@ -405,21 +425,21 @@ function Cfs() {
                                   border: "none",
                                 }}
                               >
-                                {cf?.P_IVA_CF}
+                                {operatore?.X_COD_BADGE}
                               </TableCell>
                             </TableRow>
                             <TableRow>
-                              <TableCell colSpan={4} padding="none">
-                                <FormCreateEdit cf={cf} />
-                              </TableCell>
+                              <TableCell colSpan={4} padding="none"></TableCell>
                             </TableRow>
-                            {open[cf.COD_CF] && (
+                            {open[operatore.COD_OP] && (
                               <TableRow
                                 style={{ padding: "none" }}
                                 sx={{ "& > *": { borderBottom: "unset" } }}
                               >
                                 <TableCell colSpan={4}>
-                                  <CfCommPage {...cf} />
+                                  <EpsNestjsOrpEffCicliEsecPage
+                                    operatore={operatore}
+                                  />
                                 </TableCell>
                               </TableRow>
                             )}
@@ -445,4 +465,4 @@ function Cfs() {
   );
 }
 
-export default withPageRequiredAuth(Cfs, { roles: [RoleEnum.ADMIN] });
+export default withPageRequiredAuth(Operatoris, { roles: [RoleEnum.ADMIN] });

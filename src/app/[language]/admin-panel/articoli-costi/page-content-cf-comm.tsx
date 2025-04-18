@@ -22,7 +22,7 @@ const TableCellLoadingContainer = styled(TableCell)(() => ({
 export default function CfCommPage(cf: Cf) {
   const { data, isFetchingNextPage } = useGetCfCommQuery({
     sort: { order: SortEnum.ASC, orderBy: "NUM_SEDE" },
-    filters: [{ columnName: "COD_CF", value: cf.COD_CF, id: 0 }],
+    filters: [{ columnName: "COD_CF", value: cf.COD_CF }],
   });
 
   const result = useMemo(() => {

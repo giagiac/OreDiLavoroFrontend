@@ -69,3 +69,48 @@ export function useGetOperatoriService() {
     [fetch]
   );
 }
+
+// ---------------------------------------------------------------------
+
+export type OperatoriEsecuzioniRequest = {
+  page: number;
+  limit: number;
+  filters?: Array<FilterItem<Operatori>>;
+  sort?: Array<{
+    orderBy: keyof Operatori;
+    order: SortEnum;
+  }>;
+  othersFilters?: Array<OthersFiltersItem>;
+};
+
+export type OperatoriEsecuzioniResponse = InfinityPaginationType<Operatori>;
+
+export function useGetOperatoriEsecuzioniService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data: OperatoriEsecuzioniRequest, requestConfig?: RequestConfigType) => {
+      const requestUrl = new URL(`${API_URL}/v1/operatoris/operatori-esecuzioni`);
+      requestUrl.searchParams.append("page", data.page.toString());
+      requestUrl.searchParams.append("limit", data.limit.toString());
+      if (data.filters) {
+        requestUrl.searchParams.append("filters", JSON.stringify(data.filters));
+      }
+      if (data.sort) {
+        requestUrl.searchParams.append("sort", JSON.stringify(data.sort));
+      }
+      if (data.othersFilters) {
+        requestUrl.searchParams.append(
+          "othersFilters",
+          JSON.stringify(data.othersFilters)
+        );
+      }
+
+      return fetch(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<OperatoriEsecuzioniResponse>);
+    },
+    [fetch]
+  );
+}

@@ -139,7 +139,6 @@ function FormCreateUser() {
         {
           columnName: "CODICE_BREVE",
           value: target.value,
-          id: 0,
         },
       ]);
       setEnterPressed(true);
@@ -161,7 +160,7 @@ function FormCreateUser() {
     orderBy: OrpEffCicliKeys;
   }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
-    { columnName: "CODICE_BREVE", value: codiceBreveValue, id: 0 },
+    { columnName: "CODICE_BREVE", value: codiceBreveValue },
   ]);
   const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
     []
@@ -199,7 +198,7 @@ function FormCreateUser() {
     setFilters(() => {
       const newValue = "";
       setCodiceBreve(newValue);
-      return [{ columnName: "CODICE_BREVE", value: newValue, id: 0 }];
+      return [{ columnName: "CODICE_BREVE", value: newValue }];
     });
   };
 
@@ -309,7 +308,6 @@ function FormCreateUser() {
                         {
                           columnName: "CODICE_BREVE",
                           value: result[0].rawValue,
-                          id: 0,
                         },
                       ]);
                       handleCloseScanner();

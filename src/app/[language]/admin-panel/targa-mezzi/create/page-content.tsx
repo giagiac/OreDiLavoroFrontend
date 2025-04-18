@@ -124,7 +124,7 @@ export default function FormCreateEdit({
       <form>
         <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
           name={`COD_ART`}
-          label={`Targa Mezzi`}
+          label={`Targa Mezzo`}
           options={result}
           renderSelected={(option) => option.COD_ART}
           renderOption={(option) =>
@@ -136,7 +136,7 @@ export default function FormCreateEdit({
           searchPlaceholder="Search options..."
           search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
           onSearchChange={(value) => {
-            setFilters([{ columnName: "COD_ART", value, id: 0 }]);
+            setFilters([{ columnName: "COD_ART", value }]);
           }}
           onEndReached={handleScroll}
           onChangeCallback={async (artAna) => {

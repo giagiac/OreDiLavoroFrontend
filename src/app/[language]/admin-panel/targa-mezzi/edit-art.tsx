@@ -57,7 +57,7 @@ function EditArt(props: { onSubmit: () => void }) {
       searchPlaceholder="Search options..."
       search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
       onSearchChange={(value) => {
-        setFilters([{ columnName: "COD_ART", value, id: 0 }]);
+        setFilters([{ columnName: "COD_ART", value }]);
       }}
       onEndReached={handleScroll}
       onChangeCallback={(value) => console.log(value)}

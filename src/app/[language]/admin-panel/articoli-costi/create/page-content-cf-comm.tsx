@@ -181,7 +181,7 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
   const articoliEdit = [
     cfComm.articoliCostiCfComm?.find(
       (it) => it.TIPO_COSTO == "IN_GIORNATA"
-    ) || { TIPO_COSTO: "IN_GIORNATA", id: 0, COD_ART: null, artAna: null },
+    ) || { TIPO_COSTO: "IN_GIORNATA", COD_ART: null, artAna: null },
     cfComm.articoliCostiCfComm?.find(
       (it) => it.TIPO_COSTO == "IN_GIORNATA_DOPO_21"
     ) || {
@@ -239,7 +239,7 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
                       ""
                     }
                     onSearchChange={(value) => {
-                      setFilters([{ columnName: "COD_ART", value, id: 0 }]);
+                      setFilters([{ columnName: "COD_ART", value }]);
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) =>

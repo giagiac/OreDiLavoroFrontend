@@ -132,11 +132,18 @@ function ResponsiveAppBar() {
                     component={Link}
                     href="/admin-panel/targa-mezzi"
                   >
+                    <Typography textAlign="center">{"Targhe mezzi"}</Typography>
+                  </MenuItem>,
+                  <MenuItem
+                    key="EpsNestjsOrpEffCicli"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/admin-panel/eps-nestjs-orp-eff-cicli-esec"
+                  >
                     <Typography textAlign="center">
-                      {"Targa mezzi"}
+                      {"Gestione Ore Operatori"}
                     </Typography>
                   </MenuItem>,
-                  // mobile-menu-items,
                 ]}
               {!!user?.role && [
                 // mobile-menu-items
@@ -233,7 +240,15 @@ function ResponsiveAppBar() {
                     component={Link}
                     href="/admin-panel/targa-mezzi"
                   >
-                    {"Targa mezzi"}
+                    {"Targhe mezzi"}
+                  </Button>
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                    component={Link}
+                    href="/admin-panel/eps-nestjs-orp-eff-cicli-esec"
+                  >
+                    {"Gestione Ore Operatori"}
                   </Button>
                 </>
               )}

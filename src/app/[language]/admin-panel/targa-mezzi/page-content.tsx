@@ -221,7 +221,7 @@ function TargaMezziPage() {
       prev.value = value;
     } else if (value.length > 0) {
       // New one
-      oldFilter = [...oldFilter, { columnName, value, id: 0 }];
+      oldFilter = [...oldFilter, { columnName, value }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
@@ -256,7 +256,7 @@ function TargaMezziPage() {
       <Grid container spacing={3} pt={3}>
         <Grid container spacing={3} size={{ xs: 12 }}>
           <Grid size="grow">
-            <Typography variant="h3">{"Targa mezzi"}</Typography>
+            <Typography variant="h3">{"Targhe mezzi"}</Typography>
           </Grid>
         </Grid>
         <Grid size={{ xs: 12 }} mb={2}>

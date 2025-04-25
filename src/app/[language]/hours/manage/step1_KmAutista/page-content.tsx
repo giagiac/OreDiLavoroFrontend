@@ -4,13 +4,13 @@ import { NumericKeypadKm } from "@/components/numeric-keypad-km";
 import { RoleEnum } from "@/services/api/types/role";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
-import { Button } from "@mui/material";
+import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import TargaMezziTable from "../targa-mezzi-table";
-import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 
 function FormCreateUser() {
   const router = useRouter();
@@ -47,7 +47,7 @@ function FormCreateUser() {
         </Grid>
         <Grid size={12} pt={3}>
           <TargaMezziTable
-            children={(COD_ART) => (
+            childrenCallBack={(COD_ART) => (
               <Button
                 style={{
                   width: "100%",
@@ -66,7 +66,7 @@ function FormCreateUser() {
                 <ForwardTwoToneIcon />
               </Button>
             )}
-          ></TargaMezziTable>
+          />
         </Grid>
       </Grid>
     </Container>

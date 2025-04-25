@@ -10,27 +10,24 @@ import {
   OthersFiltersType,
 } from "../orp-eff-cicli-filter-types";
 
-export const orpEffCicliQueryKeys = createQueryKeys(
-  ["OrpEffCicli"],
-  {
-    list: () => ({
-      key: [],
-      sub: {
-        by: ({
-          sort,
-          filter,
-          othersFilters,
-        }: {
-          filter: OrpEffCicliFilterType | undefined;
-          sort?: OrpEffCicliSortType | undefined;
-          othersFilters?: OthersFiltersType | undefined;
-        }) => ({
-          key: [sort, filter, othersFilters],
-        }),
-      },
-    }),
-  }
-);
+export const orpEffCicliQueryKeys = createQueryKeys(["OrpEffCicli"], {
+  list: () => ({
+    key: [],
+    sub: {
+      by: ({
+        sort,
+        filter,
+        othersFilters,
+      }: {
+        filter: OrpEffCicliFilterType | undefined;
+        sort?: OrpEffCicliSortType | undefined;
+        othersFilters?: OthersFiltersType | undefined;
+      }) => ({
+        key: [sort, filter, othersFilters],
+      }),
+    },
+  }),
+});
 
 export const useGetOrpEffCicliQuery = ({
   sort,

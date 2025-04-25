@@ -4,16 +4,16 @@ import { OrpEffCicli } from "./orp-eff-cicli";
 import { Operatori } from "./operatori";
 
 export type TipoTrasferta =
-  | 'in_sede'
-  | 'in_giornata'
-  | 'in_giornata_dopo_21'
-  | 'fuori_sede_andata'
-  | 'fuori_sede_ritorno'
-  | 'ancora_in_missione_5'
-  | 'ancora_in_missione_10'
-  | 'ancora_in_missione_15'
-  | 'ancora_in_missione_20'
-  | 'step1_KmAutista';
+  | "in_sede"
+  | "in_giornata"
+  | "in_giornata_dopo_21"
+  | "fuori_sede_andata"
+  | "fuori_sede_ritorno"
+  | "ancora_in_missione_5"
+  | "ancora_in_missione_10"
+  | "ancora_in_missione_15"
+  | "ancora_in_missione_20"
+  | "step1_KmAutista";
 
 // export enum TipoTrasferta {
 //   "in_sede" = "in_sede",
@@ -49,8 +49,8 @@ export type EpsNestjsOrpEffCicliEsec = {
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
   TIPO_TRASFERTA: TipoTrasferta;
-  HYPSERV_REQ2_COD_CHIAVE: string | null
-  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null
+  HYPSERV_REQ2_COD_CHIAVE: string | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
 
   TEMPO_OPERATORE_SESSANTESIMI?: String | null;
 

@@ -1,8 +1,6 @@
 "use client";
 
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
-import { useTranslation } from "@/services/i18n/client";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -10,10 +8,7 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 function FormCreateUser() {
-  const { user } = useAuth();
-
   const router = useRouter();
-  const { t } = useTranslation("admin-panel-users-create");
 
   return (
     <Container maxWidth="md">
@@ -55,7 +50,9 @@ function FormCreateUser() {
                   color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/create/in_giornata")}
+                  onClick={() =>
+                    router.push("/hours/manage/create/in_giornata")
+                  }
                   endIcon={"📅"}
                 >
                   In giornata
@@ -68,7 +65,9 @@ function FormCreateUser() {
                   color="primary"
                   size="large"
                   style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/create/in_giornata_dopo_21")}
+                  onClick={() =>
+                    router.push("/hours/manage/create/in_giornata_dopo_21")
+                  }
                   endIcon={"🌃"}
                 >
                   In giornata dopo le 21:00

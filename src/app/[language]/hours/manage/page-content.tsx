@@ -1,10 +1,15 @@
 "use client";
 
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
+import TipoTrasfertaComponent, {
+  backgroundColorsDark,
+  backgroundColorsLight,
+} from "@/components/tipo-trasferta";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
 import { RoleEnum } from "@/services/api/types/role";
@@ -12,102 +17,76 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { useTranslation } from "@/services/i18n/client";
-import { DeleteForeverTwoTone } from "@mui/icons-material";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
+import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Icon,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  Tooltip,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
-import Fab from "@mui/material/Fab";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid2";
+import Icon from "@mui/material/Icon";
 import LinearProgress from "@mui/material/LinearProgress";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import { useRouter, useSearchParams } from "next/navigation";
+import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import {
-  Fragment,
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
-import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
-import TipoTrasfertaComponent, {
-  backgroundColorsDark,
-  backgroundColorsLight,
-} from "@/components/tipo-trasferta";
-import Grid from "@mui/material/Grid2";
-import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
-import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
-const TableCellLoadingContainer = styled(TableCell)(() => ({
-  padding: 0,
-}));
+// const TableCellLoadingContainer = styled(TableCell)(() => ({
+//   padding: 0,
+// }));
 
-function TableSortCellWrapper(
-  props: PropsWithChildren<{
-    width?: number;
-    orderBy: EpsNestjsOrpEffCicliEsecKeys;
-    order: SortEnum;
-    column: EpsNestjsOrpEffCicliEsecKeys;
-    handleRequestSort: (
-      event: React.MouseEvent<unknown>,
-      property: EpsNestjsOrpEffCicliEsecKeys
-    ) => void;
-  }>
-) {
-  return (
-    <TableCell
-      style={{ width: props.width }}
-      sortDirection={props.orderBy === props.column ? props.order : false}
-    >
-      <TableSortLabel
-        active={props.orderBy === props.column}
-        direction={props.orderBy === props.column ? props.order : SortEnum.ASC}
-        onClick={(event) => props.handleRequestSort(event, props.column)}
-      >
-        {props.children}
-      </TableSortLabel>
-    </TableCell>
-  );
-}
+// function TableSortCellWrapper(
+//   props: PropsWithChildren<{
+//     width?: number;
+//     orderBy: EpsNestjsOrpEffCicliEsecKeys;
+//     order: SortEnum;
+//     column: EpsNestjsOrpEffCicliEsecKeys;
+//     handleRequestSort: (
+//       event: React.MouseEvent<unknown>,
+//       property: EpsNestjsOrpEffCicliEsecKeys
+//     ) => void;
+//   }>
+// ) {
+//   return (
+//     <TableCell
+//       style={{ width: props.width }}
+//       sortDirection={props.orderBy === props.column ? props.order : false}
+//     >
+//       <TableSortLabel
+//         active={props.orderBy === props.column}
+//         direction={props.orderBy === props.column ? props.order : SortEnum.ASC}
+//         onClick={(event) => props.handleRequestSort(event, props.column)}
+//       >
+//         {props.children}
+//       </TableSortLabel>
+//     </TableCell>
+//   );
+// }
 
 function UserHours() {
-  const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
-    "admin-panel-epsNestjsOrpEffCicliEsec"
-  );
-  const { t: tRoles } = useTranslation("admin-panel-roles");
+  // const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
+  //   "admin-panel-epsNestjsOrpEffCicliEsec"
+  // );
+  // const { t: tRoles } = useTranslation("admin-panel-roles");
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: EpsNestjsOrpEffCicliEsecKeys;
   }>(() => {
@@ -118,24 +97,24 @@ function UserHours() {
     return { order: SortEnum.DESC, orderBy: "id" };
   });
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: EpsNestjsOrpEffCicliEsecKeys
-  ) => {
-    const isAsc = orderBy === property && order === SortEnum.ASC;
-    const searchParams = new URLSearchParams(window.location.search);
-    const newOrder = isAsc ? SortEnum.DESC : SortEnum.ASC;
-    const newOrderBy = property;
-    searchParams.set(
-      "sort",
-      JSON.stringify({ order: newOrder, orderBy: newOrderBy })
-    );
-    setSort({
-      order: newOrder,
-      orderBy: newOrderBy,
-    });
-    router.push(window.location.pathname + "?" + searchParams.toString());
-  };
+  // const handleRequestSort = (
+  //   event: React.MouseEvent<unknown>,
+  //   property: EpsNestjsOrpEffCicliEsecKeys
+  // ) => {
+  //   const isAsc = orderBy === property && order === SortEnum.ASC;
+  //   const searchParams = new URLSearchParams(window.location.search);
+  //   const newOrder = isAsc ? SortEnum.DESC : SortEnum.ASC;
+  //   const newOrderBy = property;
+  //   searchParams.set(
+  //     "sort",
+  //     JSON.stringify({ order: newOrder, orderBy: newOrderBy })
+  //   );
+  //   setSort({
+  //     order: newOrder,
+  //     orderBy: newOrderBy,
+  //   });
+  //   router.push(window.location.pathname + "?" + searchParams.toString());
+  // };
 
   const filter = useMemo(() => {
     const searchParamsFilter = searchParams.get("filter");
@@ -148,22 +127,16 @@ function UserHours() {
     return undefined;
   }, [searchParams]);
 
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    fetchNextPage,
-    refetch,
-  } = useGetEpsNestjsOrpEffCicliEsecQuery({
-    filters: filter,
-    sort: { order, orderBy },
-  });
+  const { data, isFetchingNextPage, isLoading, refetch } =
+    useGetEpsNestjsOrpEffCicliEsecQuery({
+      filters: filter,
+      sort: { order, orderBy },
+    });
 
-  const handleScroll = useCallback(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-    fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // const handleScroll = useCallback(() => {
+  //   if (!hasNextPage || isFetchingNextPage) return;
+  //   fetchNextPage();
+  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const result = useMemo(() => {
     const result =
@@ -175,8 +148,6 @@ function UserHours() {
   }, [data]);
 
   const { user } = useAuth();
-
-  const theme = useTheme();
 
   const { enqueueSnackbar } = useSnackbar();
   const { confirmDialog } = useConfirmDialog();
@@ -193,7 +164,7 @@ function UserHours() {
       const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      debugger
+      debugger;
       if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
         enqueueSnackbar("Impossibile eliminare!", {
           variant: "error",
@@ -252,7 +223,8 @@ function UserHours() {
                 ).map((key) => {
                   const value = selectedOrdCliTras?.[key];
                   if (
-                    value == null ||
+                    value === undefined ||
+                    value === null ||
                     key === "DES_DEST_MERCE" ||
                     key === "NUM_DEST"
                   )
@@ -285,8 +257,11 @@ function UserHours() {
     <Container maxWidth="xl">
       <Grid
         container
-        spacing={2}
-        style={{ marginTop: 20, marginBottom: 200 }}
+        spacing={1}
+        sx={(theme) => ({
+          marginTop: theme.spacing(0),
+          marginBottom: theme.spacing(5),
+        })}
         justifyContent="center"
       >
         <Grid size={{ xs: 12 }}>
@@ -307,10 +282,10 @@ function UserHours() {
             justifyContent="center"
           >
             <Card
-              style={{
+              sx={(theme) => ({
                 minWidth: "100%",
-                padding: 16,
-                borderRadius: 8,
+                padding: theme.spacing(1),
+                borderRadius: 1,
                 border: `1px solid ${
                   theme.palette.mode === "dark"
                     ? backgroundColorsDark[
@@ -320,14 +295,14 @@ function UserHours() {
                         epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
                       ]
                 }`,
-              }}
+              })}
             >
               <Grid size={{ xs: 12 }}>
                 <TipoTrasfertaComponent
                   tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
                 >
-                  {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE != null ||
-                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !=
+                  {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
+                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !==
                     null ? (
                     <Icon>
                       <LockTwoToneIcon />
@@ -405,7 +380,7 @@ function UserHours() {
         justifyContent="center"
         spacing={2}
         mt={2}
-        sx={{
+        sx={(theme) => ({
           position: "fixed",
           bottom: 0, // Add some space from the bottom edge
           left: 0,
@@ -421,8 +396,8 @@ function UserHours() {
           borderBottomRightRadius: 0,
           boxShadow: (theme) => theme.shadows[10], // Elevation effect
           zIndex: 1000,
-          padding: 2,
-        }}
+          padding: theme.spacing(1),
+        })}
       >
         {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
           user?.role?.id as RoleEnum

@@ -17,15 +17,15 @@ import { useGetArtAnaQuery } from "../queries/queries-art-ana";
 
 type ArtAnaKeys = keyof ArtAna;
 
-const useValidationSchema = () => {
-  // const { t } = useTranslation("admin-panel-users-create");
+// const useValidationSchema = () => {
+//   // const { t } = useTranslation("admin-panel-users-create");
 
-  return yup.object().shape({
-    targaMezzi: yup.object().shape({
-      COD_ART: yup.string().notRequired(),
-    }),
-  });
-};
+//   return yup.object().shape({
+//     targaMezzi: yup.object().shape({
+//       COD_ART: yup.string().notRequired(),
+//     }),
+//   });
+// };
 
 // function CreateUserFormActions() {
 //   const { t } = useTranslation("admin-panel-users-create");
@@ -53,14 +53,12 @@ export default function FormCreateEdit({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
-    []
-  );
+  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
   const [filters, setFilters] = useState<Array<FilterItem<ArtAna>>>(() => {
     return [];
   });
 
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: ArtAnaKeys;
   }>({ order: SortEnum.ASC, orderBy: "COD_ART" });
@@ -96,10 +94,10 @@ export default function FormCreateEdit({
     },
   });
 
-  const { handleSubmit, setError, reset } = methods;
+  const { setError } = methods;
 
   const onChange = async (artAna: ArtAna) => {
-    const { data, status } = await fetchPostTargaMezzi({
+    const { status } = await fetchPostTargaMezzi({
       COD_ART: artAna.COD_ART,
       data: {
         COD_ART: artAna.COD_ART,
@@ -128,19 +126,24 @@ export default function FormCreateEdit({
           options={result}
           renderSelected={(option) => option.COD_ART}
           renderOption={(option) =>
-            option.COD_ART != null ? option.COD_ART + " " + option.DES_ART : ""
+            option?.COD_ART !== null
+              ? option.COD_ART + " " + option.DES_ART
+              : ""
           }
           keyExtractor={(option) => option.COD_ART}
           isSearchable={true}
           searchLabel="Search"
           searchPlaceholder="Search options..."
-          search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
+          search={
+            filters.find((it) => it.columnName === "COD_ART")?.value || ""
+          }
           onSearchChange={(value) => {
             setFilters([{ columnName: "COD_ART", value }]);
           }}
           onEndReached={handleScroll}
           onChangeCallback={async (artAna) => {
             const result = await onChange(artAna);
+            console.log(result);
             onChangeCallback(artAna);
           }}
         />

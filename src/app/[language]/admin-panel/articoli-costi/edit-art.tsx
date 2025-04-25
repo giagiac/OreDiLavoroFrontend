@@ -4,7 +4,7 @@ import FormSelectExtendedInput from "@/components/form/select-extended/form-sele
 import { ArtAna } from "@/services/api/types/art-ana";
 import {
   ArticoliCostiCfComm,
-  TipoCosto,
+  TipoTrasferta,
 } from "@/services/api/types/articoli-costi-cf-comm";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { SortEnum } from "@/services/api/types/sort-type";
@@ -16,12 +16,12 @@ type ArtAnaKeys = keyof ArtAna;
 
 export type EditArtAnaFormData = {
   COD_ART?: string | undefined;
-  TIPO_COSTO?: TipoCosto | string | undefined;
+  TIPO_TRASFERTA?: TipoTrasferta | string | undefined;
 
-  IN_GIORNATA?: string | undefined;
-  IN_GIORNATA_DOPO_21?: string | undefined;
-  PERNOTTO_FUORISEDE_ANDATA?: string | undefined;
-  PERNOTTO_FUORISEDE_RITORNO?: string | undefined;
+  in_giornata?: string | undefined;
+  in_giornata_dopo_21?: string | undefined;
+  fuori_sede_andata?: string | undefined;
+  fuori_sede_ritorno?: string | undefined;
 };
 
 function EditArt(props: {
@@ -30,14 +30,12 @@ function EditArt(props: {
 }) {
   const { articoliCostiCfComm } = props;
 
-  const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
-    []
-  );
+  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
   const [filters, setFilters] = useState<Array<FilterItem<ArtAna>>>(() => {
     return [];
   });
 
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: ArtAnaKeys;
   }>({ order: SortEnum.ASC, orderBy: "COD_ART" });
@@ -61,7 +59,7 @@ function EditArt(props: {
   return (
     <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
       // defaultValue={result.find(it=>it.COD_ART == articoliCostiCfComm.COD_ART)?.COD_ART}
-      name={articoliCostiCfComm.TIPO_COSTO}
+      name={articoliCostiCfComm.TIPO_TRASFERTA}
       label="Seleziona un articolo"
       options={result}
       renderSelected={(option) => option.COD_ART}
@@ -70,7 +68,7 @@ function EditArt(props: {
       isSearchable={true}
       searchLabel="Search"
       searchPlaceholder="Search options..."
-      search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
+      search={filters.find((it) => it.columnName === "COD_ART")?.value || ""}
       onSearchChange={(value) => {
         setFilters([{ columnName: "COD_ART", value }]);
       }}

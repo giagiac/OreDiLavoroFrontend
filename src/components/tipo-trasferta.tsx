@@ -1,10 +1,11 @@
-import React, { ReactElement } from "react";
-import { Paper, Typography } from "@mui/material";
-import { Stack, styled, Theme, useTheme } from "@mui/system";
-import { TipoTrasferta } from "../services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import { Stack, styled, useTheme } from "@mui/system";
+import React, { ReactElement } from "react";
+import { TipoTrasferta } from "../services/api/types/eps-nestjs-orp-eff-cicli-esec";
 
 export interface TipoTrasfertaProps {
   tipotrasferta: TipoTrasferta;
@@ -46,7 +47,7 @@ const StyledPaper = styled(Paper)(({
 }) => {
   const theme = useTheme();
   return {
-    padding: 8,
+    padding: theme.spacing(1.5),
     minWidth: 200,
     backgroundColor:
       theme.palette.mode === "dark"

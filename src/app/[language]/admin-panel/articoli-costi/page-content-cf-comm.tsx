@@ -4,8 +4,10 @@ import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { Paper, TableContainer, TableHead } from "@mui/material";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import LinearProgress from "@mui/material/LinearProgress";
+import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -46,26 +48,26 @@ export default function CfCommPage(cf: Cf) {
           </TableHead>
         )}
         <TableBody>
-          {result.map((cfComm, index) => {
+          {result.map((cfComm) => {
             return (
               <TableRow key={cfComm.CF_COMM_ID}>
                 <TableCell colSpan={4}>
                   <Table
-                    style={{
+                    sx={(theme) => ({
                       borderCollapse: "separate",
                       borderBottom: "none",
-                      padding: "none",
-                    }}
+                      padding: theme.spacing(0),
+                    })}
                   >
                     <TableBody>
                       <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
-                        <TableCell style={{ width: "10%", textAlign: "left" }}>
+                        <TableCell sx={{ width: "10%", textAlign: "left" }}>
                           {cfComm?.NUM_SEDE}
                         </TableCell>
-                        <TableCell style={{ width: "45%", textAlign: "left" }}>
+                        <TableCell sx={{ width: "45%", textAlign: "left" }}>
                           {cfComm?.DES_SEDE}
                         </TableCell>
-                        <TableCell style={{ width: "45%", textAlign: "left" }}>
+                        <TableCell sx={{ width: "45%", textAlign: "left" }}>
                           {cfComm?.INDI_SEDE}
                         </TableCell>
                       </TableRow>

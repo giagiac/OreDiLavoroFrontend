@@ -85,12 +85,12 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
     gcTime: 0,
     select: (data) => {
       // Trasforma i dati per includere informazioni aggiuntive
-      const totale = data.pages[0]?.totale
-      const targetDateInizio = data.pages[0]?.targetDateInizio
+      const totale = data.pages[0]?.totale;
+      const targetDateInizio = data.pages[0]?.targetDateInizio;
       return {
         ...data,
         totale,
-        targetDateInizio
+        targetDateInizio,
       };
     },
   });

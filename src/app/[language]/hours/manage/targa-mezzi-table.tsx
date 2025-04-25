@@ -5,18 +5,16 @@ import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicat
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import NoCrashTwoToneIcon from "@mui/icons-material/NoCrashTwoTone";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Button from "@mui/material/Button";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import Grid from "@mui/material/Grid2";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -27,11 +25,11 @@ export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
 interface TargaMezziTableProps {
-  children: (COD_ART: string) => React.ReactElement;
+  childrenCallBack: (COD_ART: string) => React.ReactElement;
 }
 
 const TargaMezziTable = ({
-  children,
+  childrenCallBack: children,
 }: TargaMezziTableProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -97,7 +95,7 @@ const TargaMezziTable = ({
       ([] as TargaMezzi[]);
 
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
-  }, [data, searchParams]);
+  }, [data]);
 
   const [targaMezziSelected, setTargaMezziSelected] =
     useState<string>(targaSelected);
@@ -125,10 +123,18 @@ const TargaMezziTable = ({
             id="table-header"
           >
             <Typography variant="subtitle2">
-              {(targaMezziSelected === NO_TARGA_MEZZI_SELECTED &&
-                "Procedi senza una targa") ||
-                result.find((it) => it.COD_ART == targaMezziSelected)?.artAna
-                  ?.DES_ART}
+              {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
+                ? "Procedi senza una targa"
+                : (() => {
+                    const selectedItem = result.find(
+                      (it) => it.COD_ART === targaMezziSelected
+                    );
+                    const codArt = selectedItem?.artAna?.COD_ART ?? "";
+                    const desArt = selectedItem?.artAna?.DES_ART ?? "";
+                    return codArt && desArt
+                      ? `${codArt} · ${desArt}`
+                      : "Targa selezionata non trovata";
+                  })()}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -167,13 +173,13 @@ const TargaMezziTable = ({
                   </TableCell>
                 </TableRow>
                 {/* LISTA ARTICOLI TARGHE */}
-                {result.map((targaMezzi, index) => {
+                {result.map((targaMezzi) => {
                   return (
                     <TableRow
                       key={targaMezzi.COD_ART}
                       style={{
                         backgroundColor:
-                          Number(targaMezzi.id) % 2 == 0
+                          Number(targaMezzi.id) % 2 === 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}
@@ -207,9 +213,7 @@ const TargaMezziTable = ({
             </Table>
           </AccordionDetails>
         </Accordion>
-        <Grid>
-        {children(targaMezziSelected)}
-        </Grid>
+        <Grid>{children(targaMezziSelected)}</Grid>
       </Grid>
     </Grid>
   );

@@ -1,4 +1,3 @@
-
 export type OrdCliTras = {
   DOC_ID: string;
   NOTE_DEST_MERCE?: string | null;

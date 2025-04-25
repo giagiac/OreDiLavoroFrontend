@@ -1,4 +1,3 @@
-
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { Operatori } from "@/services/api/types/operatori";
 import { SortEnum } from "@/services/api/types/sort-type";

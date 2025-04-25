@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
-import { useSnackbar } from "@/hooks/use-snackbar";
-import { Paper, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 
 export const NumericKeypadKm = ({
   onChange: onChange,
@@ -42,7 +44,10 @@ export const NumericKeypadKm = ({
           <Paper
             style={{ borderRadius: 5 }}
             elevation={3}
-            sx={{ paddingLeft: 3, paddingRight: 3 }}
+            sx={(theme) => ({
+              paddingLeft: theme.spacing(1),
+              paddingRight: theme.spacing(1),
+            })}
           >
             <Typography variant="h1" textAlign="center">
               {currentValue.toString().padStart(4, "0")}

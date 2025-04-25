@@ -1,5 +1,4 @@
 import { OrdCliRighe } from "./ord-cli-righe";
-import { OrpEffCicli } from "./orp-eff-cicli";
 
 export type LinkOrpOrd = {
   LINK_ORP_ORD_ID: string;

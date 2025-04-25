@@ -8,7 +8,6 @@ import { FilterItem, OthersFiltersItem } from "../types/filter";
 import { SortEnum } from "../types/sort-type";
 import { InfinityPaginationType } from "../types/infinity-pagination";
 
-
 export type OrpEffCicliRequest = {
   page: number;
   limit: number;

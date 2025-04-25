@@ -7,18 +7,19 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { useTranslation } from "@/services/i18n/client";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Paper, TableContainer, TableHead, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
@@ -128,7 +129,7 @@ function TableSortFilterCellWrapper(
 function TargaMezziPage() {
   const theme = useTheme();
 
-  const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
+  //const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -247,7 +248,7 @@ function TargaMezziPage() {
       ([] as TargaMezzi[]);
 
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
-  }, [data, searchParams]);
+  }, [data]);
 
   // const fetchPostTargaMezzi = useDeleteTargaMezziService();
 
@@ -295,13 +296,13 @@ function TargaMezziPage() {
                   borderCollapse: "collapse",
                 }}
               >
-                {result.map((targaMezzi, index) => {
+                {result.map((targaMezzi) => {
                   return (
                     <TableRow
                       key={targaMezzi.COD_ART}
                       style={{
                         backgroundColor:
-                          Number(targaMezzi.id) % 2 == 0
+                          Number(targaMezzi.id) % 2 === 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}

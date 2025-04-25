@@ -10,29 +10,25 @@ import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import useLanguage from "@/services/i18n/use-language";
-import {
-  Box,
-  Button,
-  Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Table,
-  TableBody,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -48,10 +44,6 @@ import imageLogo from "../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
-
-const TableCellLoadingContainer = styled(TableCell)(() => ({
-  padding: 0,
-}));
 
 function UserHours() {
   const [dateSelected, setDateSelected] = useState<Dayjs | null>(
@@ -69,7 +61,7 @@ function UserHours() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: EpsNestjsOrpEffCicliEsecKeys;
   }>(() => {
@@ -80,20 +72,20 @@ function UserHours() {
     return { order: SortEnum.DESC, orderBy: "id" };
   });
 
-  const filter = useMemo(() => {
-    const searchParamsFilter = searchParams.get("filter");
-    if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter) as Array<
-        FilterItem<EpsNestjsOrpEffCicliEsec>
-      >;
-    }
-    return [
+  let filter = [];
+  const searchParamsFilter = searchParams.get("filter");
+  if (searchParamsFilter) {
+    filter = JSON.parse(searchParamsFilter) as Array<
+      FilterItem<EpsNestjsOrpEffCicliEsec>
+    >;
+  } else {
+    filter = [
       {
         columnName: "DATA_INIZIO",
         value: dateSelected?.format("YYYY-MM-DD") || "",
       },
     ] as Array<FilterItem<EpsNestjsOrpEffCicliEsec>>;
-  }, [searchParams]);
+  }
 
   const { data, isFetchingNextPage, isLoading } =
     useGetEpsNestjsOrpEffCicliEsecQuery({
@@ -101,21 +93,21 @@ function UserHours() {
       sort: { order, orderBy },
     });
 
-  const [filters, setFilters] = useState<
-    Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
-  >(() => {
-    const searchParamsFilter = searchParams.get("filter");
-    if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter);
-    }
-    return [];
-  });
+  // const [filters, setFilters] = useState<
+  //   Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
+  // >(() => {
+  //   const searchParamsFilter = searchParams.get("filter");
+  //   if (searchParamsFilter) {
+  //     return JSON.parse(searchParamsFilter);
+  //   }
+  //   return [];
+  // });
 
   const handleRequestFilter = (value: string) => {
     const columnName = "DATA_INIZIO";
     const searchParams = new URLSearchParams(window.location.search);
 
-    let oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
+    const oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
       {
         columnName,
         value,
@@ -124,7 +116,7 @@ function UserHours() {
 
     searchParams.set("filter", JSON.stringify(oldFilter));
 
-    setFilters(oldFilter);
+    // setFilters(oldFilter);
     router.push("/hours-history?" + searchParams.toString());
   };
 
@@ -136,8 +128,6 @@ function UserHours() {
 
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
-
-  const { user } = useAuth();
 
   const theme = useTheme();
 
@@ -170,8 +160,7 @@ function UserHours() {
 
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
           <DialogTitle>
-            {selectedOrdCliTras?.NUM_DEST} ·{" "}
-            {selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}
+            {`${selectedOrdCliTras?.NUM_DEST} · ${selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}`}
           </DialogTitle>
           <DialogContent>
             <Table size="small">
@@ -181,7 +170,8 @@ function UserHours() {
                 ).map((key) => {
                   const value = selectedOrdCliTras?.[key];
                   if (
-                    value == null ||
+                    value === null ||
+                    value === undefined ||
                     key === "DES_DEST_MERCE" ||
                     key === "NUM_DEST"
                   )
@@ -214,8 +204,8 @@ function UserHours() {
     <Container maxWidth="xl">
       <Grid
         container
-        spacing={2}
-        style={{ marginTop: 20, marginBottom: 200 }}
+        spacing={theme.spacing(1)}
+        style={{ marginTop: theme.spacing(5), marginBottom: theme.spacing(5) }}
         justifyContent="center"
       >
         <Grid size={{ xs: 12 }}>
@@ -235,7 +225,9 @@ function UserHours() {
                 maxDate={dayjs().subtract(1, "day")}
               />
             </LocalizationProvider>
-            <Typography variant="subtitle2">ore totali della giornata</Typography>
+            <Typography variant="subtitle2">
+              ore totali della giornata
+            </Typography>
             <Typography variant="h2">{data?.totale}</Typography>
           </Stack>
         </Grid>
@@ -249,7 +241,7 @@ function UserHours() {
           >
             <Card
               style={{
-                padding: 16,
+                padding: theme.spacing(1),
                 borderRadius: 8,
                 border: `2px solid ${
                   theme.palette.mode === "dark"

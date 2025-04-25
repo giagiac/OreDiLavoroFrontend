@@ -62,10 +62,7 @@ export function usePatchTargaMezziService() {
   const fetch = useFetch();
 
   return useCallback(
-    (
-      data: TargaMezziPatchRequest,
-      requestConfig?: RequestConfigType
-    ) => {
+    (data: TargaMezziPatchRequest, requestConfig?: RequestConfigType) => {
       return fetch(`${API_URL}/v1/eps-nestjs-targa-mezzis/${data.COD_ART}`, {
         method: "PATCH",
         body: JSON.stringify(data.data),
@@ -84,14 +81,11 @@ export function useDeleteTargaMezziService() {
   const fetch = useFetch();
 
   return useCallback(
-    (
-      data: TargaMezziDeleteRequest,
-      requestConfig?: RequestConfigType
-    ) => {
+    (data: TargaMezziDeleteRequest, requestConfig?: RequestConfigType) => {
       return fetch(`${API_URL}/v1/eps-nestjs-targa-mezzis/${data.id}`, {
         method: "DELETE",
         ...requestConfig,
-      })
+      });
     },
     [fetch]
   );

@@ -11,16 +11,18 @@ import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import LinkIcon from "@mui/icons-material/Link";
-import { Paper, TableContainer, TableHead, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
@@ -248,7 +250,10 @@ function Cfs() {
       (data?.pages.flatMap((page) => page?.data) as Cf[]) ?? ([] as Cf[]);
 
     return removeDuplicatesFromArrayObjects(result, "COD_CF");
-  }, [data, searchParams]);
+  }, [
+    data,
+    // searchParams
+  ]);
 
   interface ItemDetail {
     [key: string]: string;
@@ -345,7 +350,7 @@ function Cfs() {
                       key={cf.COD_CF}
                       style={{
                         backgroundColor:
-                          index % 2 == 0
+                          index % 2 === 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}
@@ -415,8 +420,10 @@ function Cfs() {
                             </TableRow>
                             {open[cf.COD_CF] && (
                               <TableRow
-                                style={{ padding: "none" }}
-                                sx={{ "& > *": { borderBottom: "unset" } }}
+                                sx={(theme) => ({
+                                  padding: theme.spacing(0),
+                                  "& > *": { borderBottom: "unset" },
+                                })}
                               >
                                 <TableCell colSpan={4}>
                                   <CfCommPage {...cf} />

@@ -9,7 +9,7 @@ export type ArticoliCostiCfCommPostRequest = {
   CF_COMM_ID: ArticoliCostiCfComm["CF_COMM_ID"];
   //data: Partial<Pick<ArticoliCosti, "costo1" | "costo2">>;
   COD_ART: ArticoliCostiCfComm["COD_ART"];
-  TIPO_COSTO: ArticoliCostiCfComm["TIPO_COSTO"];
+  TIPO_TRASFERTA: ArticoliCostiCfComm["TIPO_TRASFERTA"];
 };
 
 export type ArticoliCostiCfCommPostResponse = ArticoliCostiCfComm;
@@ -34,7 +34,9 @@ export function usePostArticoliCostiCfCommService() {
 
 export type ArticoliCostiCfCommPatchRequest = {
   CF_COMM_ID: ArticoliCostiCfComm["CF_COMM_ID"];
-  data: Partial<Pick<ArticoliCostiCfComm, "COD_ART" | "TIPO_COSTO" | "CF_COMM_ID">>;
+  data: Partial<
+    Pick<ArticoliCostiCfComm, "COD_ART" | "TIPO_TRASFERTA" | "CF_COMM_ID">
+  >;
 };
 
 export type ArticoliCostiCfCommPatchResponse = ArticoliCostiCfComm;

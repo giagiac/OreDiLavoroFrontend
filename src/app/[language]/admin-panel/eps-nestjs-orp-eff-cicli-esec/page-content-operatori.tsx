@@ -6,26 +6,25 @@ import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { useTranslation } from "@/services/i18n/client";
 import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import LinkIcon from "@mui/icons-material/Link";
-import { Paper, TableContainer, TableHead, useTheme } from "@mui/material";
+import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import LinearProgress from "@mui/material/LinearProgress";
-import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import { styled, useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, {
@@ -35,9 +34,8 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useGetOperatoriEsecuzioniQuery } from "./queries/queries-operatori";
 import EpsNestjsOrpEffCicliEsecPage from "./page-content-eps-nestjs-orp-eff-cicli-esec";
-import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
+import { useGetOperatoriEsecuzioniQuery } from "./queries/queries-operatori";
 type OperatoriKeys = keyof Operatori;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
@@ -129,7 +127,7 @@ function TableSortFilterCellWrapper(
 }
 
 function Operatoris() {
-  const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
+  // const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -153,22 +151,22 @@ function Operatoris() {
     }
   );
 
-  const handleRequestOthersFilters = (
-    event: React.MouseEvent<HTMLElement>,
-    newOthersFilters: string[]
-  ) => {
-    const searchParams = new URLSearchParams(window.location.search);
+  // const handleRequestOthersFilters = (
+  //   event: React.MouseEvent<HTMLElement>,
+  //   newOthersFilters: string[]
+  // ) => {
+  //   const searchParams = new URLSearchParams(window.location.search);
 
-    const converted = newOthersFilters.map((it) => {
-      return { key: it, value: "true" };
-    });
+  //   const converted = newOthersFilters.map((it) => {
+  //     return { key: it, value: "true" };
+  //   });
 
-    searchParams.set("othersFilters", JSON.stringify(converted));
+  //   searchParams.set("othersFilters", JSON.stringify(converted));
 
-    setOthersFilters(converted);
+  //   setOthersFilters(converted);
 
-    router.push(window.location.pathname + "?" + searchParams.toString());
-  };
+  //   router.push(window.location.pathname + "?" + searchParams.toString());
+  // };
 
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
@@ -252,7 +250,7 @@ function Operatoris() {
       ([] as Operatori[]);
 
     return removeDuplicatesFromArrayObjects(result, "COD_OP");
-  }, [data, searchParams]);
+  }, [data]);
 
   interface ItemDetail {
     [key: string]: string;
@@ -290,13 +288,13 @@ function Operatoris() {
                   //invalidate query
                   refetch();
                 }}
-                sx={{
-                  minWidth: 0, // Allow button to shrink
-                  width: 48, // Set width
-                  height: 48, // Set height to match width for square shape
-                  marginLeft: 1, // Add some space from the ToggleButtonGroup
-                  padding: 0, // Remove default padding if needed
-                }}
+                sx={(theme) => ({
+                  minWidth: theme.spacing(0), // Allow button to shrink
+                  width: theme.spacing(12), // Set width
+                  height: theme.spacing(12), // Set height to match width for square shape
+                  marginLeft: theme.spacing(1), // Add some space from the ToggleButtonGroup
+                  padding: theme.spacing(0), // Remove default padding if needed
+                })}
               >
                 <RefreshTwoToneIcon />
               </Button>
@@ -359,7 +357,7 @@ function Operatoris() {
                       key={operatore.COD_OP}
                       style={{
                         backgroundColor:
-                          index % 2 == 0
+                          index % 2 === 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}
@@ -425,8 +423,10 @@ function Operatoris() {
                             </TableRow>
                             {open[operatore.COD_OP] && (
                               <TableRow
-                                style={{ padding: "none" }}
-                                sx={{ "& > *": { borderBottom: "unset" } }}
+                                sx={(theme) => ({
+                                  "& > *": { borderBottom: "unset" },
+                                  padding: theme.spacing(0),
+                                })}
                               >
                                 <TableCell colSpan={4}>
                                   <EpsNestjsOrpEffCicliEsecPage

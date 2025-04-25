@@ -4,7 +4,11 @@ import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { OperatoriFilterType, OperatoriSortType, OthersFiltersType } from "../operatori-filter-types";
+import {
+  OperatoriFilterType,
+  OperatoriSortType,
+  OthersFiltersType,
+} from "../operatori-filter-types";
 
 export const artAnasQueryKeys = createQueryKeys(["Operatori"], {
   list: () => ({

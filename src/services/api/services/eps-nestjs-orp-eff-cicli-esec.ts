@@ -7,7 +7,6 @@ import { SortEnum } from "../types/sort-type";
 import useFetch from "../use-fetch";
 import wrapperFetchJsonResponse from "../wrapper-fetch-json-response";
 import { RequestConfigType } from "./types/request-config";
-import { TipoTrasferta } from "../types/orp-eff-cicli";
 
 export type EpsNestjsOrpEffCicliEsecsRequest = {
   page: number;

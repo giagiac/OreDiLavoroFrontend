@@ -1,33 +1,29 @@
 "use client";
 
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { Operatori } from "@/services/api/types/operatori";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import {
-  Button,
-  Icon,
-  Paper,
-  Stack,
-  TableContainer,
-  TableHead,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import DoubleArrowTwoToneIcon from "@mui/icons-material/DoubleArrowTwoTone";
+import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
+import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid2";
+import Icon from "@mui/material/Icon";
 import LinearProgress from "@mui/material/LinearProgress";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import { useMemo } from "react";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries-eps-nestjs-orp-eff-cicli-esec";
-import { Operatori } from "@/services/api/types/operatori";
-import Grid from "@mui/material/Grid2";
-import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
-import TipoTrasfertaComponent from "@/components/tipo-trasferta";
-import DoubleArrowTwoToneIcon from "@mui/icons-material/DoubleArrowTwoTone";
-import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -69,13 +65,13 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
               //invalidate query
               refetch();
             }}
-            sx={{
-              minWidth: 0, // Allow button to shrink
-              width: 48, // Set width
-              height: 48, // Set height to match width for square shape
-              marginLeft: 1, // Add some space from the ToggleButtonGroup
+            sx={(theme) => ({
+              minWidth: theme.spacing(0), // Allow button to shrink
+              width: theme.spacing(12), // Set width
+              height: theme.spacing(12), // Set height to match width for square shape
+              marginLeft: theme.spacing(1), // Add some space from the ToggleButtonGroup
               padding: 0, // Remove default padding if needed
-            }}
+            })}
           >
             <RefreshTwoToneIcon />
           </Button>
@@ -104,16 +100,16 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                 </Stack>
               </TableCell>
             </TableRow>
-            {result.map((epsNestjsOrpEffCicliEsec, index) => {
+            {result.map((epsNestjsOrpEffCicliEsec) => {
               return (
                 <TableRow key={epsNestjsOrpEffCicliEsec.id}>
                   <TableCell colSpan={4}>
                     <Table
-                      style={{
+                      sx={(theme) => ({
                         borderCollapse: "separate",
-                        borderBottom: "none",
-                        padding: "none",
-                      }}
+                        borderBottom: theme.spacing(0),
+                        padding: theme.spacing(0),
+                      })}
                     >
                       <TableBody>
                         <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
@@ -137,9 +133,9 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                                 epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
                               }
                             >
-                              {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !=
+                              {epsNestjsOrpEffCicliEsec?.HYPSERV_REQ2_COD_CHIAVE !==
                                 null ||
-                              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !=
+                              epsNestjsOrpEffCicliEsec?.APP_REQ3_HYPSERV_COD_CHIAVE !==
                                 null ? (
                                 <Icon>
                                   <LockTwoToneIcon />

@@ -17,6 +17,6 @@ export type User = {
   socialId?: string;
   role?: Role;
 
-  COD_OP?: string | null
-  operatori: Operatori | null
+  COD_OP?: string | null;
+  operatori: Operatori | null;
 };

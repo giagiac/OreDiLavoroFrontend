@@ -11,7 +11,6 @@ import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Table, TableBody, TableHead } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -25,19 +24,16 @@ import MenuList from "@mui/material/MenuList";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { PropsWithChildren, useMemo, useRef, useState } from "react";
 import FormCreateEdit from "../operatori/create-operatori/page-content";
 import { useGetUsersQuery, usersQueryKeys } from "./queries/queries";
 import UserFilter from "./user-filter";
@@ -279,13 +275,15 @@ function Users() {
     return undefined;
   }, [searchParams]);
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useGetUsersQuery({ filter, sort: { order, orderBy } });
+  const { data, isFetchingNextPage } = useGetUsersQuery({
+    filter,
+    sort: { order, orderBy },
+  });
 
-  const handleScroll = useCallback(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-    fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // const handleScroll = useCallback(() => {
+  //   if (!hasNextPage || isFetchingNextPage) return;
+  //   fetchNextPage();
+  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const result = useMemo(() => {
     const result =

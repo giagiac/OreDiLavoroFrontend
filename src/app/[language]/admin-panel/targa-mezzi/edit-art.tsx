@@ -14,15 +14,13 @@ export type EditArtAnaFormData = {
   COD_ART?: string | undefined;
 };
 
-function EditArt(props: { onSubmit: () => void }) {
-  const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
-    []
-  );
+function EditArt() {
+  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
   const [filters, setFilters] = useState<Array<FilterItem<ArtAna>>>(() => {
     return [];
   });
 
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: ArtAnaKeys;
   }>({ order: SortEnum.ASC, orderBy: "COD_ART" });
@@ -55,7 +53,7 @@ function EditArt(props: { onSubmit: () => void }) {
       isSearchable={true}
       searchLabel="Search"
       searchPlaceholder="Search options..."
-      search={filters.find((it) => it.columnName == "COD_ART")?.value || ""}
+      search={filters.find((it) => it.columnName === "COD_ART")?.value || ""}
       onSearchChange={(value) => {
         setFilters([{ columnName: "COD_ART", value }]);
       }}

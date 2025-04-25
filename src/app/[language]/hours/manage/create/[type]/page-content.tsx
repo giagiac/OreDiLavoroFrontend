@@ -12,26 +12,23 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { useTranslation } from "@/services/i18n/client";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import CameraAltTwoToneIcon from "@mui/icons-material/CameraAltTwoTone";
-import {
-  FilledInput,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  Typography,
-} from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import FilledInput from "@mui/material/FilledInput";
+import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid2";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useMemo, useState } from "react";
+import { ChangeEvent, Fragment, KeyboardEvent, useMemo, useState } from "react";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import TargaMezziTable from "../../targa-mezzi-table";
 
@@ -129,10 +126,14 @@ function FormCreateUser() {
   const [multipleScannerDetected, setMultipleScannerDetected] =
     useState<String | null>(null);
 
-  const handleCustomInputChange = (event: any) => {
+  const handleCustomInputChange = (
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const target = event.target as HTMLInputElement;
 
-    if (event.key === "Enter") {
+    if ("key" in event && event.key === "Enter") {
       // Logica per gestire l'invio a capo
       console.log("Invio a capo rilevato:", target.value);
       setFilters([
@@ -155,16 +156,14 @@ function FormCreateUser() {
   const handleCloseScanner = () => setScannerOpen(false);
 
   // FILTERS
-  const [{ order, orderBy }, setSort] = useState<{
+  const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: OrpEffCicliKeys;
   }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
     { columnName: "CODICE_BREVE", value: codiceBreveValue },
   ]);
-  const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
-    []
-  );
+  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
 
   const { data, isFetched, isFetching, isLoading } = useGetOrpEffCicliQuery({
     sort: { order, orderBy },
@@ -183,7 +182,7 @@ function FormCreateUser() {
   const router = useRouter();
   const fetchPostEpsNestjsOrpEffCicliEsec =
     usePostEpsNestjsOrpEffCicliEsecService();
-  const { t } = useTranslation("admin-panel-users-create");
+  // const { t } = useTranslation("admin-panel-users-create");
   const { enqueueSnackbar } = useSnackbar();
 
   const [tempoOreOperatore, setTempoOreOperatore] = useState<string>(
@@ -206,7 +205,7 @@ function FormCreateUser() {
     const selected_COD_ART = searchParams.get("COD_ART") || COD_ART;
     const KM: number = parseFloat(searchParams.get("KM") || "0");
 
-    if (tempoOreOperatore == TEMPO_OPERATORE_DEFAULT) {
+    if (tempoOreOperatore === TEMPO_OPERATORE_DEFAULT) {
       enqueueSnackbar(`Non hai impostato il tempo operatore`, {
         variant: "error",
       });
@@ -302,7 +301,7 @@ function FormCreateUser() {
               <DialogContent>
                 <Scanner
                   onScan={(result) => {
-                    if (result.length == 1) {
+                    if (result.length === 1) {
                       setCodiceBreve(result[0].rawValue);
                       setFilters([
                         {
@@ -339,7 +338,7 @@ function FormCreateUser() {
           </Grid>
           {isFetched && (
             <>
-              {result.length == 0 &&
+              {result.length === 0 &&
                 codiceBreveValue.length > 0 &&
                 enterPressed && (
                   <Grid size={{ xs: 12 }} textAlign="center">
@@ -348,7 +347,7 @@ function FormCreateUser() {
                     </Typography>
                   </Grid>
                 )}
-              {result.length == 0 && codiceBreveValue.length == 0 && (
+              {result.length === 0 && codiceBreveValue.length === 0 && (
                 <Grid size={{ xs: 12 }} textAlign="center">
                   <Typography variant="h4" color="info">
                     Inserisci il codice commessa
@@ -356,8 +355,8 @@ function FormCreateUser() {
                 </Grid>
               )}
               {result.length > 0 &&
-                result[0].orpEff != null &&
-                result[0].orpEff.STATUS == 2 && (
+                result[0].orpEff !== null &&
+                result[0].orpEff.STATUS === 2 && (
                   <Grid size={{ xs: 12 }} textAlign="center">
                     <Typography variant="h3" color="warning">
                       Commessa chiusa
@@ -366,8 +365,8 @@ function FormCreateUser() {
                 )}
               {/* DETTAGLIO COMMESSE - possono essere liste - ma improbabile */}
               {result.length > 0 &&
-                result[0].orpEff != null &&
-                result[0].orpEff.STATUS != 2 &&
+                result[0].orpEff !== null &&
+                result[0].orpEff.STATUS !== 2 &&
                 result.map((item) => (
                   <Fragment key={item.DOC_RIGA_ID}>
                     <Grid size={{ xs: 12 }}>
@@ -398,17 +397,17 @@ function FormCreateUser() {
                       />
                       <Grid size={{ xs: 12 }}>
                         {user?.role?.id === RoleEnum.AUTISTA &&
-                        tipoTrasferta != "in_sede" &&
-                        tipoTrasferta != "step1_KmAutista" ? (
+                        tipoTrasferta !== "in_sede" &&
+                        tipoTrasferta !== "step1_KmAutista" ? (
                           <>
                             <TargaMezziTable
-                              children={(COD_ART) => (
+                              childrenCallBack={(COD_ART) => (
                                 <Button
-                                  style={{
+                                  sx={(theme) => ({
                                     width: "100%",
-                                    height: 50,
+                                    height: theme.spacing(10),
                                     fontSize: "1.5rem",
-                                  }}
+                                  })}
                                   fullWidth
                                   size="large"
                                   variant="contained"

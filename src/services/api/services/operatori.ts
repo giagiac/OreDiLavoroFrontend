@@ -90,7 +90,9 @@ export function useGetOperatoriEsecuzioniService() {
 
   return useCallback(
     (data: OperatoriEsecuzioniRequest, requestConfig?: RequestConfigType) => {
-      const requestUrl = new URL(`${API_URL}/v1/operatoris/operatori-esecuzioni`);
+      const requestUrl = new URL(
+        `${API_URL}/v1/operatoris/operatori-esecuzioni`
+      );
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {

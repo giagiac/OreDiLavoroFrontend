@@ -90,15 +90,16 @@ function SelectExtendedInputRaw<T extends object>(
     }
   }, [isOpen]);
 
-  const value = JSON.stringify(
-    props.value ? props.renderOption(props.value) : ""
-  );
+  // const value = JSON.stringify(
+  //   props.value ? props.renderOption(props.value) : ""
+  // );
 
   return (
     <ClickAwayListener onClickAway={() => setIsOpen(false)}>
       <div>
         <Box mb={0.5} ref={boxRef}>
           <TextField
+            size="small"
             ref={ref}
             name={props.name}
             value={props.value ? props.renderOption(props.value) : ""}
@@ -131,7 +132,7 @@ function SelectExtendedInputRaw<T extends object>(
             sx={{
               position: "absolute",
               zIndex: 100,
-              width: "auto"
+              width: "auto",
             }}
           >
             <CardContent

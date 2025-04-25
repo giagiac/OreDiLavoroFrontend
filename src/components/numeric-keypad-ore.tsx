@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
-import { useSnackbar } from "@/hooks/use-snackbar";
-import { Paper, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 
 export const NumericKeypad = ({
   onNumberChange,
@@ -59,7 +61,14 @@ export const NumericKeypad = ({
     <Grid mt={4} container spacing={1}>
       <Grid container size={{ xs: 12 }} justifyContent="center">
         <Stack direction="column">
-          <Paper style={{borderRadius: 5}} elevation={3} sx={{ paddingLeft: 3, paddingRight: 3 }}>
+          <Paper
+            style={{ borderRadius: 5 }}
+            elevation={3}
+            sx={(theme) => ({
+              paddingLeft: theme.spacing(1),
+              paddingRight: theme.spacing(1),
+            })}
+          >
             <Typography variant="h1" textAlign="center">
               {tempoOreOperatore.toString().padStart(2, "0")}:
               {tempoMinutiOperatore.toString().padStart(2, "0")}
@@ -69,7 +78,7 @@ export const NumericKeypad = ({
       </Grid>
       <Grid container size={{ xs: 12 }} justifyContent="center">
         <Grid>
-          <Typography variant="caption" textAlign="center" >
+          <Typography variant="caption" textAlign="center">
             {"ore"}
           </Typography>
         </Grid>
@@ -117,7 +126,7 @@ export const NumericKeypad = ({
         <hr style={{ width: "50%" }} />
         <Grid container size={{ xs: 12 }} mb={3} justifyContent="center">
           <Grid>
-            <Typography variant="caption" textAlign="center" >
+            <Typography variant="caption" textAlign="center">
               {"minuti"}
             </Typography>
           </Grid>

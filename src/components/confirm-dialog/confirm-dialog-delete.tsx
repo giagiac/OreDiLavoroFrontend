@@ -5,7 +5,7 @@ import { useSnackbar } from "@/hooks/use-snackbar";
 import ClearIcon from "@mui/icons-material/Clear";
 import Button from "@mui/material/Button";
 
-export function ButtonDeleteConfirm<T>({
+export function ButtonDeleteConfirm<T extends { id: string }>({
   item,
   refetch,
   useDeleteService,
@@ -46,7 +46,7 @@ export function ButtonDeleteConfirm<T>({
   return (
     <Button
       onClick={() => {
-        handleDelete(item as any);
+        handleDelete(item);
       }}
     >
       <ClearIcon />

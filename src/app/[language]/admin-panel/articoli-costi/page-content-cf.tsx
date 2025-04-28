@@ -296,7 +296,7 @@ function Cfs() {
         </Grid>
 
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} elevation={5}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -369,19 +369,20 @@ function Cfs() {
                               <TableCell
                                 style={{ width: "10%", border: "none" }}
                               >
-                                {cf.articoliCostiCf && (
-                                  <IconButton
-                                    aria-label="expand row"
-                                    size="small"
-                                    onClick={() => handleOpen(cf.COD_CF)}
-                                  >
-                                    {open[cf.COD_CF] ? (
-                                      <KeyboardArrowUpIcon />
-                                    ) : (
-                                      <KeyboardArrowDownIcon />
-                                    )}
-                                  </IconButton>
-                                )}
+                                {cf.COD_CF !== "DEFAULT_CF" &&
+                                  cf.articoliCostiCf && (
+                                    <IconButton
+                                      aria-label="expand row"
+                                      size="small"
+                                      onClick={() => handleOpen(cf.COD_CF)}
+                                    >
+                                      {open[cf.COD_CF] ? (
+                                        <KeyboardArrowUpIcon />
+                                      ) : (
+                                        <KeyboardArrowDownIcon />
+                                      )}
+                                    </IconButton>
+                                  )}
                               </TableCell>
                               <TableCell
                                 style={{

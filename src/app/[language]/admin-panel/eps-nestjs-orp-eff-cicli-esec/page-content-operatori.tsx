@@ -288,13 +288,6 @@ function Operatoris() {
                   //invalidate query
                   refetch();
                 }}
-                sx={(theme) => ({
-                  minWidth: theme.spacing(0), // Allow button to shrink
-                  width: theme.spacing(12), // Set width
-                  height: theme.spacing(12), // Set height to match width for square shape
-                  marginLeft: theme.spacing(1), // Add some space from the ToggleButtonGroup
-                  padding: theme.spacing(0), // Remove default padding if needed
-                })}
               >
                 <RefreshTwoToneIcon />
               </Button>
@@ -303,7 +296,7 @@ function Operatoris() {
         </Grid>
 
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} elevation={5}>
             <Table size="small">
               <TableHead>
                 <TableRow>

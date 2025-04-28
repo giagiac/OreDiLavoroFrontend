@@ -1,4 +1,5 @@
-import { useGetEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/epsNestjsOrpEffCicliEsec";
+import { useGetEpsNestjsOrpEffCicliEsecOperatoreService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
@@ -8,7 +9,6 @@ import {
   EpsNestjsOrpEffCicliEsecSortType,
   OthersFiltersType,
 } from "../eps-nestjs-orp-eff-cicli-esec-filter-types";
-import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 
 export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(
   ["EpsNestjsOrpEffCicliEsec"],
@@ -41,7 +41,7 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
   filters?: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
-  const fetch = useGetEpsNestjsOrpEffCicliEsecService();
+  const fetch = useGetEpsNestjsOrpEffCicliEsecOperatoreService();
 
   const query = useInfiniteQuery({
     refetchOnWindowFocus: true,

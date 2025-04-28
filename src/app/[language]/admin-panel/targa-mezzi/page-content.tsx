@@ -267,7 +267,7 @@ function TargaMezziPage() {
               refetch();
             }}
           />
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} elevation={5}>
             <Table size="small">
               <TableHead>
                 <TableRow>

@@ -300,16 +300,16 @@ function UserHours() {
         {result.length === 0 && !isLoading && (
           <Grid size={{ xs: 12 }}>
             <Box
-              display="flex"
+              display="flex-column"
               justifyContent="center"
               alignItems="center"
               height="30vh"
               textAlign="center"
             >
+              <Image src={imageLogo} alt="No records image" height={200} />
               <Typography variant="h2">
                 Nessuna registrazione effettuata!
               </Typography>
-              <Image src={imageLogo} alt="No records image" height={200} />
             </Box>
           </Grid>
         )}

@@ -1,27 +1,28 @@
 import ResponsiveAppBar from "@/components/app-bar";
+import ConfirmDialogProvider from "@/components/confirm-dialog/confirm-dialog-provider";
+import ToastContainer from "@/components/snackbar-provider";
+import InitColorSchemeScript from "@/components/theme/init-color-scheme-script";
+import ThemeProvider from "@/components/theme/theme-provider";
 import AuthProvider from "@/services/auth/auth-provider";
-import "../globals.css";
+import { getServerTranslation } from "@/services/i18n";
+import "@/services/i18n/config";
+import { languages } from "@/services/i18n/config";
+import StoreLanguageProvider from "@/services/i18n/store-language-provider";
+import LeavePageProvider from "@/services/leave-page/leave-page-provider";
+import queryClient from "@/services/react-query/query-client";
+import QueryClientProvider from "@/services/react-query/query-client-provider";
+import ReactQueryDevtools from "@/services/react-query/react-query-devtools";
+import FacebookAuthProvider from "@/services/social-auth/facebook/facebook-auth-provider";
+import GoogleAuthProvider from "@/services/social-auth/google/google-auth-provider";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { dir } from "i18next";
-import "@/services/i18n/config";
-import { languages } from "@/services/i18n/config";
 import type { Metadata } from "next";
-import ToastContainer from "@/components/snackbar-provider";
-import { getServerTranslation } from "@/services/i18n";
-import StoreLanguageProvider from "@/services/i18n/store-language-provider";
-import ThemeProvider from "@/components/theme/theme-provider";
-import LeavePageProvider from "@/services/leave-page/leave-page-provider";
-import QueryClientProvider from "@/services/react-query/query-client-provider";
-import queryClient from "@/services/react-query/query-client";
-import ReactQueryDevtools from "@/services/react-query/react-query-devtools";
-import GoogleAuthProvider from "@/services/social-auth/google/google-auth-provider";
-import FacebookAuthProvider from "@/services/social-auth/facebook/facebook-auth-provider";
-import ConfirmDialogProvider from "@/components/confirm-dialog/confirm-dialog-provider";
-import InitColorSchemeScript from "@/components/theme/init-color-scheme-script";
+import "../globals.css";
 
 type Props = {
   params: Promise<{ language: string }>;
@@ -33,6 +34,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   return {
     title: t("title"),
+    manifest: "/manifest.json",
   };
 }
 
@@ -66,7 +68,9 @@ export default async function RootLayout(props: {
                     <FacebookAuthProvider>
                       <LeavePageProvider>
                         <ResponsiveAppBar />
-                        {children}
+                        <Box mt={12} mb={20}>
+                          {children}
+                        </Box>
                         <ToastContainer
                           position="bottom-left"
                           hideProgressBar

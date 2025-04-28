@@ -74,6 +74,16 @@ function AdminPanel() {
           </Grid>
         </Grid>
       </Grid>
+      <Typography
+        sx={{
+          mt: 20,
+          mb: 10,
+          textAlign: "center",
+          fontSize: 9,
+        }}
+      >
+        Vers. app : {process.env.NEXT_PUBLIC_APP_VERSION}
+      </Typography>
     </Container>
   );
 }

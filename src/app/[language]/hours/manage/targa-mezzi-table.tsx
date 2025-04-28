@@ -19,7 +19,7 @@ import Grid from "@mui/material/Grid2";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
-
+import DirectionsCarFilledTwoToneIcon from "@mui/icons-material/DirectionsCarFilledTwoTone";
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
@@ -112,16 +112,15 @@ const TargaMezziTable = ({
           sx={{ p: 1 }}
         >
           <AccordionSummary
-            sx={{
-              flexDirection: "row-reverse", // Sposta l'icona a sinistra
-              "& .MuiAccordionSummary-expandIconWrapper": {
-                marginRight: "auto", // Allinea l'icona a sinistra
-              },
-            }}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="table-content"
             id="table-header"
+            style={{
+              backgroundColor: theme.palette.background.paper,
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
           >
+            <DirectionsCarFilledTwoToneIcon sx={{ mr: 3 }} />
             <Typography variant="subtitle2">
               {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
                 ? "Procedi senza una targa"

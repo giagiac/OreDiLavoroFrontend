@@ -121,3 +121,40 @@ export function usePostEpsNestjsOrpEffCicliEsecService() {
     [fetch]
   );
 }
+
+// -----------------------------------------------------------------------------
+
+export function useGetEpsNestjsOrpEffCicliEsecOperatoreService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecsRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs/operatore`
+      );
+      requestUrl.searchParams.append("page", data.page.toString());
+      requestUrl.searchParams.append("limit", data.limit.toString());
+      if (data.filters) {
+        requestUrl.searchParams.append("filters", JSON.stringify(data.filters));
+      }
+      if (data.sort) {
+        requestUrl.searchParams.append("sort", JSON.stringify(data.sort));
+      }
+      if (data.othersFilters) {
+        requestUrl.searchParams.append(
+          "othersFilters",
+          JSON.stringify(data.othersFilters)
+        );
+      }
+
+      return fetch(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
+    },
+    [fetch]
+  );
+}

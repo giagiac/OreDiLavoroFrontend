@@ -1,7 +1,11 @@
 "use client";
 
+import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { Operatori } from "@/services/api/types/operatori";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
@@ -49,6 +53,35 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
+  const { enqueueSnackbar } = useSnackbar();
+  const { confirmDialog } = useConfirmDialog();
+  const fetchScheduleTask = useScheduleTaskService();
+
+  const onScheduleTask = async (id: string) => {
+    const isConfirmed = await confirmDialog({
+      title: "Ore commessa",
+      message: "Vuoi confermare l'esecuzione?",
+    });
+
+    if (isConfirmed) {
+      const { status } = await fetchScheduleTask({
+        id,
+      });
+      debugger;
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        enqueueSnackbar("Impossibile processare!", {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar("Esecuzione processata!", {
+          variant: "success",
+        });
+      }
+
+      refetch();
+    }
+  };
+
   return (
     <>
       <Grid
@@ -65,19 +98,12 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
               //invalidate query
               refetch();
             }}
-            sx={(theme) => ({
-              minWidth: theme.spacing(0), // Allow button to shrink
-              width: theme.spacing(12), // Set width
-              height: theme.spacing(12), // Set height to match width for square shape
-              marginLeft: theme.spacing(1), // Add some space from the ToggleButtonGroup
-              padding: 0, // Remove default padding if needed
-            })}
           >
             <RefreshTwoToneIcon />
           </Button>
         </Grid>
       </Grid>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} elevation={5}>
         <Table size="small">
           {isFetchingNextPage && (
             <TableHead>
@@ -143,7 +169,7 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                               ) : (
                                 <Button
                                   onClick={() => {
-                                    // onDelete(epsNestjsOrpEffCicliEsec?.id);
+                                    onScheduleTask(epsNestjsOrpEffCicliEsec.id);
                                   }}
                                   variant="contained"
                                   endIcon={<DoubleArrowTwoToneIcon />}

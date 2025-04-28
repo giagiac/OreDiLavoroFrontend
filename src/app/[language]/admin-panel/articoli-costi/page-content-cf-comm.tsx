@@ -36,7 +36,7 @@ export default function CfCommPage(cf: Cf) {
   }, [data]);
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={5}>
       <Table size="small">
         {isFetchingNextPage && (
           <TableHead>

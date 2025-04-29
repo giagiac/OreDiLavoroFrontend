@@ -7,6 +7,7 @@ import TipoTrasfertaComponent, {
 } from "@/components/tipo-trasferta";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { Cf } from "@/services/api/types/cf";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
@@ -44,8 +45,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import { link } from "fs";
-import { Cf } from "@/services/api/types/cf";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -418,7 +417,7 @@ function UserHours() {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.COD_ART != null &&
+                  {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
                     `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
                 </Typography>
               </Grid>

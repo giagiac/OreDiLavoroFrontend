@@ -359,7 +359,7 @@ function UserHours() {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.COD_ART != null &&
+                  {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
                     `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
                 </Typography>
               </Grid>

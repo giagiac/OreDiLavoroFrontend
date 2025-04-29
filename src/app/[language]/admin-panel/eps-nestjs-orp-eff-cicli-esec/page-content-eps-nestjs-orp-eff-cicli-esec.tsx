@@ -150,7 +150,7 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                               epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI
                             }
                           </TableCell>
-                          {epsNestjsOrpEffCicliEsec?.COD_ART != null && (
+                          {epsNestjsOrpEffCicliEsec?.COD_ART !== null && (
                             <TableCell
                               style={{ width: "10%", textAlign: "left" }}
                             >

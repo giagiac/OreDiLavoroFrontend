@@ -34,6 +34,16 @@ function AdminPanel() {
             {t("titleNext")}
           </Typography>
         </Grid>
+        {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+          <Grid size={{ xs: 12 }}>
+            <iframe
+              width="100%"
+              height={500}
+              src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSwkwic6JfrkgW8ZRm-R4kgX-FQGqoeJz_0_SMvOcIIVWGrDGtgEI-m7b3LEZlC1FvpVMxLYhVR8sce/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"
+              style={{ border: 0 }}
+            ></iframe>
+          </Grid>
+        )}
         <Grid size={12}>
           <Grid
             container

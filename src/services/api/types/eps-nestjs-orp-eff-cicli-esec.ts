@@ -43,6 +43,7 @@ export type EpsNestjsOrpEffCicliEsec = {
   TEMPO_MACCHINA?: Decimal | null;
   COD_OP?: string | null;
   COD_ART?: string | null;
+  KM?: Decimal | null;
   DOC_RIGA_ESEC_ID?: string | null;
   DOC_RIGA_ID?: string | null;
   NUM_RIGA?: number | null;

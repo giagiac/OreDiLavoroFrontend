@@ -41,9 +41,11 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
+import { link } from "fs";
+import { Cf } from "@/services/api/types/cf";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -164,7 +166,6 @@ function UserHours() {
       const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      debugger;
       if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
         enqueueSnackbar("Impossibile eliminare!", {
           variant: "error",
@@ -179,76 +180,149 @@ function UserHours() {
     }
   };
 
-  const [open, setOpen] = useState(false);
   const [selectedOrdCliTras, setSelectedOrdCliTras] =
     useState<OrdCliTras | null>(null);
-
   const handleOpen = (ordCliTras: OrdCliTras) => {
     setSelectedOrdCliTras(ordCliTras);
-    setOpen(true);
   };
-
   const handleClose = () => {
-    setOpen(false);
     setSelectedOrdCliTras(null);
   };
 
+  const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
+  const handleOpenCf = (cf: Cf) => {
+    setSelectedCf(cf);
+  };
+  const handleCloseCf = () => {
+    setSelectedCf(null);
+  };
+
   const renderOrdCliTrasDialog = (linkOrpOrd: Array<LinkOrpOrd>) => {
+    if (!linkOrpOrd || linkOrpOrd.length === 0)
+      return (
+        <Typography variant="body2">
+          Nessuna commessa/ordine collegata/o
+        </Typography>
+      );
+
     return (
       <>
-        {linkOrpOrd?.map((it, index) => {
+        {linkOrpOrd.map((it, index) => {
           const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
+
+          if (ordCliTras.NUM_DEST === null) {
+            const cf = it.ordCliRighe?.cf;
+
+            return (
+              <Fragment key={index}>
+                <Button
+                  key={index}
+                  variant="outlined"
+                  onClick={() => cf && handleOpenCf(cf)}
+                  fullWidth
+                  disabled={!cf} // Optionally disable the button if cf is undefined
+                >
+                  {cf?.INDI_CF || "No Title"}
+                </Button>
+                <Dialog
+                  open={selectedCf !== null}
+                  onClose={handleCloseCf}
+                  fullWidth
+                  maxWidth="sm"
+                >
+                  <DialogTitle>{`${selectedCf?.INDI_CF || "No Title"}`}</DialogTitle>
+                  <DialogContent>
+                    <Table size="small">
+                      <TableBody>
+                        {(Object.keys(selectedCf || {}) as (keyof Cf)[]).map(
+                          (key) => {
+                            const value = selectedCf?.[key];
+                            if (value === null || value === undefined)
+                              return null;
+                            return (
+                              <TableRow key={key}>
+                                <TableCell align="left">
+                                  <Typography variant="caption">
+                                    {key}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="left" style={{ width: 300 }}>
+                                  <Typography variant="subtitle2">
+                                    {String(value)}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
+                        )}
+                      </TableBody>
+                    </Table>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseCf} color="primary">
+                      Chiudi
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Fragment>
+            );
+          }
+
           return (
-            <Button
-              key={index}
-              variant="outlined"
-              onClick={() => handleOpen(ordCliTras)}
-              fullWidth
-            >
-              {ordCliTras.NUM_DEST} · {ordCliTras.DES_DEST_MERCE || "No Title"}
-            </Button>
+            <Fragment key={index}>
+              <Button
+                variant="outlined"
+                onClick={() => handleOpen(ordCliTras)}
+                fullWidth
+                disabled={!ordCliTras.NUM_DEST} // Optionally disable the button if NUM_DEST is undefined
+              >
+                {ordCliTras.NUM_DEST} {" · "}
+                {ordCliTras.DES_DEST_MERCE || "No Title"}
+              </Button>
+              <Dialog
+                open={selectedOrdCliTras !== null}
+                onClose={handleClose}
+                fullWidth
+                maxWidth="sm"
+              >
+                <DialogTitle>
+                  {`${selectedOrdCliTras?.NUM_DEST} · ${selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}`}
+                </DialogTitle>
+                <DialogContent>
+                  <Table size="small">
+                    <TableBody>
+                      {(
+                        Object.keys(
+                          selectedOrdCliTras || {}
+                        ) as (keyof OrdCliTras)[]
+                      ).map((key) => {
+                        const value = selectedOrdCliTras?.[key];
+                        if (value === null || value === undefined) return null;
+                        return (
+                          <TableRow key={key}>
+                            <TableCell align="left">
+                              <Typography variant="caption">{key}</Typography>
+                            </TableCell>
+                            <TableCell align="left" style={{ width: 300 }}>
+                              <Typography variant="subtitle2">
+                                {value}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} color="primary">
+                    Chiudi
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Fragment>
           );
         })}
-
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-          <DialogTitle>
-            {selectedOrdCliTras?.NUM_DEST} ·{" "}
-            {selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}
-          </DialogTitle>
-          <DialogContent>
-            <Table size="small">
-              <TableBody>
-                {(
-                  Object.keys(selectedOrdCliTras || {}) as (keyof OrdCliTras)[]
-                ).map((key) => {
-                  const value = selectedOrdCliTras?.[key];
-                  if (
-                    value === undefined ||
-                    value === null ||
-                    key === "DES_DEST_MERCE" ||
-                    key === "NUM_DEST"
-                  )
-                    return null;
-                  return (
-                    <TableRow key={key}>
-                      <TableCell align="left">
-                        <Typography variant="caption">{key}</Typography>
-                      </TableCell>
-                      <TableCell align="left" style={{ width: 300 }}>
-                        <Typography variant="subtitle2">{value}</Typography>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Chiudi
-            </Button>
-          </DialogActions>
-        </Dialog>
       </>
     );
   };
@@ -273,7 +347,6 @@ function UserHours() {
             <Typography variant="h2">{data?.totale}</Typography>
           </Stack>
         </Grid>
-
         {result.map((epsNestjsOrpEffCicliEsec) => (
           <Grid
             container
@@ -341,6 +414,12 @@ function UserHours() {
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2">
                   {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+                </Typography>
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Typography variant="body2" textAlign="right">
+                  {epsNestjsOrpEffCicliEsec?.COD_ART != null &&
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>

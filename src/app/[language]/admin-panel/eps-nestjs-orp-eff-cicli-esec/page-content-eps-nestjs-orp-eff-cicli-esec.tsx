@@ -67,7 +67,6 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
       const { status } = await fetchScheduleTask({
         id,
       });
-      debugger;
       if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
         enqueueSnackbar("Impossibile processare!", {
           variant: "error",
@@ -151,6 +150,13 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                               epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI
                             }
                           </TableCell>
+                          {epsNestjsOrpEffCicliEsec?.COD_ART != null && (
+                            <TableCell
+                              style={{ width: "10%", textAlign: "left" }}
+                            >
+                              {`${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
+                            </TableCell>
+                          )}
                           <TableCell
                             style={{ width: "20%", textAlign: "left" }}
                           >

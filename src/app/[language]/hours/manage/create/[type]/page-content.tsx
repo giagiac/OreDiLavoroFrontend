@@ -4,12 +4,11 @@ import { FullPageLoader } from "@/components/full-page-loader";
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { usePostEpsNestjsOrpEffCicliEsecChildService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec-child";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
-import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
@@ -25,12 +24,22 @@ import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, Fragment, KeyboardEvent, useMemo, useState } from "react";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import TargaMezziTable from "../../targa-mezzi-table";
+import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
+import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
+import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -54,17 +63,34 @@ type CreateFormData = {
   NOTE?: string | null;
 };
 
-function FormCreateUser() {
+type CreateFormDataChild = {
+  idfk: number;
+  // OBBLIGATORI
+  TIPO_TRASFERTA: string;
+  TEMPO_OPERATORE: string;
+  // Documento
+  DOC_RIGA_ID: string;
+  DOC_ID: string;
+  AZIENDA_ID: number;
+
+  // SEZIONE DEDICATA a KM AUTISTA
+  COD_ART: string; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+  KM: number;
+
+  // EXTRA
+  NOTE?: string | null;
+};
+
+function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{ type: string }>();
   const searchParams = useSearchParams();
-
-  const { user } = useAuth();
 
   const tipoTrasferta = params.type;
 
   let prepareLink = "/hours/manage";
   let prepareText = "In sede";
   let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
+  let icon = <FactoryTwoToneIcon />;
 
   switch (tipoTrasferta) {
     case "in_sede":
@@ -75,49 +101,64 @@ function FormCreateUser() {
     // da qui in poi sono tutte
     // FUORI SEDE
     case "in_giornata":
-      prepareLink = "/hours/manage/step1_FuoriSede";
+      prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "in_giornata_dopo_21":
-      prepareLink = "/hours/manage/step1_FuoriSede";
+      prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata dopo le 21:00";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_andata":
       prepareText = "Fuori sede andata";
-      prepareLink = "/hours/manage/step2_FuoriSede";
+      prepareLink = "/hours/manage/step3_FuoriSede";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_ritorno":
       prepareText = "Fuori sede ritorno";
-      prepareLink = "/hours/manage/step2_FuoriSede";
+      prepareLink = "/hours/manage/step3_FuoriSede";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "ancora_in_missione_5":
-      prepareText = "Ancora in trasferta 5 Km";
-      prepareLink = "/hours/manage/step2_FuoriSede";
+    case "ancora_in_missione_0":
+      prepareText = "Ancora in trasferta 0 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_missione_10":
-      prepareText = "Ancora in trasferta 10 Km";
-      prepareLink = "/hours/manage/step2_FuoriSede";
+      prepareText = "Ancora in trasferta 5 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
       buttonColor = "primary";
-      break;
-    case "ancora_in_missione_15":
-      prepareText = "Ancora in trasferta 15 Km";
-      prepareLink = "/hours/manage/step2_FuoriSede";
-      buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_missione_20":
-      prepareText = "Ancora in trasferta 20 Km";
-      prepareLink = "/hours/manage/step2_FuoriSede";
+      prepareText = "Ancora in trasferta 10 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
       buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
+      break;
+    case "ancora_in_missione_30":
+      prepareText = "Ancora in trasferta 15 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
+      buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
+      break;
+    case "ancora_in_missione_40":
+      prepareText = "Ancora in trasferta 20 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
+      buttonColor = "primary";
+      icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "step1_KmAutista":
       prepareText = "Km Autista";
       prepareLink = "/hours/manage/step1_KmAutista";
       buttonColor = "info";
+      icon = <AirportShuttleTwoToneIcon />;
       break;
   }
 
@@ -201,6 +242,8 @@ function FormCreateUser() {
     });
   };
 
+  const [id, setId] = useState<number | null>(null);
+
   const onSubmit = async (COD_ART?: string) => {
     const selected_COD_ART = searchParams.get("COD_ART") || COD_ART;
     const KM: number = parseFloat(searchParams.get("KM") || "0");
@@ -244,13 +287,91 @@ function FormCreateUser() {
         variant: "success",
       });
 
+      setId(Number(data.id));
+
       // Open confirmation dialog
       setDialogOpen(true);
     }
   };
 
+  const fetchPostEpsNestjsOrpEffCicliEsecChild =
+    usePostEpsNestjsOrpEffCicliEsecChildService();
+
+  const onSubmitChild = async (COD_ART: string) => {
+    const selected_COD_ART = searchParams.get("COD_ART") || COD_ART;
+    const KM: number = parseFloat(searchParams.get("KM") || "0");
+
+    const formData: CreateFormDataChild = {
+      TIPO_TRASFERTA: tipoTrasferta,
+
+      TEMPO_OPERATORE: tempoOreOperatore,
+      // Documento
+      DOC_RIGA_ID: result[0].DOC_RIGA_ID,
+      DOC_ID: result[0].DOC_ID,
+      AZIENDA_ID: result[0].AZIENDA_ID,
+      // SEZIONE DEDICATA a KM AUTISTA
+      COD_ART: selected_COD_ART, // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+      KM: KM,
+      // EXTRA
+      NOTE: "",
+      idfk: id || -1,
+    };
+
+    const { data, status } =
+      await fetchPostEpsNestjsOrpEffCicliEsecChild(formData);
+    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+      (Object.keys(data.errors) as Array<keyof CreateFormData>).forEach(
+        (key) => {
+          // TODO: GESTIONE ERRORI
+          enqueueSnackbar(`${key} - ${data.errors[key]}`, {
+            variant: "error",
+          });
+        }
+      );
+      return;
+    }
+    if (status === HTTP_CODES_ENUM.CREATED) {
+      enqueueSnackbar("Ore commessa aggiunte", {
+        variant: "success",
+      });
+    }
+  };
+
   return (
     <>
+      <Dialog open={isScannerOpen} onClose={handleCloseScanner} fullWidth>
+        <DialogContent>
+          <Scanner
+            onScan={(result) => {
+              if (result.length === 1) {
+                setCodiceBreve(result[0].rawValue);
+                setFilters([
+                  {
+                    columnName: "CODICE_BREVE",
+                    value: result[0].rawValue,
+                  },
+                ]);
+                handleCloseScanner();
+                setMultipleScannerDetected(null);
+              } else if (result.length > 1) {
+                {
+                  setMultipleScannerDetected(
+                    result.map((item) => item.rawValue).join(", ")
+                  );
+                }
+              }
+            }}
+          />
+          <Typography variant="h6" align="center" gutterBottom sx={{ mt: 2 }}>
+            {multipleScannerDetected}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseScanner} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Container maxWidth="md">
         <Grid
           container
@@ -270,6 +391,7 @@ function FormCreateUser() {
                 router.push(prepareLink);
               }}
               startIcon={<ArrowBackTwoToneIcon />}
+              endIcon={icon}
             >
               {prepareText}
             </Button>
@@ -295,46 +417,6 @@ function FormCreateUser() {
                 }
               />
             </FormControl>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Dialog open={isScannerOpen} onClose={handleCloseScanner} fullWidth>
-              <DialogContent>
-                <Scanner
-                  onScan={(result) => {
-                    if (result.length === 1) {
-                      setCodiceBreve(result[0].rawValue);
-                      setFilters([
-                        {
-                          columnName: "CODICE_BREVE",
-                          value: result[0].rawValue,
-                        },
-                      ]);
-                      handleCloseScanner();
-                      setMultipleScannerDetected(null);
-                    } else if (result.length > 1) {
-                      {
-                        setMultipleScannerDetected(
-                          result.map((item) => item.rawValue).join(", ")
-                        );
-                      }
-                    }
-                  }}
-                />
-                <Typography
-                  variant="h6"
-                  align="center"
-                  gutterBottom
-                  sx={{ mt: 2 }}
-                >
-                  {multipleScannerDetected}
-                </Typography>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCloseScanner} color="primary">
-                  Close
-                </Button>
-              </DialogActions>
-            </Dialog>
           </Grid>
           {isFetched && (
             <>
@@ -370,34 +452,151 @@ function FormCreateUser() {
                 result.map((item) => (
                   <Fragment key={item.DOC_RIGA_ID}>
                     <Grid size={{ xs: 12 }}>
-                      <Typography variant="h4" gutterBottom textAlign="center">
-                        {item?.DOC_ID} · {item?.orpEff?.COD_ART}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        gutterBottom
-                        textAlign="center"
+                      <TableContainer
+                        component={Paper}
+                        elevation={5}
+                        sx={{ p: 2 }}
                       >
-                        {item?.orpEff?.DES_PROD}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        gutterBottom
-                        textAlign="center"
-                      >
-                        {item?.DES_CICLO?.replace(
-                          item?.orpEff?.DES_PROD || "",
-                          ""
-                        )}
-                      </Typography>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
+                                <Typography variant="caption">
+                                  Commessa
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ borderBottom: "none", p: 0.5 }}
+                              >
+                                <Typography
+                                  variant="h4"
+                                  gutterBottom
+                                  textAlign="center"
+                                >
+                                  {item?.DOC_ID}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
+                                <Typography variant="caption">
+                                  Articolo
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ borderBottom: "none", p: 0.5 }}
+                              >
+                                <Typography
+                                  variant="h4"
+                                  gutterBottom
+                                  textAlign="center"
+                                >
+                                  {item?.orpEff?.COD_ART}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
+                                <Typography variant="caption">
+                                  Cliente
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ borderBottom: "none", p: 0.5 }}
+                              >
+                                {(item?.linkOrpOrd?.length ?? 0) > 0 ? (
+                                  <Fragment>
+                                    <Typography
+                                      variant="body1"
+                                      gutterBottom
+                                      textAlign="center"
+                                    >
+                                      {
+                                        item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                                          .RAG_SOC_CF
+                                      }
+                                    </Typography>
+                                    <Typography
+                                      variant="body1"
+                                      gutterBottom
+                                      textAlign="center"
+                                    >
+                                      {item?.linkOrpOrd?.[0]?.ordCliRighe
+                                        ?.ordCli.cfComm?.INDI_SEDE ||
+                                        item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                                          .INDI_CF}
+                                    </Typography>
+                                  </Fragment>
+                                ) : (
+                                  <Typography variant="caption">
+                                    Nessun ordine associato
+                                  </Typography>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
+                                <Typography variant="caption">
+                                  Prodotto
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ borderBottom: "none", p: 0.5 }}
+                              >
+                                <Typography
+                                  variant="body1"
+                                  gutterBottom
+                                  textAlign="center"
+                                >
+                                  {item?.orpEff?.DES_PROD}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
+                                <Typography variant="caption">Ciclo</Typography>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ borderBottom: "none", p: 0.5 }}
+                              >
+                                <Typography
+                                  variant="body1"
+                                  gutterBottom
+                                  textAlign="center"
+                                >
+                                  {item?.DES_CICLO?.replace(
+                                    item?.orpEff?.DES_PROD || "",
+                                    ""
+                                  )}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+
                       <NumericKeypad
                         onNumberChange={(value) => {
                           setTempoOreOperatore(value);
                         }}
                       />
                       <Grid size={{ xs: 12 }}>
-                        {user?.role?.id === RoleEnum.AUTISTA &&
-                        tipoTrasferta !== "in_sede" &&
+                        {tipoTrasferta !== "step1_KmAutista" && (
+                          <Typography
+                            gutterBottom
+                            textAlign="center"
+                            variant="body2"
+                          >
+                            Nota: anche se non sei l'autista specifica comunque
+                            la targa del veicolo del viaggio!
+                          </Typography>
+                        )}
+                        {tipoTrasferta !== "in_sede" &&
                         tipoTrasferta !== "step1_KmAutista" ? (
                           <>
                             <TargaMezziTable
@@ -407,6 +606,7 @@ function FormCreateUser() {
                                     width: "100%",
                                     height: theme.spacing(10),
                                     fontSize: "1.5rem",
+                                    mt: theme.spacing(2),
                                   })}
                                   fullWidth
                                   size="large"
@@ -427,9 +627,12 @@ function FormCreateUser() {
                               height: 50,
                               fontSize: "1.5rem",
                             }}
-                            sx={{
-                              height: 90,
-                            }}
+                            sx={(theme) => ({
+                              width: "100%",
+                              height: theme.spacing(10),
+                              fontSize: "1.5rem",
+                              mt: theme.spacing(2),
+                            })}
                             fullWidth
                             size="large"
                             variant="contained"
@@ -451,19 +654,19 @@ function FormCreateUser() {
       <Dialog open={isDialogOpen} onClose={handleDialogClose}>
         <DialogContent>
           <Typography>
-            La creazione è avvenuta con successo. Vuoi uscire?
+            La creazione è avvenuta con successo. Vuoi aggiungere altre ORE? ⏱️
           </Typography>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Sì
+          </Button>
           <Button
             onClick={() => {
               router.push("/hours/manage");
             }}
-            color="primary"
+            color="secondary"
           >
-            Sì
-          </Button>
-          <Button onClick={handleDialogClose} color="secondary">
             No
           </Button>
         </DialogActions>
@@ -474,7 +677,7 @@ function FormCreateUser() {
 }
 
 function CreateUser() {
-  return <FormCreateUser />;
+  return <FormCreateEpsNestjsOrpEffCicliEsec />;
 }
 
 export default withPageRequiredAuth(CreateUser);

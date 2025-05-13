@@ -4,33 +4,35 @@ import TipoTrasfertaComponent, {
   backgroundColorsDark,
   backgroundColorsLight,
 } from "@/components/tipo-trasferta";
+import { Cf } from "@/services/api/types/cf";
+import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
-import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
+import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import useLanguage from "@/services/i18n/use-language";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid2";
+import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid2";
-import LinearProgress from "@mui/material/LinearProgress";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -42,7 +44,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import { Cf } from "@/services/api/types/cf";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -90,16 +91,6 @@ function UserHours() {
       sort: { order, orderBy },
     });
 
-  // const [filters, setFilters] = useState<
-  //   Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
-  // >(() => {
-  //   const searchParamsFilter = searchParams.get("filter");
-  //   if (searchParamsFilter) {
-  //     return JSON.parse(searchParamsFilter);
-  //   }
-  //   return [];
-  // });
-
   const handleRequestFilter = (value: string) => {
     const columnName = "DATA_INIZIO";
     const searchParams = new URLSearchParams(window.location.search);
@@ -128,13 +119,12 @@ function UserHours() {
 
   const theme = useTheme();
 
-  const [selectedOrdCliTras, setSelectedOrdCliTras] =
-    useState<OrdCliTras | null>(null);
-  const handleOpen = (ordCliTras: OrdCliTras) => {
-    setSelectedOrdCliTras(ordCliTras);
+  const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
+  const handleOpen = (ordCli: OrdCli) => {
+    setSelectedOrdCli(ordCli);
   };
   const handleClose = () => {
-    setSelectedOrdCliTras(null);
+    setSelectedOrdCli(null);
   };
 
   const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
@@ -155,16 +145,17 @@ function UserHours() {
 
     return (
       <>
-        {linkOrpOrd.map((it, index) => {
-          const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
+        {linkOrpOrd.map((it) => {
+          const ordCli = it.ordCliRighe?.ordCli || ({} as OrdCli);
 
-          if (ordCliTras.NUM_DEST === null) {
+          const cfComm = ordCli.cfComm;
+
+          if (ordCli.NUM_SEDE === null || cfComm === null) {
             const cf = it.ordCliRighe?.cf;
 
             return (
-              <Fragment key={index}>
+              <Fragment key={ordCli.DOC_ID}>
                 <Button
-                  key={index}
                   variant="outlined"
                   onClick={() => cf && handleOpenCf(cf)}
                   fullWidth
@@ -216,35 +207,36 @@ function UserHours() {
             );
           }
 
+          // si c'è sede commerciale
+
           return (
-            <Fragment key={index}>
+            <Fragment key={ordCli.DOC_ID}>
               <Button
                 variant="outlined"
-                onClick={() => handleOpen(ordCliTras)}
+                onClick={() => handleOpen(ordCli)}
                 fullWidth
-                disabled={!ordCliTras.NUM_DEST} // Optionally disable the button if NUM_DEST is undefined
+                disabled={!ordCli.NUM_SEDE} // Optionally disable the button if NUM_DEST is undefined
               >
-                {ordCliTras.NUM_DEST} {" · "}
-                {ordCliTras.DES_DEST_MERCE || "No Title"}
+                {`${cfComm?.NUM_SEDE} · ${cfComm?.DES_SEDE}` || "No Title"}
               </Button>
               <Dialog
-                open={selectedOrdCliTras !== null}
+                open={selectedOrdCli !== null}
                 onClose={handleClose}
                 fullWidth
                 maxWidth="sm"
               >
                 <DialogTitle>
-                  {`${selectedOrdCliTras?.NUM_DEST} · ${selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}`}
+                  {`${selectedOrdCli?.cfComm?.NUM_SEDE} · ${selectedOrdCli?.cfComm?.DES_SEDE || "No Title"}`}
                 </DialogTitle>
                 <DialogContent>
                   <Table size="small">
                     <TableBody>
                       {(
                         Object.keys(
-                          selectedOrdCliTras || {}
-                        ) as (keyof OrdCliTras)[]
+                          selectedOrdCli?.cfComm || {}
+                        ) as (keyof CfComm)[]
                       ).map((key) => {
-                        const value = selectedOrdCliTras?.[key];
+                        const value = selectedOrdCli?.cfComm?.[key];
                         if (value === null || value === undefined) return null;
                         return (
                           <TableRow key={key}>
@@ -253,7 +245,7 @@ function UserHours() {
                             </TableCell>
                             <TableCell align="left" style={{ width: 300 }}>
                               <Typography variant="subtitle2">
-                                {value}
+                                {String(value)}
                               </Typography>
                             </TableCell>
                           </TableRow>
@@ -279,8 +271,11 @@ function UserHours() {
     <Container maxWidth="xl">
       <Grid
         container
-        spacing={theme.spacing(1)}
-        style={{ marginTop: theme.spacing(5), marginBottom: theme.spacing(5) }}
+        spacing={1}
+        sx={(theme) => ({
+          marginTop: theme.spacing(0),
+          marginBottom: theme.spacing(5),
+        })}
         justifyContent="center"
       >
         <Grid size={{ xs: 12 }}>
@@ -315,10 +310,11 @@ function UserHours() {
             justifyContent="center"
           >
             <Card
-              style={{
+              sx={(theme) => ({
+                minWidth: "100%",
                 padding: theme.spacing(1),
-                borderRadius: 8,
-                border: `2px solid ${
+                borderRadius: 1,
+                border: `1px solid ${
                   theme.palette.mode === "dark"
                     ? backgroundColorsDark[
                         epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
@@ -327,7 +323,7 @@ function UserHours() {
                         epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
                       ]
                 }`,
-              }}
+              })}
             >
               <Grid size={{ xs: 12 }}>
                 <TipoTrasfertaComponent
@@ -360,7 +356,11 @@ function UserHours() {
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
+                      epsNestjsOrpEffCicliEsec?.KM?.toString() != "0"
+                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
+                        : ""
+                    }`}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -384,7 +384,7 @@ function UserHours() {
               display="flex-column"
               justifyContent="center"
               alignItems="center"
-              height="30vh"
+              height="40vh"
               textAlign="center"
             >
               <Image src={imageLogo} alt="No records image" height={200} />

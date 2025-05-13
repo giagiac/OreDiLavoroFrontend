@@ -1,5 +1,5 @@
 import { Cf } from "./cf";
-import { OrdCliTras } from "./ord-cli-tras";
+import { OrdCli } from "./ord-cli";
 
 export type OrdCliRighe = {
   LINK_ORP_ORD_ID: string;
@@ -7,5 +7,5 @@ export type OrdCliRighe = {
   ORD_CLI_DOC_RIGA_ID: string;
 
   cf: Cf;
-  ordCliTras: OrdCliTras;
+  ordCli: OrdCli;
 };

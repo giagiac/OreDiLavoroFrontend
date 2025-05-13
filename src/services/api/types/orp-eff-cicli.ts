@@ -8,10 +8,10 @@ export type TipoTrasferta =
   | "in_giornata_dopo_21"
   | "fuori_sede_andata"
   | "fuori_sede_ritorno"
-  | "ancora_in_missione_5"
   | "ancora_in_missione_10"
-  | "ancora_in_missione_15"
   | "ancora_in_missione_20"
+  | "ancora_in_missione_30"
+  | "ancora_in_missione_40"
   | "step1_KmAutista";
 
 export type OrpEffCicli = {

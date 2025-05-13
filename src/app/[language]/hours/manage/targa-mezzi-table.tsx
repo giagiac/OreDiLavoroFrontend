@@ -9,18 +9,83 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid2";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
-import Grid from "@mui/material/Grid2";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
-import DirectionsCarFilledTwoToneIcon from "@mui/icons-material/DirectionsCarFilledTwoTone";
+
+import { Star } from "@mui/icons-material";
+import Container from "@mui/material/Container";
+
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
+
+const AnelloGiallo = () => {
+  return (
+    <div style={{ backgroundColor: "#003DA3", height: "100%", paddingTop: 10 }}>
+      <div
+        style={{
+          position: "relative",
+          marginLeft: 6,
+          width: 25,
+          height: 25,
+          borderRadius: "50%",
+          border: 2,
+          borderColor: "#FFC300",
+          borderStyle: "solid",
+        }}
+      />
+    </div>
+  );
+};
+
+const StelleEuropee = () => {
+  const numStars = 10; // Numero di stelle
+  const radius = 16; // Raggio del cerchio
+  const starSize = 8; // Dimensione delle stelle
+
+  const stars = [];
+  for (let i = 0; i < numStars; i++) {
+    const angle = (i / numStars) * 2 * Math.PI;
+    const x = radius * Math.cos(angle);
+    const y = radius * Math.sin(angle);
+
+    stars.push(
+      <Star // Usa Star invece di StarFill e aggiungi fill="#FFC300"
+        key={i}
+        style={{
+          position: "absolute",
+          left: `calc(50% + ${x}px - ${starSize / 2}px)`,
+          top: `calc(50% + ${y}px - ${starSize / 2}px)`,
+          width: starSize,
+          height: starSize,
+          color: "#FFC300", // Colore delle stelle
+        }}
+      />
+    );
+  }
+
+  return (
+    <div style={{ backgroundColor: "#003DA3", width: 100, height: "100%" }}>
+      <div
+        style={{
+          width: 45,
+          height: 50,
+          position: "absolute", // Importante per posizionare le stelle relativamente a questo div
+          display: "inline-block",
+        }}
+      >
+        {stars}
+      </div>
+    </div>
+  );
+};
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
@@ -42,8 +107,6 @@ const TargaMezziTable = ({
 
   const targaSelected =
     localStorage.getItem(STORAGE_KEY) || NO_TARGA_MEZZI_SELECTED;
-
-  const theme = useTheme();
 
   useEffect(() => {
     if (searchParams.size === 0) {
@@ -103,118 +166,104 @@ const TargaMezziTable = ({
   const [isAccordionExpanded, setIsAccordionExpanded] =
     useState<boolean>(false);
 
+  const selectedItem = result.find((it) => it.COD_ART === targaMezziSelected);
+  //const codArt = selectedItem?.artAna?.COD_ART ?? "";
+  const desArt = selectedItem?.artAna?.DES_ART ?? "";
+
   return (
-    <Grid container spacing={2} direction="column">
-      <Grid size={{ xs: 12 }}>
-        <Accordion
-          expanded={isAccordionExpanded}
-          onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
-          sx={{ p: 1 }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="table-content"
-            id="table-header"
-            style={{
-              backgroundColor: theme.palette.background.paper,
-              borderBottom: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <DirectionsCarFilledTwoToneIcon sx={{ mr: 3 }} />
-            <Typography variant="subtitle2">
-              {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
-                ? "Procedi senza una targa"
-                : (() => {
-                    const selectedItem = result.find(
-                      (it) => it.COD_ART === targaMezziSelected
-                    );
-                    const codArt = selectedItem?.artAna?.COD_ART ?? "";
-                    const desArt = selectedItem?.artAna?.DES_ART ?? "";
-                    return codArt && desArt
-                      ? `${codArt} · ${desArt}`
-                      : "Targa selezionata non trovata";
-                  })()}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Table size="small">
-              <TableBody
-                style={{
-                  borderBottom: "none",
-                  borderCollapse: "collapse",
-                }}
-              >
-                {/* ITEM DI DEFAULT */}
-                <TableRow
-                  style={{
-                    backgroundColor: theme.palette.background.paper,
-                  }}
+    <Paper elevation={5} sx={{ p: 1 }}>
+      <Container maxWidth="sm">
+        <Grid container direction="row" p={1} spacing={4}>
+          <Grid size={{ xs: 12 }}>
+            <Grid
+              container
+              direction="row"
+              style={{
+                borderRadius: 10,
+                borderWidth: 4,
+                borderStyle: "solid",
+                borderColor: "black",
+                boxShadow: `8px 8px 10px gray`,
+              }}
+            >
+              <Grid size={{ xs: 1 }}>
+                <StelleEuropee />
+              </Grid>
+              <Grid size={{ xs: 10 }}>
+                <Accordion
+                  sx={{ minHeight: 120 }}
+                  elevation={0}
+                  expanded={isAccordionExpanded}
+                  onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
                 >
-                  <TableCell>
-                    <Typography variant="body1">Nessuna targa</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      color="info"
-                      variant="contained"
-                      fullWidth
-                      onClick={() => {
-                        localStorage.setItem(
-                          STORAGE_KEY,
-                          NO_TARGA_MEZZI_SELECTED
-                        );
-                        setTargaMezziSelected(NO_TARGA_MEZZI_SELECTED);
-                        setIsAccordionExpanded(false); // Chiude l'accordion
-                      }}
-                    >
-                      <NoCrashTwoToneIcon />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                {/* LISTA ARTICOLI TARGHE */}
-                {result.map((targaMezzi) => {
-                  return (
-                    <TableRow
-                      key={targaMezzi.COD_ART}
-                      style={{
-                        backgroundColor:
-                          Number(targaMezzi.id) % 2 === 0
-                            ? theme.palette.divider
-                            : theme.palette.background.paper,
-                      }}
-                    >
-                      <TableCell>
-                        <Typography variant="body1">
-                          {targaMezzi?.COD_ART} · {targaMezzi.artAna?.DES_ART}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="info"
-                          variant="contained"
-                          fullWidth
-                          onClick={() => {
-                            localStorage.setItem(
-                              STORAGE_KEY,
-                              targaMezzi.COD_ART
-                            );
-                            setTargaMezziSelected(targaMezzi.COD_ART);
-                            setIsAccordionExpanded(false); // Chiude l'accordion
-                          }}
-                        >
-                          <NoCrashTwoToneIcon />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </AccordionDetails>
-        </Accordion>
-        <Grid>{children(targaMezziSelected)}</Grid>
-      </Grid>
-    </Grid>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    style={{ flexFlow: "column", textAlign: "center" }}
+                  >
+                    <Typography variant="h4">
+                      {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
+                        ? "Seleziona una targa"
+                        : desArt != ""
+                          ? `${desArt}`
+                          : "Targa selezionata non trovata"}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Table size="small">
+                      <TableBody
+                        style={{
+                          borderBottom: "none",
+                          borderCollapse: "collapse",
+                        }}
+                      >
+                        {/* LISTA ARTICOLI TARGHE */}
+                        {result.map((targaMezzi) => {
+                          return (
+                            <TableRow key={targaMezzi.COD_ART}>
+                              <TableCell>
+                                <Typography variant="body1">
+                                  {targaMezzi?.COD_ART} ·{" "}
+                                  {targaMezzi.artAna?.DES_ART}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  color="info"
+                                  variant="contained"
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      STORAGE_KEY,
+                                      targaMezzi.COD_ART
+                                    );
+                                    setTargaMezziSelected(targaMezzi.COD_ART);
+                                    setIsAccordionExpanded(false); // Chiude l'accordion
+                                  }}
+                                >
+                                  <NoCrashTwoToneIcon />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+              <Grid size={{ xs: 1 }}>
+                <AnelloGiallo />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid size={{ xs: 12 }}>
+            {targaMezziSelected !== NO_TARGA_MEZZI_SELECTED &&
+              // codArt != "" &&
+              desArt != "" &&
+              children(targaMezziSelected)}
+          </Grid>
+        </Grid>
+      </Container>
+    </Paper>
   );
 };
 

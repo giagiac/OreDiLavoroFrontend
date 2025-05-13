@@ -1,8 +1,8 @@
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 import { Stack, styled, useTheme } from "@mui/system";
 import React, { ReactElement } from "react";
 import { TipoTrasferta } from "../services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -19,10 +19,10 @@ export const backgroundColorsLight: Record<TipoTrasferta, string> = {
   in_giornata_dopo_21: "#ffccbc",
   fuori_sede_andata: "#dcedc8",
   fuori_sede_ritorno: "#c5e1a5",
-  ancora_in_missione_5: "#f8bbd0",
-  ancora_in_missione_10: "#f48fb1",
-  ancora_in_missione_15: "#ce93d8",
-  ancora_in_missione_20: "#b39ddb",
+  ancora_in_missione_10: "#f8bbd0",
+  ancora_in_missione_20: "#f48fb1",
+  ancora_in_missione_30: "#ce93d8",
+  ancora_in_missione_40: "#b39ddb",
   step1_KmAutista: "#9fa8da",
 };
 
@@ -33,10 +33,10 @@ export const backgroundColorsDark: Record<TipoTrasferta, string> = {
   in_giornata_dopo_21: "#3E2723",
   fuori_sede_andata: "#1B5E20",
   fuori_sede_ritorno: "#1B5E20",
-  ancora_in_missione_5: "#880E4F",
   ancora_in_missione_10: "#880E4F",
-  ancora_in_missione_15: "#4A148C",
-  ancora_in_missione_20: "#311B92",
+  ancora_in_missione_20: "#880E4F",
+  ancora_in_missione_30: "#4A148C",
+  ancora_in_missione_40: "#311B92",
   step1_KmAutista: "#1A237E",
 };
 
@@ -85,19 +85,19 @@ const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "fuori sede ritorno";
       break;
-    case "ancora_in_missione_5":
+    case "ancora_in_missione_10":
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "ancora in missione 5";
       break;
-    case "ancora_in_missione_10":
+    case "ancora_in_missione_20":
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "ancora in missione 10";
       break;
-    case "ancora_in_missione_15":
+    case "ancora_in_missione_30":
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "ancora in missione 15";
       break;
-    case "ancora_in_missione_20":
+    case "ancora_in_missione_40":
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "ancora in missione 20";
       break;

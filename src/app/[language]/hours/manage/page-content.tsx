@@ -8,11 +8,12 @@ import TipoTrasfertaComponent, {
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { Cf } from "@/services/api/types/cf";
+import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
-import { OrdCliTras } from "@/services/api/types/ord-cli-tras";
+import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import useAuth from "@/services/auth/use-auth";
@@ -48,43 +49,7 @@ import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
-// const TableCellLoadingContainer = styled(TableCell)(() => ({
-//   padding: 0,
-// }));
-
-// function TableSortCellWrapper(
-//   props: PropsWithChildren<{
-//     width?: number;
-//     orderBy: EpsNestjsOrpEffCicliEsecKeys;
-//     order: SortEnum;
-//     column: EpsNestjsOrpEffCicliEsecKeys;
-//     handleRequestSort: (
-//       event: React.MouseEvent<unknown>,
-//       property: EpsNestjsOrpEffCicliEsecKeys
-//     ) => void;
-//   }>
-// ) {
-//   return (
-//     <TableCell
-//       style={{ width: props.width }}
-//       sortDirection={props.orderBy === props.column ? props.order : false}
-//     >
-//       <TableSortLabel
-//         active={props.orderBy === props.column}
-//         direction={props.orderBy === props.column ? props.order : SortEnum.ASC}
-//         onClick={(event) => props.handleRequestSort(event, props.column)}
-//       >
-//         {props.children}
-//       </TableSortLabel>
-//     </TableCell>
-//   );
-// }
-
 function UserHours() {
-  // const { t: tEpsNestjsOrpEffCicliEsec } = useTranslation(
-  //   "admin-panel-epsNestjsOrpEffCicliEsec"
-  // );
-  // const { t: tRoles } = useTranslation("admin-panel-roles");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }] = useState<{
@@ -97,25 +62,6 @@ function UserHours() {
     }
     return { order: SortEnum.DESC, orderBy: "id" };
   });
-
-  // const handleRequestSort = (
-  //   event: React.MouseEvent<unknown>,
-  //   property: EpsNestjsOrpEffCicliEsecKeys
-  // ) => {
-  //   const isAsc = orderBy === property && order === SortEnum.ASC;
-  //   const searchParams = new URLSearchParams(window.location.search);
-  //   const newOrder = isAsc ? SortEnum.DESC : SortEnum.ASC;
-  //   const newOrderBy = property;
-  //   searchParams.set(
-  //     "sort",
-  //     JSON.stringify({ order: newOrder, orderBy: newOrderBy })
-  //   );
-  //   setSort({
-  //     order: newOrder,
-  //     orderBy: newOrderBy,
-  //   });
-  //   router.push(window.location.pathname + "?" + searchParams.toString());
-  // };
 
   const filter = useMemo(() => {
     const searchParamsFilter = searchParams.get("filter");
@@ -133,11 +79,6 @@ function UserHours() {
       filters: filter,
       sort: { order, orderBy },
     });
-
-  // const handleScroll = useCallback(() => {
-  //   if (!hasNextPage || isFetchingNextPage) return;
-  //   fetchNextPage();
-  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const result = useMemo(() => {
     const result =
@@ -179,13 +120,12 @@ function UserHours() {
     }
   };
 
-  const [selectedOrdCliTras, setSelectedOrdCliTras] =
-    useState<OrdCliTras | null>(null);
-  const handleOpen = (ordCliTras: OrdCliTras) => {
-    setSelectedOrdCliTras(ordCliTras);
+  const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
+  const handleOpen = (ordCli: OrdCli) => {
+    setSelectedOrdCli(ordCli);
   };
   const handleClose = () => {
-    setSelectedOrdCliTras(null);
+    setSelectedOrdCli(null);
   };
 
   const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
@@ -206,16 +146,17 @@ function UserHours() {
 
     return (
       <>
-        {linkOrpOrd.map((it, index) => {
-          const ordCliTras = it.ordCliRighe?.ordCliTras || ({} as OrdCliTras);
+        {linkOrpOrd.map((it) => {
+          const ordCli = it.ordCliRighe?.ordCli || ({} as OrdCli);
 
-          if (ordCliTras.NUM_DEST === null) {
+          const cfComm = ordCli.cfComm;
+
+          if (ordCli.NUM_SEDE === null || cfComm === null) {
             const cf = it.ordCliRighe?.cf;
 
             return (
-              <Fragment key={index}>
+              <Fragment key={ordCli.DOC_ID}>
                 <Button
-                  key={index}
                   variant="outlined"
                   onClick={() => cf && handleOpenCf(cf)}
                   fullWidth
@@ -267,35 +208,36 @@ function UserHours() {
             );
           }
 
+          // si c'è sede commerciale
+
           return (
-            <Fragment key={index}>
+            <Fragment key={ordCli.DOC_ID}>
               <Button
                 variant="outlined"
-                onClick={() => handleOpen(ordCliTras)}
+                onClick={() => handleOpen(ordCli)}
                 fullWidth
-                disabled={!ordCliTras.NUM_DEST} // Optionally disable the button if NUM_DEST is undefined
+                disabled={!ordCli.NUM_SEDE} // Optionally disable the button if NUM_DEST is undefined
               >
-                {ordCliTras.NUM_DEST} {" · "}
-                {ordCliTras.DES_DEST_MERCE || "No Title"}
+                {`${cfComm?.NUM_SEDE} · ${cfComm?.DES_SEDE}` || "No Title"}
               </Button>
               <Dialog
-                open={selectedOrdCliTras !== null}
+                open={selectedOrdCli !== null}
                 onClose={handleClose}
                 fullWidth
                 maxWidth="sm"
               >
                 <DialogTitle>
-                  {`${selectedOrdCliTras?.NUM_DEST} · ${selectedOrdCliTras?.DES_DEST_MERCE || "No Title"}`}
+                  {`${selectedOrdCli?.cfComm?.NUM_SEDE} · ${selectedOrdCli?.cfComm?.DES_SEDE || "No Title"}`}
                 </DialogTitle>
                 <DialogContent>
                   <Table size="small">
                     <TableBody>
                       {(
                         Object.keys(
-                          selectedOrdCliTras || {}
-                        ) as (keyof OrdCliTras)[]
+                          selectedOrdCli?.cfComm || {}
+                        ) as (keyof CfComm)[]
                       ).map((key) => {
-                        const value = selectedOrdCliTras?.[key];
+                        const value = selectedOrdCli?.cfComm?.[key];
                         if (value === null || value === undefined) return null;
                         return (
                           <TableRow key={key}>
@@ -304,7 +246,7 @@ function UserHours() {
                             </TableCell>
                             <TableCell align="left" style={{ width: 300 }}>
                               <Typography variant="subtitle2">
-                                {value}
+                                {String(value)}
                               </Typography>
                             </TableCell>
                           </TableRow>
@@ -418,7 +360,11 @@ function UserHours() {
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
+                      epsNestjsOrpEffCicliEsec?.KM?.toString() != "0"
+                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
+                        : ""
+                    }`}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -486,7 +432,7 @@ function UserHours() {
               variant="contained"
               color="info"
               onClick={() => router.push("/hours/manage/step1_KmAutista")}
-              startIcon={<AirportShuttleTwoToneIcon />}
+              endIcon={<AirportShuttleTwoToneIcon />}
             >
               Km Autista
             </Button>
@@ -498,7 +444,7 @@ function UserHours() {
             variant="contained"
             color="primary"
             onClick={() => router.push("/hours/manage/step1_FuoriSede")}
-            startIcon={<FlightTakeoffTwoToneIcon />}
+            endIcon={<FlightTakeoffTwoToneIcon />}
           >
             Fuori Sede
           </Button>
@@ -509,7 +455,7 @@ function UserHours() {
             variant="contained"
             color="secondary"
             onClick={() => router.push("/hours/manage/create/in_sede")}
-            startIcon={<FactoryTwoToneIcon />}
+            endIcon={<FactoryTwoToneIcon />}
           >
             In Sede
           </Button>

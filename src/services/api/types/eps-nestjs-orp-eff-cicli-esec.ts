@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
-import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
-import { OrpEffCicli } from "./orp-eff-cicli";
 import { Operatori } from "./operatori";
+import { OrpEffCicli } from "./orp-eff-cicli";
+import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
 
 export type TipoTrasferta =
   | "in_sede"
@@ -9,10 +9,10 @@ export type TipoTrasferta =
   | "in_giornata_dopo_21"
   | "fuori_sede_andata"
   | "fuori_sede_ritorno"
-  | "ancora_in_missione_5"
   | "ancora_in_missione_10"
-  | "ancora_in_missione_15"
   | "ancora_in_missione_20"
+  | "ancora_in_missione_30"
+  | "ancora_in_missione_40"
   | "step1_KmAutista";
 
 // export enum TipoTrasferta {
@@ -21,10 +21,10 @@ export type TipoTrasferta =
 //   "in_giornata_dopo_21" = "in_giornata_dopo_21",
 //   "fuori_sede_andata" = "fuori_sede_andata",
 //   "fuori_sede_ritorno" = "fuori_sede_ritorno",
-//   "ancora_in_missione_5" = "ancora_in_missione_5",
 //   "ancora_in_missione_10" = "ancora_in_missione_10",
-//   "ancora_in_missione_15" = "ancora_in_missione_15",
 //   "ancora_in_missione_20" = "ancora_in_missione_20",
+//   "ancora_in_missione_30" = "ancora_in_missione_30",
+//   "ancora_in_missione_40" = "ancora_in_missione_40",
 //   "step1_KmAutista" = "step1_KmAutista",
 // }
 
@@ -33,7 +33,6 @@ export type EpsNestjsOrpEffCicliEsec = {
   createdAt: Date;
   updatedAt: Date;
 
-  SYNCED?: number | null;
   TEMPO_MINUTI_OP?: Decimal | null;
   TEMPO_MINUTI_MACC?: Decimal | null;
   NOTE?: string | null;

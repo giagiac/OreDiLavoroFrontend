@@ -11,6 +11,7 @@ import Grid from "@mui/material/Grid2";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import TargaMezziTable from "../targa-mezzi-table";
+import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 
 function FormCreateUser() {
   const router = useRouter();
@@ -28,22 +29,21 @@ function FormCreateUser() {
             style={{ height: 50, fontSize: "1.5rem" }}
             onClick={() => router.push("/hours/manage")}
             startIcon={<ArrowBackTwoToneIcon />}
+            endIcon={<AirportShuttleTwoToneIcon/>}
           >
             KM Autista
           </Button>
         </Grid>
         <Grid size={12}>
-          <Container maxWidth="sm">
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid size={{ xs: 12 }}>
-                <NumericKeypadKm
-                  onChange={(value) => {
-                    setKm(value);
-                  }}
-                />
-              </Grid>
+          <Grid container justifyContent="center" alignItems="center">
+            <Grid size={{ xs: 12 }}>
+              <NumericKeypadKm
+                onChange={(value) => {
+                  setKm(value);
+                }}
+              />
             </Grid>
-          </Container>
+          </Grid>
         </Grid>
         <Grid size={12} pt={3}>
           <TargaMezziTable

@@ -1,6 +1,6 @@
 export type FilterItem<T> = {
   columnName: keyof T;
-  value: string;
+  value: string | number;
 };
 
 export type GenericFilterType<T> = {

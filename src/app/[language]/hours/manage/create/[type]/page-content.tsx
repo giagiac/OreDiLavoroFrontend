@@ -244,8 +244,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
   const [id, setId] = useState<number | null>(null);
 
-  const onSubmit = async (COD_ART?: string) => {
-    const selected_COD_ART = searchParams.get("COD_ART") || COD_ART;
+  const onSubmit = async () => {
+    const selected_COD_ART = searchParams.get("COD_ART");
     const KM: number = parseFloat(searchParams.get("KM") || "0");
 
     if (tempoOreOperatore === TEMPO_OPERATORE_DEFAULT) {
@@ -579,70 +579,33 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                           </TableBody>
                         </Table>
                       </TableContainer>
-
                       <NumericKeypad
                         onNumberChange={(value) => {
                           setTempoOreOperatore(value);
                         }}
                       />
                       <Grid size={{ xs: 12 }}>
-                        {tipoTrasferta !== "step1_KmAutista" && (
-                          <Typography
-                            gutterBottom
-                            textAlign="center"
-                            variant="body2"
-                          >
-                            Nota: anche se non sei l'autista specifica comunque
-                            la targa del veicolo del viaggio!
-                          </Typography>
-                        )}
-                        {tipoTrasferta !== "in_sede" &&
-                        tipoTrasferta !== "step1_KmAutista" ? (
-                          <>
-                            <TargaMezziTable
-                              childrenCallBack={(COD_ART) => (
-                                <Button
-                                  sx={(theme) => ({
-                                    width: "100%",
-                                    height: theme.spacing(10),
-                                    fontSize: "1.5rem",
-                                    mt: theme.spacing(2),
-                                  })}
-                                  fullWidth
-                                  size="large"
-                                  variant="contained"
-                                  onClick={async () => {
-                                    await onSubmit(COD_ART); // è UN AUTISTA
-                                  }} // Usa la funzione onClick passata
-                                >
-                                  CONFERMA
-                                </Button>
-                              )}
-                            />
-                          </>
-                        ) : (
-                          <Button
-                            style={{
-                              width: "100%",
-                              height: 50,
-                              fontSize: "1.5rem",
-                            }}
-                            sx={(theme) => ({
-                              width: "100%",
-                              height: theme.spacing(10),
-                              fontSize: "1.5rem",
-                              mt: theme.spacing(2),
-                            })}
-                            fullWidth
-                            size="large"
-                            variant="contained"
-                            onClick={async () => {
-                              await onSubmit(); // NON è un AUTISTA
-                            }}
-                          >
-                            CONFERMA
-                          </Button>
-                        )}
+                        <Button
+                          style={{
+                            width: "100%",
+                            height: 50,
+                            fontSize: "1.5rem",
+                          }}
+                          sx={(theme) => ({
+                            width: "100%",
+                            height: theme.spacing(10),
+                            fontSize: "1.5rem",
+                            mt: theme.spacing(2),
+                          })}
+                          fullWidth
+                          size="large"
+                          variant="contained"
+                          onClick={async () => {
+                            await onSubmit();
+                          }}
+                        >
+                          CONFERMA
+                        </Button>
                       </Grid>
                     </Grid>
                   </Fragment>

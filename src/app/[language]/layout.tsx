@@ -20,6 +20,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Analytics } from "@vercel/analytics/next";
 import { dir } from "i18next";
 import type { Metadata } from "next";
 import "../globals.css";
@@ -55,6 +56,7 @@ export default async function RootLayout(props: {
   return (
     <html lang={language} dir={dir(language)} suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <Analytics />
         <InitColorSchemeScript />
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />

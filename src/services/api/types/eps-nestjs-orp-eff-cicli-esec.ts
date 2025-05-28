@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import { Operatori } from "./operatori";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
+import { EpsNestjsOrpEffCicliEsecChild } from "./eps-nestjs-orp-eff-cicli-esec-child";
 
 export type TipoTrasferta =
   | "in_sede"
@@ -57,4 +58,6 @@ export type EpsNestjsOrpEffCicliEsec = {
   orpEffCicliEsec?: OrpEffCicliEsec | null;
   orpEffCicli?: OrpEffCicli | null;
   operatori?: Operatori | null;
+
+  epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChild> | null;
 };

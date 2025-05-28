@@ -5,10 +5,13 @@ import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicat
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import NoCrashTwoToneIcon from "@mui/icons-material/NoCrashTwoTone";
+import Star from "@mui/icons-material/Star";
+import { useTheme } from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -20,20 +23,24 @@ import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
 
-import { Star } from "@mui/icons-material";
-import Container from "@mui/material/Container";
-
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
 
 const AnelloGiallo = () => {
+  const theme = useTheme();
   return (
-    <div style={{ backgroundColor: "#003DA3", height: "100%", paddingTop: 10 }}>
+    <div
+      style={{
+        backgroundColor: "#003DA3",
+        height: "100%",
+        paddingTop: theme.spacing(1),
+      }}
+    >
       <div
         style={{
           position: "relative",
-          marginLeft: 6,
-          width: 25,
-          height: 25,
+          marginLeft: theme.spacing(0.75),
+          width: theme.spacing(3.125),
+          height: theme.spacing(3.125),
           borderRadius: "50%",
           border: 2,
           borderColor: "#FFC300",
@@ -202,7 +209,7 @@ const TargaMezziTable = ({
                     <Typography variant="h4">
                       {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
                         ? "Seleziona una targa"
-                        : desArt != ""
+                        : desArt !== ""
                           ? `${desArt}`
                           : "Targa selezionata non trovata"}
                     </Typography>
@@ -256,8 +263,8 @@ const TargaMezziTable = ({
           </Grid>
           <Grid size={{ xs: 12 }}>
             {targaMezziSelected !== NO_TARGA_MEZZI_SELECTED &&
-              // codArt != "" &&
-              desArt != "" &&
+              // codArt !== "" &&
+              desArt !== "" &&
               children(targaMezziSelected)}
           </Grid>
         </Grid>

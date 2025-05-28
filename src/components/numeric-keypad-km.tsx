@@ -37,7 +37,7 @@ export const NumericKeypadKm = ({
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: 2, mt: 3 }}>
+    <Paper elevation={3} sx={(theme) => ({ padding: theme.spacing(2), mt: 3 })}>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12 }} justifyContent="center">
           <Typography variant="h1" textAlign="center">

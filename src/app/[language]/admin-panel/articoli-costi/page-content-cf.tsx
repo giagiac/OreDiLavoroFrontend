@@ -62,7 +62,9 @@ function TableSortFilterCellWrapper(
   }>
 ) {
   const value =
-    props.filters?.find((it) => it.columnName === props.column)?.value || "";
+    String(
+      props.filters?.find((it) => it.columnName === props.column)?.value
+    ) || "";
   const [text, setText] = useState<string>(value);
 
   const handleCancellaTesto = () => {
@@ -223,13 +225,13 @@ function Cfs() {
     if (prev) {
       // Update
       prev.value = value;
-    } else if (value.length > 0) {
+    } else if (String(value).length > 0) {
       // New one
       oldFilter = [...oldFilter, { columnName, value }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
-    oldFilter = oldFilter.filter((it) => it.value.length > 0);
+    oldFilter = oldFilter.filter((it) => String(it.value).length > 0);
 
     searchParams.set("filter", JSON.stringify(oldFilter));
 
@@ -352,7 +354,10 @@ function Cfs() {
                     >
                       <TableCell
                         colSpan={4}
-                        sx={{ borderBottom: "none", padding: "8px" }}
+                        sx={(theme) => ({
+                          borderBottom: "none",
+                          padding: theme.spacing(2),
+                        })}
                       >
                         <Paper
                           elevation={2}

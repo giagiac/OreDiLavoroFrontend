@@ -1,10 +1,6 @@
 "use client";
 
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
-import TipoTrasfertaComponent, {
-  backgroundColorsDark,
-  backgroundColorsLight,
-} from "@/components/tipo-trasferta";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { Cf } from "@/services/api/types/cf";
@@ -20,20 +16,16 @@ import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
-import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import Container from "@mui/material/Container";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid2";
-import Icon from "@mui/material/Icon";
 import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
@@ -45,6 +37,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
+import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
@@ -288,93 +281,16 @@ function UserHours() {
             <Typography variant="h2">{data?.totale}</Typography>
           </Stack>
         </Grid>
-        {result.map((epsNestjsOrpEffCicliEsec) => (
-          <Grid
-            container
-            size={{ xs: 12, sm: 6, md: 4 }}
-            key={epsNestjsOrpEffCicliEsec?.id}
-            justifyContent="center"
-          >
-            <Card
-              sx={(theme) => ({
-                minWidth: "100%",
-                padding: theme.spacing(1),
-                borderRadius: 1,
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? backgroundColorsDark[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                    : backgroundColorsLight[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                }`,
-              })}
-            >
-              <Grid size={{ xs: 12 }}>
-                <TipoTrasfertaComponent
-                  tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
-                >
-                  {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
-                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !==
-                    null ? (
-                    <Icon>
-                      <LockTwoToneIcon />
-                    </Icon>
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        onDelete(epsNestjsOrpEffCicliEsec?.id);
-                      }}
-                      variant="contained"
-                      endIcon={<DeleteForeverTwoTone />}
-                    >
-                      {epsNestjsOrpEffCicliEsec?.id}
-                    </Button>
-                  )}
-                </TipoTrasfertaComponent>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body1">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
-                    (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                  )}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-                  renderOrdCliTrasDialog(
-                    epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-                  )}
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="caption">
-                  {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
-                      epsNestjsOrpEffCicliEsec?.KM?.toString() != "0"
-                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                        : ""
-                    }`}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="h4" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
-                </Typography>
-              </Grid>
-            </Card>
-          </Grid>
-        ))}
+        <Grid container spacing={2} justifyContent="center">
+          {result.map((epsNestjsOrpEffCicliEsec) => (
+            <ChildEpsNestjsOrpEffCicliEsecCard
+              key={epsNestjsOrpEffCicliEsec.id}
+              epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
+              onDelete={onDelete}
+              renderOrdCliTrasDialog={renderOrdCliTrasDialog}
+            />
+          ))}
+        </Grid>
 
         {isFetchingNextPage && (
           <Grid size={{ xs: 12 }}>

@@ -32,7 +32,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -117,7 +116,7 @@ function UserHours() {
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
   const handleOpen = (ordCli: OrdCli) => {
@@ -357,7 +356,7 @@ function UserHours() {
                 <Typography variant="body2" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
                     `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
-                      epsNestjsOrpEffCicliEsec?.KM?.toString() != "0"
+                      epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
                         ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
                         : ""
                     }`}

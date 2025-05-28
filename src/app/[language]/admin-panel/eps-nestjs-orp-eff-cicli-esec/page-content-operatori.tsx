@@ -57,7 +57,9 @@ function TableSortFilterCellWrapper(
   }>
 ) {
   const value =
-    props.filters?.find((it) => it.columnName === props.column)?.value || "";
+    String(
+      props.filters?.find((it) => it.columnName === props.column)?.value
+    ) || "";
   const [text, setText] = useState<string>(value);
 
   const handleCancellaTesto = () => {
@@ -218,13 +220,13 @@ function Operatoris() {
     if (prev) {
       // Update
       prev.value = value;
-    } else if (value.length > 0) {
+    } else if (String(value).length > 0) {
       // New one
       oldFilter = [...oldFilter, { columnName, value }];
     }
 
     // se value è vuoto rimuovo tutto l'oggetto
-    oldFilter = oldFilter.filter((it) => it.value.length > 0);
+    oldFilter = oldFilter.filter((it) => String(it.value).length > 0);
 
     searchParams.set("filter", JSON.stringify(oldFilter));
 

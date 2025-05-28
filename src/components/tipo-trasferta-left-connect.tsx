@@ -56,7 +56,7 @@ const StyledPaper = styled(Paper)(({
   };
 });
 
-const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
+const TipoTrasfertaLeftConnectComponent: React.FC<TipoTrasfertaProps> = ({
   tipotrasferta,
   children,
 }) => {
@@ -118,4 +118,4 @@ const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
     </StyledPaper>
   );
 };
-export default TipoTrasfertaComponent;
+export default TipoTrasfertaLeftConnectComponent;

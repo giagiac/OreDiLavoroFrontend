@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CreateUser from "./page-content";
+import PageContent from "./page-content";
 import { getServerTranslation } from "@/services/i18n";
 
 type Props = {
@@ -19,5 +19,5 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default function Page() {
-  return <CreateUser />;
+  return <PageContent />;
 }

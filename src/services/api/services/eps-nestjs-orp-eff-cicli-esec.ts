@@ -60,6 +60,45 @@ export function useGetEpsNestjsOrpEffCicliEsecService() {
   );
 }
 
+// -----------------------------------------------------------------------------
+
+export function useGetEpsNestjsOrpEffCicliEsecFindByIdService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecsRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs/find-by-id`
+      );
+      requestUrl.searchParams.append("page", data.page.toString());
+      requestUrl.searchParams.append("limit", data.limit.toString());
+      if (data.filters) {
+        requestUrl.searchParams.append("filters", JSON.stringify(data.filters));
+      }
+      if (data.sort) {
+        requestUrl.searchParams.append("sort", JSON.stringify(data.sort));
+      }
+      if (data.othersFilters) {
+        requestUrl.searchParams.append(
+          "othersFilters",
+          JSON.stringify(data.othersFilters)
+        );
+      }
+
+      return fetch(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
+    },
+    [fetch]
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 export type EpsNestjsOrpEffCicliEsecDeleteRequest = {
   id: EpsNestjsOrpEffCicliEsec["id"];
 };
@@ -154,6 +193,64 @@ export function useGetEpsNestjsOrpEffCicliEsecOperatoreService() {
         method: "GET",
         ...requestConfig,
       }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
+    },
+    [fetch]
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+export function useGetEpsNestjsOrpEffCicliEsecByIdOperatoreService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecsRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs/operatore`
+      );
+      requestUrl.searchParams.append("page", data.page.toString());
+      requestUrl.searchParams.append("limit", data.limit.toString());
+      if (data.filters) {
+        requestUrl.searchParams.append("filters", JSON.stringify(data.filters));
+      }
+      if (data.sort) {
+        requestUrl.searchParams.append("sort", JSON.stringify(data.sort));
+      }
+      if (data.othersFilters) {
+        requestUrl.searchParams.append(
+          "othersFilters",
+          JSON.stringify(data.othersFilters)
+        );
+      }
+
+      return fetch(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
+    },
+    [fetch]
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+export function useGetEpsNestjsOrpEffCicliEsecsByIdService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (id: string, requestConfig?: RequestConfigType) => {
+      const requestUrl = new URL(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs`
+      );
+      requestUrl.searchParams.append("id", id);
+
+      return fetch(requestUrl, {
+        method: "GET",
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsec>);
     },
     [fetch]
   );

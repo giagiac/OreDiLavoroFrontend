@@ -135,7 +135,8 @@ export default function FormCreateEdit({
           searchLabel="Search"
           searchPlaceholder="Search options..."
           search={
-            filters.find((it) => it.columnName === "COD_ART")?.value || ""
+            String(filters.find((it) => it.columnName === "COD_ART")?.value) ||
+            ""
           }
           onSearchChange={(value) => {
             setFilters([{ columnName: "COD_ART", value }]);

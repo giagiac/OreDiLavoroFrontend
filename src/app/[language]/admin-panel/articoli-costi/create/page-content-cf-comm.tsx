@@ -234,8 +234,11 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
                     searchLabel="Search"
                     searchPlaceholder="Search options..."
                     search={
-                      filters.find((filter) => filter.columnName === "COD_ART")
-                        ?.value || ""
+                      String(
+                        filters.find(
+                          (filter) => filter.columnName === "COD_ART"
+                        )?.value
+                      ) || ""
                     }
                     onSearchChange={(value) => {
                       setFilters([{ columnName: "COD_ART", value }]);

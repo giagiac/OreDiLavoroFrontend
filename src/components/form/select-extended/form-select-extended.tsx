@@ -39,7 +39,7 @@ type SelectExtendedInputProps<T extends object> = {
       isSearchable: true;
       searchLabel: string;
       searchPlaceholder: string;
-      search: string;
+      search: string | number;
       onSearchChange: (search: string) => void;
     }
   | {

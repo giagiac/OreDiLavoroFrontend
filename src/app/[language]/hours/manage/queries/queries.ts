@@ -1,9 +1,15 @@
+import { API_URL } from "@/services/api/config";
 import { useGetEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { RequestConfigType } from "@/services/api/services/types/request-config";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { EpsNestjsOrpEffCicliEsecChild } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-child";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import useFetch from "@/services/api/use-fetch";
+import wrapperFetchJsonResponse from "@/services/api/wrapper-fetch-json-response";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 import {
   EpsNestjsOrpEffCicliEsecFilterType,
   EpsNestjsOrpEffCicliEsecSortType,
@@ -52,10 +58,6 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
       othersFilters: { filters: othersFilters },
     }).key,
     initialPageParam: 1,
-    // select: (data) => ({
-    //   pages: [...data.pages].reverse(),
-    //   pageParams: [...data.pageParams].reverse()
-    // }),
     queryFn: async ({ pageParam, signal }) => {
       const { status, data } = await fetch(
         {
@@ -97,3 +99,45 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
 
   return query;
 };
+
+// -----------------------------------------------------------------------------
+
+export type EpsNestjsOrpEffCicliEsecChildPostRequest = {
+  // OBBLIGATORI
+  TIPO_TRASFERTA: string;
+  TEMPO_OPERATORE: string;
+  // Documento
+  DOC_RIGA_ID: string;
+  DOC_ID: string;
+  AZIENDA_ID: number;
+
+  // SEZIONE DEDICATA a KM AUTISTA
+  COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
+  KM?: number | null;
+
+  // EXTRA
+  NOTE?: string | null;
+};
+
+export type EpsNestjsOrpEffCicliEsecChildPostResponse =
+  EpsNestjsOrpEffCicliEsecChild;
+
+export function usePostEpsNestjsOrpEffCicliEsecChildService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecChildPostRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(`${API_URL}/v1/eps-nestjs-orp-eff-cicli-esec-children`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(
+        wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecChildPostResponse>
+      );
+    },
+    [fetch]
+  );
+}

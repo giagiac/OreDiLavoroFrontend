@@ -1,77 +1,71 @@
 "use client";
 
 import { FullPageLoader } from "@/components/full-page-loader";
-import { TipoTrasferta } from "@/services/api/types/articoli-costi-cf-comm";
-import { EpsNestjsOrpEffCicliEsecChild } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-child";
+import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import { useMemo, useState } from "react";
-import { useGetEpsNestjsOrpEffCicliEsecChildQuery } from "../../queries/queries-eps-nestjs-orp-eff-cicli-esec-child";
+import { ChildEpsNestjsOrpEffCicliEsecCardMini } from "../../child-eps-nestjs-orp-eff-cicli-esec-card-mini";
+import { useGetEpsNestjsOrpEffCicliEsecQuery } from "../../queries/queries";
 
-type EpsNestjsOrpEffCicliEsecChildKeys = keyof EpsNestjsOrpEffCicliEsecChild;
+type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 interface Props {
-  tipoTrasferta: TipoTrasferta;
-  idfk: number;
-
-  DOC_RIGA_ID: string;
-  DOC_ID: string;
-  AZIENDA_ID: number;
-
-  // SEZIONE DEDICATA a KM AUTISTA
-  COD_ART: string; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
-  KM: number;
+  id: number;
 }
 
-function Children({ idfk }: Props) {
+function Children({ id }: Props) {
   // FILTERS
   const [{ order, orderBy }] = useState<{
     order: SortEnum;
-    orderBy: EpsNestjsOrpEffCicliEsecChildKeys;
+    orderBy: EpsNestjsOrpEffCicliEsecKeys;
   }>({ order: SortEnum.ASC, orderBy: "id" });
 
-  const [filters, setFilters] = useState<
-    Array<FilterItem<EpsNestjsOrpEffCicliEsecChild>>
-  >([{ columnName: "idfk", value: idfk }]);
+  const [filters] = useState<Array<FilterItem<EpsNestjsOrpEffCicliEsec>>>([
+    { columnName: "id", value: id },
+  ]);
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
 
-  const { data, isFetched, isFetching, isLoading } =
-    useGetEpsNestjsOrpEffCicliEsecChildQuery({
-      sort: { order, orderBy },
-      filters,
-      othersFilters,
-    });
+  const { data, isFetching, isLoading } = useGetEpsNestjsOrpEffCicliEsecQuery({
+    sort: { order, orderBy },
+    filters,
+    othersFilters,
+  });
 
   const result = useMemo(() => {
     const result =
       (data?.pages.flatMap(
         (page) => page?.data
-      ) as EpsNestjsOrpEffCicliEsecChild[]) ??
-      ([] as EpsNestjsOrpEffCicliEsecChild[]);
+      ) as EpsNestjsOrpEffCicliEsec[]) ?? ([] as EpsNestjsOrpEffCicliEsec[]);
 
     return removeDuplicatesFromArrayObjects(result, "id");
-  }, [data, filters]);
+  }, [data]);
 
   return (
     <>
-      <Container maxWidth="md">
-        <Grid
-          container
-          spacing={2}
-          mb={3}
-          mt={3}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Grid size={{ xs: 12 }}></Grid>
-        </Grid>
-        <Grid container spacing={2} mb={3} mt={3}>
-          {isFetched && <></>}
-        </Grid>
-      </Container>
+      <Grid
+        container
+        spacing={1}
+        direction="row"
+        wrap="nowrap"
+        sx={{
+          overflowX: "auto",
+          flexWrap: "nowrap",
+          flexDirection: "row",
+          scrollbarWidth: "auto",
+        }}
+      >
+        {result.map((item) => (
+          <ChildEpsNestjsOrpEffCicliEsecCardMini
+            key={item.id}
+            epsNestjsOrpEffCicliEsec={item}
+            onDelete={() => {}}
+            renderOrdCliTrasDialog={() => null}
+          />
+        ))}
+      </Grid>
       <FullPageLoader isLoading={isLoading || isFetching} />
     </>
   );

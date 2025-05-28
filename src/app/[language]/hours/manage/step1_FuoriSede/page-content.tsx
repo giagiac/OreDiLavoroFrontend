@@ -22,67 +22,67 @@ function FormCreateUser() {
 
   const tipoTrasferta = params.type;
 
-  let prepareLink = "/hours/manage";
-  let prepareText = "In sede";
-  let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
+  // let prepareLink = "/hours/manage";
+  // // let prepareText = "In sede";
+  // // let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
 
-  switch (tipoTrasferta) {
-    case "in_sede": // non usato in richiesta TARGA
-      prepareLink = "/hours/manage";
-      prepareText = "In sede";
-      buttonColor = "secondary";
-      break;
-    case "in_giornata":
-      prepareLink = "/hours/manage/step2_FuoriSede";
-      prepareText = "In giornata";
-      buttonColor = "primary";
-      break;
-    case "in_giornata_dopo_21":
-      prepareLink = "/hours/manage/step2_FuoriSede";
-      prepareText = "In giornata dopo le 21:00";
-      buttonColor = "primary";
-      break;
-    case "fuori_sede_andata":
-      prepareText = "Fuori sede andata";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "fuori_sede_ritorno":
-      prepareText = "Fuori sede ritorno";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "ancora_in_missione_0":
-      prepareText = "Ancora in trasferta 0 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "ancora_in_missione_10":
-      prepareText = "Ancora in trasferta 5 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "ancora_in_missione_20":
-      prepareText = "Ancora in trasferta 10 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "ancora_in_missione_30":
-      prepareText = "Ancora in trasferta 15 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "ancora_in_missione_40":
-      prepareText = "Ancora in trasferta 20 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      break;
-    case "step1_KmAutista":
-      prepareText = "Km Autista";
-      prepareLink = "/hours/manage/step1_KmAutista";
-      buttonColor = "info";
-      break;
-  }
+  // switch (tipoTrasferta) {
+  //   case "in_sede": // non usato in richiesta TARGA
+  //     prepareLink = "/hours/manage";
+  //     // prepareText = "In sede";
+  //     // buttonColor = "secondary";
+  //     break;
+  //   case "in_giornata":
+  //     prepareLink = "/hours/manage/step2_FuoriSede";
+  //     // prepareText = "In giornata";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "in_giornata_dopo_21":
+  //     prepareLink = "/hours/manage/step2_FuoriSede";
+  //     // prepareText = "In giornata dopo le 21:00";
+  //     buttonColor = "primary";
+  //     break;
+  //   case "fuori_sede_andata":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Fuori sede andata";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "fuori_sede_ritorno":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Fuori sede ritorno";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "ancora_in_missione_0":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Ancora in trasferta 0 Km";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "ancora_in_missione_10":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Ancora in trasferta 5 Km";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "ancora_in_missione_20":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Ancora in trasferta 10 Km";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "ancora_in_missione_30":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Ancora in trasferta 15 Km";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "ancora_in_missione_40":
+  //     prepareLink = "/hours/manage/step3_FuoriSede";
+  //     //prepareText = "Ancora in trasferta 20 Km";
+  //     // buttonColor = "primary";
+  //     break;
+  //   case "step1_KmAutista":
+  //     prepareLink = "/hours/manage/step1_KmAutista";
+  //     //prepareText = "Km Autista";
+  //     // buttonColor = "info";
+  //     break;
+  // }
 
   return (
     <Container maxWidth="md">

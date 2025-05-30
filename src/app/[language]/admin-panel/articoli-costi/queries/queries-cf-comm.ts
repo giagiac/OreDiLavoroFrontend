@@ -38,8 +38,6 @@ export const useGetCfCommQuery = ({
   const fetch = useGetCfCommService();
 
   const query = useInfiniteQuery({
-    refetchOnWindowFocus: true,
-    retry: 3,
     queryKey: cfCommQueryKeys.list().sub.by({
       sort,
       filter: { filters },

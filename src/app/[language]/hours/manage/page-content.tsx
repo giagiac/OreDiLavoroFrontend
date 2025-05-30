@@ -263,7 +263,13 @@ function UserHours() {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container
+      maxWidth="xl"
+      sx={{
+        p: 1,
+        m: 0,
+      }}
+    >
       <Grid
         container
         spacing={1}
@@ -337,7 +343,7 @@ function UserHours() {
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
           boxShadow: (theme) => theme.shadows[10], // Elevation effect
-          zIndex: 1000,
+
           padding: theme.spacing(1),
         })}
       >

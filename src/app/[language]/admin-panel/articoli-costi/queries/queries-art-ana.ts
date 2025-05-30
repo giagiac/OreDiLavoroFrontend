@@ -41,8 +41,6 @@ export const useGetArtAnaQuery = ({
   const fetch = useGetArtAnaService();
 
   const query = useInfiniteQuery({
-    refetchOnWindowFocus: true,
-    retry: 3,
     queryKey: artAnasQueryKeys.list().sub.by({
       sort,
       filter: { filters },

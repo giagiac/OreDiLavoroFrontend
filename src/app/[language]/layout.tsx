@@ -77,7 +77,18 @@ export default async function RootLayout(props: {
                     <FacebookAuthProvider>
                       <LeavePageProvider>
                         <ResponsiveAppBar />
-                        <Box mt={12} mb={20}>
+                        <Box
+                          mt={12}
+                          mb={20}
+                          sx={{
+                            minWidth: { xs: 290 },
+                            display: "flex",
+                            flexDirection: "column", // o 'row' a seconda delle tue esigenze
+                            alignItems: "center", // Centra orizzontalmente se flexDirection è 'column', verticalmente se 'row'
+                            justifyContent: "center", // Centra verticalmente se flexDirection è 'column', orizzontalmente se 'row'
+                            width: "100%",
+                          }}
+                        >
                           {children}
                         </Box>
                         <ToastContainer

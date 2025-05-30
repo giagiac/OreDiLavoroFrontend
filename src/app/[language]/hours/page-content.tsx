@@ -11,7 +11,7 @@ function AdminPanel() {
   const { t } = useTranslation("admin-panel-home");
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container spacing={3} wrap="nowrap" pt={3}>
         <Grid>
           <Typography variant="h3" gutterBottom>

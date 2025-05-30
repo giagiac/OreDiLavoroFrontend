@@ -10,13 +10,8 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -177,87 +172,79 @@ const TargaMezziTable = ({
 
   return (
     <>
-      <Container sx={{ mb: 5, p: 0 }}>
-        <Grid
-          container
-          direction="row"
-          style={{
-            borderRadius: 10,
-            borderWidth: 4,
-            borderStyle: "solid",
-            borderColor: "black",
-            boxShadow: `8px 8px 10px gray`,
-          }}
-        >
-          <Grid size={{ xs: 1 }}>
-            <StelleEuropee />
-          </Grid>
-          <Grid size={{ xs: 10 }}>
-            <Accordion
-              sx={{ minHeight: 120 }}
-              elevation={0}
-              expanded={isAccordionExpanded}
-              onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
+      <Grid
+        container
+        direction="row"
+        style={{
+          borderRadius: 6,
+          borderWidth: 4,
+          borderStyle: "solid",
+          borderColor: "black",
+          boxShadow: `4px 4px 4px gray`,
+        }}
+        sx={{ mb: 3 }}
+      >
+        <Grid size={{ xs: 1 }}>
+          <StelleEuropee />
+        </Grid>
+        <Grid size={{ xs: 10 }}>
+          <Accordion
+            sx={{ minHeight: 120 }}
+            elevation={0}
+            expanded={isAccordionExpanded}
+            onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              style={{ flexFlow: "column", textAlign: "center" }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                style={{ flexFlow: "column", textAlign: "center" }}
-              >
-                <Typography variant="h4">
-                  {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
-                    ? "Seleziona una targa"
-                    : desArt !== ""
-                      ? `${desArt}`
-                      : "Targa selezionata non trovata"}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Table size="small">
-                  <TableBody
-                    style={{
-                      borderBottom: "none",
-                      borderCollapse: "collapse",
+              <Typography variant="h4">
+                {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
+                  ? "Seleziona una targa"
+                  : desArt !== ""
+                    ? `${desArt}`
+                    : "Targa selezionata non trovata"}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={2} sx={{ width: "100%" }}>
+                {result.map((targaMezzi) => (
+                  <Grid
+                    size={{ xs: 12, sm: 6 }}
+                    key={targaMezzi.COD_ART}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      borderBottom: "1px solid #eee",
+                      py: 1,
                     }}
                   >
-                    {/* LISTA ARTICOLI TARGHE */}
-                    {result.map((targaMezzi) => {
-                      return (
-                        <TableRow key={targaMezzi.COD_ART}>
-                          <TableCell>
-                            <Typography variant="body1">
-                              {targaMezzi?.COD_ART} ·{" "}
-                              {targaMezzi.artAna?.DES_ART}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              color="info"
-                              variant="outlined"
-                              onClick={() => {
-                                localStorage.setItem(
-                                  STORAGE_KEY,
-                                  targaMezzi.COD_ART
-                                );
-                                setTargaMezziSelected(targaMezzi.COD_ART);
-                                setIsAccordionExpanded(false); // Chiude l'accordion
-                              }}
-                            >
-                              <NoCrashTwoToneIcon />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid size={{ xs: 1 }} sx={{ zIndex: 100 }}>
-            <AnelloGiallo />
-          </Grid>
+                    <Typography variant="body1" sx={{ flex: 1 }}>
+                      {targaMezzi?.COD_ART} · {targaMezzi.artAna?.DES_ART}
+                    </Typography>
+                    <Button
+                      color="info"
+                      variant="outlined"
+                      onClick={() => {
+                        localStorage.setItem(STORAGE_KEY, targaMezzi.COD_ART);
+                        setTargaMezziSelected(targaMezzi.COD_ART);
+                        setIsAccordionExpanded(false); // Chiude l'accordion
+                      }}
+                      sx={{ ml: 1 }}
+                    >
+                      <NoCrashTwoToneIcon />
+                    </Button>
+                  </Grid>
+                ))}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
-      </Container>
+        <Grid size={{ xs: 1 }}>
+          <AnelloGiallo />
+        </Grid>
+      </Grid>
       {targaMezziSelected !== NO_TARGA_MEZZI_SELECTED &&
         // codArt !== "" &&
         desArt !== "" &&

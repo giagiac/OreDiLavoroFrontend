@@ -16,7 +16,7 @@ function FormCreateUser() {
   const router = useRouter();
   const { user } = useAuth();
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
         <Grid textAlign="right" size={12} mb={10}>
           <Typography variant="h4" gutterBottom>
@@ -24,61 +24,54 @@ function FormCreateUser() {
           </Typography>
         </Grid>
         <Grid size={12}>
-          <Container maxWidth="sm">
-            <Grid
-              container
-              spacing={2}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Grid size={{ xs: 12 }} mb={5}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="not_defined"
-                  onClickAction={() =>
-                    router.push("/hours/manage/step1_FuoriSede")
-                  }
-                  label="Fuori sede"
-                  startIcon={<ArrowBackTwoToneIcon />}
-                  endIcon={<FlightTakeoffTwoToneIcon />}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="in_giornata"
-                  onClickAction={() =>
-                    router.push("/hours/manage/create/in_giornata")
-                  }
-                  label="In giornata"
-                  endIcon={<CalendarMonthTwoToneIcon />}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }} mb={5}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="in_giornata_dopo_21"
-                  onClickAction={() =>
-                    router.push("/hours/manage/create/in_giornata_dopo_21")
-                  }
-                  label="In giornata dopo le 21:00"
-                  endIcon={<NightsStayTwoToneIcon />}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="not_defined"
-                  onClickAction={() =>
-                    router.push("/hours/manage/step3_FuoriSede")
-                  }
-                  label="Pernotto fuori sede"
-                  endIcon={<HotelTwoToneIcon />}
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                />
-              </Grid>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12 }} mb={5}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="not_defined"
+                onClickAction={() =>
+                  router.push("/hours/manage/step1_FuoriSede")
+                }
+                label="Fuori sede"
+                startIcon={<ArrowBackTwoToneIcon />}
+                endIcon={<FlightTakeoffTwoToneIcon />}
+              />
             </Grid>
-          </Container>
+            <Grid size={{ xs: 12 }}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="in_giornata"
+                onClickAction={() =>
+                  router.push("/hours/manage/create/in_giornata")
+                }
+                label="In giornata"
+                endIcon={<CalendarMonthTwoToneIcon />}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }} mb={5}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="in_giornata_dopo_21"
+                onClickAction={() =>
+                  router.push("/hours/manage/create/in_giornata_dopo_21")
+                }
+                label="In giornata dopo le 21:00"
+                endIcon={<NightsStayTwoToneIcon />}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="not_defined"
+                onClickAction={() =>
+                  router.push("/hours/manage/step3_FuoriSede")
+                }
+                label="Pernotto fuori sede"
+                endIcon={<HotelTwoToneIcon />}
+                style={{ height: 80, fontSize: "1.5rem" }}
+                fullWidth
+                variant="outlined"
+                color="primary"
+                size="large"
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

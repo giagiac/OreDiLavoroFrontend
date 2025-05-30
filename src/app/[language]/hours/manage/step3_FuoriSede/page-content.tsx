@@ -20,7 +20,7 @@ function FormCreateUser() {
   const [showMissionPanel, setShowMissionPanel] = useState(false);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
         <Grid textAlign="right" size={12} mb={10}>
           <Typography variant="h4" gutterBottom>
@@ -28,122 +28,125 @@ function FormCreateUser() {
           </Typography>
         </Grid>
         <Grid size={12}>
-          <Container maxWidth="sm">
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }} mb={5}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="not_defined"
-                  onClickAction={() =>
-                    router.push("/hours/manage/step2_FuoriSede")
-                  }
-                  startIcon={<ArrowBackTwoToneIcon />}
-                  endIcon={<FlightTakeoffTwoToneIcon />}
-                  label="Pernotto fuori sede"
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="fuori_sede_andata"
-                  onClickAction={() =>
-                    router.push("/hours/manage/create/fuori_sede_andata")
-                  }
-                  endIcon={<TrendingUpTwoToneIcon />}
-                  label="Andata"
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }} mb={5}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="fuori_sede_ritorno"
-                  onClickAction={() =>
-                    router.push("/hours/manage/create/fuori_sede_ritorno")
-                  }
-                  endIcon={<UTurnLeftTwoToneIcon />}
-                  label="Ritorno"
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="not_defined"
-                  onClickAction={() => setShowMissionPanel(!showMissionPanel)}
-                  endIcon={<HourglassTopTwoToneIcon />}
-                  label="Ancora in trasferta"
-                />
-                <div
-                  style={{
-                    maxHeight: showMissionPanel ? "500px" : "0",
-                    overflow: "hidden",
-                    transition: "max-height 0.5s ease-in-out",
-                  }}
-                >
-                  <Grid
-                    container
-                    spacing={2}
-                    sx={(theme) => ({
-                      marginTop: theme.spacing(6),
-                      opacity: showMissionPanel ? 1 : 0,
-                      transition: "opacity 0.5s ease-in-out",
-                    })}
-                  >
-                    <Grid size={{ xs: 12 }}>
-                      <ButtonTipoTrasferta
-                        tipoTrasfertaButton="ancora_in_trasferta_0"
-                        onClickAction={() =>
-                          router.push(
-                            "/hours/manage/create/ancora_in_trasferta_0"
-                          )
-                        }
-                        label="0 km"
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-                      <ButtonTipoTrasferta
-                        tipoTrasfertaButton="ancora_in_trasferta_10"
-                        onClickAction={() =>
-                          router.push(
-                            "/hours/manage/create/ancora_in_trasferta_10"
-                          )
-                        }
-                        label="10 km"
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-                      <ButtonTipoTrasferta
-                        tipoTrasfertaButton="ancora_in_trasferta_20"
-                        onClickAction={() =>
-                          router.push(
-                            "/hours/manage/create/ancora_in_trasferta_20"
-                          )
-                        }
-                        label="20 km"
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-                      <ButtonTipoTrasferta
-                        tipoTrasfertaButton="ancora_in_trasferta_30"
-                        onClickAction={() =>
-                          router.push(
-                            "/hours/manage/create/ancora_in_trasferta_30"
-                          )
-                        }
-                        label="30 km"
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-                      <ButtonTipoTrasferta
-                        tipoTrasfertaButton="ancora_in_trasferta_40"
-                        onClickAction={() =>
-                          router.push(
-                            "/hours/manage/create/ancora_in_trasferta_40"
-                          )
-                        }
-                        label="40 km"
-                      />
-                    </Grid>
-                  </Grid>
-                </div>
-              </Grid>
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid size={{ xs: 12 }} mb={5}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="not_defined"
+                onClickAction={() =>
+                  router.push("/hours/manage/step2_FuoriSede")
+                }
+                startIcon={<ArrowBackTwoToneIcon />}
+                endIcon={<FlightTakeoffTwoToneIcon />}
+                label="Pernotto fuori sede"
+              />
             </Grid>
-          </Container>
+            <Grid size={{ xs: 12 }}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="fuori_sede_andata"
+                onClickAction={() =>
+                  router.push("/hours/manage/create/fuori_sede_andata")
+                }
+                endIcon={<TrendingUpTwoToneIcon />}
+                label="Andata"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }} mb={5}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="fuori_sede_ritorno"
+                onClickAction={() =>
+                  router.push("/hours/manage/create/fuori_sede_ritorno")
+                }
+                endIcon={<UTurnLeftTwoToneIcon />}
+                label="Ritorno"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="not_defined"
+                onClickAction={() => setShowMissionPanel(!showMissionPanel)}
+                endIcon={<HourglassTopTwoToneIcon />}
+                label="Ancora in trasferta"
+              />
+              <div
+                style={{
+                  maxHeight: showMissionPanel ? "500px" : "0",
+                  overflow: "hidden",
+                  transition: "max-height 0.5s ease-in-out",
+                }}
+              >
+                <Grid
+                  container
+                  spacing={2}
+                  sx={(theme) => ({
+                    marginTop: theme.spacing(6),
+                    opacity: showMissionPanel ? 1 : 0,
+                    transition: "opacity 0.5s ease-in-out",
+                  })}
+                >
+                  <Grid size={{ xs: 12 }}>
+                    <ButtonTipoTrasferta
+                      tipoTrasfertaButton="ancora_in_trasferta_0"
+                      onClickAction={() =>
+                        router.push(
+                          "/hours/manage/create/ancora_in_trasferta_0"
+                        )
+                      }
+                      label="0 km"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <ButtonTipoTrasferta
+                      tipoTrasfertaButton="ancora_in_trasferta_10"
+                      onClickAction={() =>
+                        router.push(
+                          "/hours/manage/create/ancora_in_trasferta_10"
+                        )
+                      }
+                      label="10 km"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <ButtonTipoTrasferta
+                      tipoTrasfertaButton="ancora_in_trasferta_20"
+                      onClickAction={() =>
+                        router.push(
+                          "/hours/manage/create/ancora_in_trasferta_20"
+                        )
+                      }
+                      label="20 km"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <ButtonTipoTrasferta
+                      tipoTrasfertaButton="ancora_in_trasferta_30"
+                      onClickAction={() =>
+                        router.push(
+                          "/hours/manage/create/ancora_in_trasferta_30"
+                        )
+                      }
+                      label="30 km"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <ButtonTipoTrasferta
+                      tipoTrasfertaButton="ancora_in_trasferta_40"
+                      onClickAction={() =>
+                        router.push(
+                          "/hours/manage/create/ancora_in_trasferta_40"
+                        )
+                      }
+                      label="40 km"
+                    />
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

@@ -253,7 +253,7 @@ function TargaMezziPage() {
   // const fetchPostTargaMezzi = useDeleteTargaMezziService();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 0 }}>
       <Grid container spacing={3} pt={3}>
         <Grid container spacing={3} size={{ xs: 12 }}>
           <Grid size="grow">
@@ -267,7 +267,7 @@ function TargaMezziPage() {
               refetch();
             }}
           />
-          <TableContainer component={Paper} elevation={5}>
+          <TableContainer component={Paper} elevation={3}>
             <Table size="small">
               <TableHead>
                 <TableRow>

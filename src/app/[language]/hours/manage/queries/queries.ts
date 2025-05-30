@@ -50,8 +50,6 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
   const fetch = useGetEpsNestjsOrpEffCicliEsecService();
 
   const query = useInfiniteQuery({
-    refetchOnWindowFocus: true,
-    retry: 3,
     queryKey: epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({
       sort,
       filter: { filters },

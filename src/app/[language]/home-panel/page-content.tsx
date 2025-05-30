@@ -18,7 +18,7 @@ function AdminPanel() {
   const { user } = useAuth();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container spacing={3} pt={3}>
         <Grid textAlign={{ xs: "right" }} size={6}>
           <Image src={imageWorker} alt="No records image" height={200} />

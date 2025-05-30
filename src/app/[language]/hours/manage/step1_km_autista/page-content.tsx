@@ -23,7 +23,7 @@ function FormCreateUser() {
   const { user } = useAuth();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
         <Grid textAlign="right" size={12} mb={5}>
           <Typography variant="h5" gutterBottom>
@@ -32,45 +32,43 @@ function FormCreateUser() {
           </Typography>
         </Grid>
         <Grid size={12}>
-          <Container maxWidth="sm">
-            <Grid container>
-              <Grid size={{ xs: 12 }}>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="not_defined"
-                  onClickAction={() => router.push("/hours/manage")}
-                  startIcon={<ArrowBackTwoToneIcon />}
-                  endIcon={<AirportShuttleTwoToneIcon />}
-                  label="KM Autista"
-                />
-              </Grid>
-              <Grid size={12}>
-                <Grid container justifyContent="center" alignItems="center">
-                  <Grid size={{ xs: 12 }}>
-                    <NumericKeypadKm
-                      onChange={(value) => {
-                        setKm(value);
-                      }}
-                    />
-                  </Grid>
+          <Grid container>
+            <Grid size={{ xs: 12 }}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="not_defined"
+                onClickAction={() => router.push("/hours/manage")}
+                startIcon={<ArrowBackTwoToneIcon />}
+                endIcon={<AirportShuttleTwoToneIcon />}
+                label="KM Autista"
+              />
+            </Grid>
+            <Grid size={12}>
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid size={{ xs: 12 }}>
+                  <NumericKeypadKm
+                    onChange={(value) => {
+                      setKm(value);
+                    }}
+                  />
                 </Grid>
               </Grid>
-              <Grid size={12} pt={3}>
-                <TargaMezziTable
-                  childrenCallBack={(COD_ART) => (
-                    <ButtonTipoTrasferta
-                      tipoTrasfertaButton="km_autista_button"
-                      onClickAction={async () => {
-                        router.push(
-                          `/hours/manage/create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}`
-                        );
-                      }}
-                      icon={<ForwardTwoToneIcon />}
-                    />
-                  )}
-                />
-              </Grid>
             </Grid>
-          </Container>
+            <Grid size={12} pt={3}>
+              <TargaMezziTable
+                childrenCallBack={(COD_ART) => (
+                  <ButtonTipoTrasferta
+                    tipoTrasfertaButton="km_autista_button"
+                    onClickAction={async () => {
+                      router.push(
+                        `/hours/manage/create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}`
+                      );
+                    }}
+                    icon={<ForwardTwoToneIcon />}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

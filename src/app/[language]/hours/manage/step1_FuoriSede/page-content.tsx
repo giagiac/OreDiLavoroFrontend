@@ -25,7 +25,7 @@ function FormCreateUser() {
   const { user } = useAuth();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
         <Grid textAlign="right" size={12} mb={10}>
           <Typography variant="h4" gutterBottom>
@@ -33,7 +33,7 @@ function FormCreateUser() {
           </Typography>
         </Grid>
         <Grid size={12}>
-          <Container maxWidth="sm">
+          <Grid container>
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
@@ -77,7 +77,7 @@ function FormCreateUser() {
                 )}
               />
             </Grid>
-          </Container>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

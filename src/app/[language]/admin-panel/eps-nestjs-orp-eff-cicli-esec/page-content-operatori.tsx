@@ -296,7 +296,7 @@ function Operatoris() {
         </Grid>
 
         <Grid size={{ xs: 12 }} mb={2}>
-          <TableContainer component={Paper} elevation={5}>
+          <TableContainer component={Paper} elevation={3}>
             <Table size="small">
               <TableHead>
                 <TableRow>

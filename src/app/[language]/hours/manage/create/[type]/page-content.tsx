@@ -396,8 +396,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Container maxWidth="md">
-        <Grid container mb={3} justifyContent="center" alignItems="center">
+      <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
+        <Grid container mb={3} justifyContent="center">
           <Grid size={{ xs: 12 }}>
             <ButtonTipoTrasferta
               onClickAction={() => {
@@ -409,7 +409,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} justifyContent="center">
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
@@ -539,7 +539,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                     <Grid size={{ xs: 12 }}>
                       <TableContainer
                         component={Paper}
-                        elevation={5}
+                        elevation={3}
                         sx={{ p: 2 }}
                       >
                         <Table>

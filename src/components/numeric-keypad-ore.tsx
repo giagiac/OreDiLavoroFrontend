@@ -57,7 +57,14 @@ export const NumericKeypad = ({
   };
 
   return (
-    <Paper elevation={5} sx={(theme) => ({ padding: theme.spacing(2), mt: 3 })}>
+    <Paper
+      elevation={3}
+      sx={(theme) => ({
+        mt: theme.spacing(3),
+        pb: theme.spacing(3),
+        minWidth: { xs: 290 },
+      })}
+    >
       <Grid container spacing={1}>
         <Grid container size={{ xs: 12 }} justifyContent="center">
           <Typography variant="h1" textAlign="center">

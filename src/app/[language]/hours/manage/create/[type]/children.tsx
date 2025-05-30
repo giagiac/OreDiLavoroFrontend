@@ -9,6 +9,8 @@ import Grid from "@mui/material/Grid2";
 import { useMemo, useState } from "react";
 import { ChildEpsNestjsOrpEffCicliEsecCardMini } from "../../child-eps-nestjs-orp-eff-cicli-esec-card-mini";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "../../queries/queries";
+import Paper from "@mui/material/Paper";
+import { useTheme } from "@mui/material/styles";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -43,26 +45,32 @@ function Children({ id }: Props) {
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
+  const theme = useTheme();
+
   return (
     <>
+      {/* Gradient overlay, fixed to the right, not scrolling with content */}
+
       <Grid
+        component={Paper}
+        elevation={3}
         container
         spacing={1}
         direction="row"
         wrap="nowrap"
         sx={{
+          padding: theme.spacing(1),
           overflowX: "auto",
           flexWrap: "nowrap",
           flexDirection: "row",
           scrollbarWidth: "auto",
+          position: "relative",
         }}
       >
         {result.map((item) => (
           <ChildEpsNestjsOrpEffCicliEsecCardMini
             key={item.id}
             epsNestjsOrpEffCicliEsec={item}
-            onDelete={() => {}}
-            renderOrdCliTrasDialog={() => null}
           />
         ))}
       </Grid>

@@ -174,6 +174,7 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                                 </Icon>
                               ) : (
                                 <Button
+                                  disabled={true}
                                   onClick={() => {
                                     onScheduleTask(epsNestjsOrpEffCicliEsec.id);
                                   }}

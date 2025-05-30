@@ -36,6 +36,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title: t("title"),
     manifest: "/manifest.json",
+    other: { pinterest: "nopin" },
   };
 }
 
@@ -55,6 +56,12 @@ export default async function RootLayout(props: {
 
   return (
     <html lang={language} dir={dir(language)} suppressHydrationWarning>
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </head>
       <body suppressHydrationWarning>
         <Analytics />
         <InitColorSchemeScript />

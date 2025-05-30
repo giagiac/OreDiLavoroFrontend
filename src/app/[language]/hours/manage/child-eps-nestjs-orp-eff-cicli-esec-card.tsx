@@ -1,17 +1,15 @@
-import TipoTrasfertaComponent, {
-  backgroundColorsDark,
-  backgroundColorsLight,
-} from "@/components/tipo-trasferta";
-import TipoTrasfertaLeftConnectComponent from "@/components/tipo-trasferta-left-connect";
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
 import Icon from "@mui/material/Icon";
+import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { Fragment } from "react";
 
@@ -28,21 +26,26 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
   renderOrdCliTrasDialog,
   onDelete,
 }: Props) {
+  const theme = useTheme();
+
+  const color =
+    theme.palette.mode === "dark"
+      ? TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA].dark
+      : TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA].light;
+
   return (
     <Fragment key={epsNestjsOrpEffCicliEsec.id}>
-      <Grid size={{ xs: 12, sm: 6, md: 4 }} key={epsNestjsOrpEffCicliEsec?.id}>
+      <Grid key={epsNestjsOrpEffCicliEsec?.id}>
         <Card
-          sx={(theme) => ({
-            minWidth: 250,
+          sx={{
+            minWidth: 300,
+            maxWidth: 360,
             minHeight: "100%",
             padding: theme.spacing(1),
             borderRadius: 1,
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? backgroundColorsDark[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-                : backgroundColorsLight[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-            }`,
-          })}
+            border: `1px solid`,
+            borderColor: color.main,
+          }}
         >
           <Grid size={{ xs: 12 }}>
             <TipoTrasfertaComponent
@@ -55,6 +58,18 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 </Icon>
               ) : (
                 <Button
+                  sx={{
+                    backgroundColor: theme.palette.augmentColor({
+                      color: {
+                        main: color.main,
+                      },
+                      mainShade: 900,
+                    }).main,
+                    color: theme.palette.getContrastText(color.main),
+                    "&:hover": {
+                      backgroundColor: color.hover,
+                    },
+                  }}
                   onClick={() => {
                     onDelete(epsNestjsOrpEffCicliEsec?.id);
                   }}
@@ -107,91 +122,29 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
         </Card>
       </Grid>
       {epsNestjsOrpEffCicliEsec?.epsNestjsOrpEffCicliEsecChild?.map((child) => (
-        <Grid
-          key={child.id}
-          size={{ xs: 12, sm: 6, md: 4 }}
-          sx={{ display: "flex", alignItems: "center" }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              position: "relative",
-            }}
-          >
-            {/* Freccia */}
-            <Box
-              sx={(theme) => ({
-                display: { xs: "none", sm: "inline-block" },
-                borderTop: "10px solid transparent",
-                borderBottom: "10px solid transparent",
-                borderRight: `15px solid ${
-                  theme.palette.mode === "dark"
-                    ? backgroundColorsDark[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                    : backgroundColorsLight[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                }`,
-                marginTop: 0,
-                position: "absolute",
-              })}
-              aria-label="freccia sinistra"
-            />
-            {/* Freccia top per xs */}
-            <Box
-              sx={(theme) => ({
-                display: { xs: "inline-block", sm: "none" },
-                borderLeft: "8px solid transparent",
-                borderRight: "8px solid transparent",
-                borderBottom: `30px solid ${
-                  theme.palette.mode === "dark"
-                    ? backgroundColorsDark[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                    : backgroundColorsLight[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                }`,
-                margin: "0 auto",
-                position: "absolute",
-                top: 0,
-                left: "50%",
-                transform: "translateX(-50%)",
-              })}
-              aria-label="freccia sopra"
-            />
-          </div>
+        <Grid key={child.id}>
           <Card
             sx={(theme) => ({
-              minWidth: "100%",
+              minWidth: 300,
+              maxWidth: 360,
+              minHeight: "100%",
               padding: theme.spacing(1),
-              border: `1px solid ${
-                theme.palette.mode === "dark"
-                  ? backgroundColorsDark[
-                      epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                    ]
-                  : backgroundColorsLight[
-                      epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                    ]
-              }`,
+              border: `1px solid`,
+              borderColor: color.main,
             })}
           >
             <Grid container>
               <Grid size={{ xs: 12 }}>
-                <TipoTrasfertaLeftConnectComponent
+                <TipoTrasfertaComponent
                   tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
                 >
-                  <Button
-                    disabled={true}
-                    variant="contained"
-                    // endIcon={<InsertLinkTwoToneIcon />}
-                  >
-                    {`${child?.id ?? ""} [${child?.idfk ?? ""}]`}
-                  </Button>
-                </TipoTrasfertaLeftConnectComponent>
+                  <Stack direction="column" textAlign="center">
+                    <Typography variant="caption">{child?.id ?? ""}</Typography>
+                    <Typography variant="caption">
+                      {child?.idfk ?? ""}
+                    </Typography>
+                  </Stack>
+                </TipoTrasfertaComponent>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body1">

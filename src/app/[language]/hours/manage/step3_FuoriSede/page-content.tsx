@@ -1,87 +1,73 @@
 "use client";
 
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
-import Button from "@mui/material/Button";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import TrendingUpTwoToneIcon from "@mui/icons-material/TrendingUpTwoTone";
+import UTurnLeftTwoToneIcon from "@mui/icons-material/UTurnLeftTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-
+import HourglassTopTwoToneIcon from "@mui/icons-material/HourglassTopTwoTone";
 function FormCreateUser() {
   const router = useRouter();
-  // const { t } = useTranslation("admin-panel-users-create");
+  const { user } = useAuth();
 
   const [showMissionPanel, setShowMissionPanel] = useState(false);
 
   return (
     <Container maxWidth="md">
-      <Grid container spacing={3} pt={3}>
-        <Grid textAlign={{ xs: "right" }} size={12}>
+      <Grid container>
+        <Grid textAlign="right" size={12} mb={10}>
           <Typography variant="h4" gutterBottom>
-            Sei rientrato?
+            {`${user?.firstName} ${user?.lastName}`} sei rientrato?
           </Typography>
         </Grid>
         <Grid size={12}>
           <Container maxWidth="sm">
-            <Grid container spacing={2} mb={3} mt={3}>
-              <Grid size={{ xs: 12 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  style={{ height: 50, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/step2_FuoriSede")}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12 }} mb={5}>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="not_defined"
+                  onClickAction={() =>
+                    router.push("/hours/manage/step2_FuoriSede")
+                  }
                   startIcon={<ArrowBackTwoToneIcon />}
                   endIcon={<FlightTakeoffTwoToneIcon />}
-                >
-                  Pernotto fuori sede
-                </Button>
+                  label="Pernotto fuori sede"
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() =>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="fuori_sede_andata"
+                  onClickAction={() =>
                     router.push("/hours/manage/create/fuori_sede_andata")
                   }
-                  endIcon={"↗"}
-                >
-                  Andata
-                </Button>
+                  endIcon={<TrendingUpTwoToneIcon />}
+                  label="Andata"
+                />
               </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() =>
+              <Grid size={{ xs: 12 }} mb={5}>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="fuori_sede_ritorno"
+                  onClickAction={() =>
                     router.push("/hours/manage/create/fuori_sede_ritorno")
                   }
-                  endIcon={"↙"}
-                >
-                  Ritorno
-                </Button>
+                  endIcon={<UTurnLeftTwoToneIcon />}
+                  label="Ritorno"
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() => setShowMissionPanel(!showMissionPanel)}
-                  endIcon={"↔"}
-                >
-                  Ancora in trasferta
-                </Button>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="not_defined"
+                  onClickAction={() => setShowMissionPanel(!showMissionPanel)}
+                  endIcon={<HourglassTopTwoToneIcon />}
+                  label="Ancora in trasferta"
+                />
                 <div
                   style={{
                     maxHeight: showMissionPanel ? "500px" : "0",
@@ -99,84 +85,59 @@ function FormCreateUser() {
                     })}
                   >
                     <Grid size={{ xs: 12 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        style={{ height: 50, fontSize: "1.2rem" }}
-                        onClick={() =>
+                      <ButtonTipoTrasferta
+                        tipoTrasfertaButton="ancora_in_trasferta_0"
+                        onClickAction={() =>
                           router.push(
-                            "/hours/manage/create/ancora_in_missione_0"
+                            "/hours/manage/create/ancora_in_trasferta_0"
                           )
                         }
-                      >
-                        0 km
-                      </Button>
+                        label="0 km"
+                      />
                     </Grid>
                     <Grid size={{ xs: 12 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        style={{ height: 50, fontSize: "1.2rem" }}
-                        onClick={() =>
+                      <ButtonTipoTrasferta
+                        tipoTrasfertaButton="ancora_in_trasferta_10"
+                        onClickAction={() =>
                           router.push(
-                            "/hours/manage/create/ancora_in_missione_10"
+                            "/hours/manage/create/ancora_in_trasferta_10"
                           )
                         }
-                      >
-                        5 km
-                      </Button>
+                        label="10 km"
+                      />
                     </Grid>
                     <Grid size={{ xs: 12 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        style={{ height: 50, fontSize: "1.2rem" }}
-                        onClick={() =>
+                      <ButtonTipoTrasferta
+                        tipoTrasfertaButton="ancora_in_trasferta_20"
+                        onClickAction={() =>
                           router.push(
-                            "/hours/manage/create/ancora_in_missione_20"
+                            "/hours/manage/create/ancora_in_trasferta_20"
                           )
                         }
-                      >
-                        10 km
-                      </Button>
+                        label="20 km"
+                      />
                     </Grid>
                     <Grid size={{ xs: 12 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        style={{ height: 50, fontSize: "1.2rem" }}
-                        onClick={() =>
+                      <ButtonTipoTrasferta
+                        tipoTrasfertaButton="ancora_in_trasferta_30"
+                        onClickAction={() =>
                           router.push(
-                            "/hours/manage/create/ancora_in_missione_30"
+                            "/hours/manage/create/ancora_in_trasferta_30"
                           )
                         }
-                      >
-                        15 km
-                      </Button>
+                        label="30 km"
+                      />
                     </Grid>
                     <Grid size={{ xs: 12 }}>
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        style={{ height: 50, fontSize: "1.2rem" }}
-                        onClick={() =>
+                      <ButtonTipoTrasferta
+                        tipoTrasfertaButton="ancora_in_trasferta_40"
+                        onClickAction={() =>
                           router.push(
-                            "/hours/manage/create/ancora_in_missione_40"
+                            "/hours/manage/create/ancora_in_trasferta_40"
                           )
                         }
-                      >
-                        20 km
-                      </Button>
+                        label="40 km"
+                      />
                     </Grid>
                   </Grid>
                 </div>

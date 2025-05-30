@@ -58,7 +58,7 @@ export const NumericKeypadKm = ({
                         width: "5rem",
                         height: "4rem",
                       }}
-                      variant="contained"
+                      variant="outlined"
                       onClick={() => handleNumberClick(number)}
                     >
                       {number}
@@ -73,7 +73,7 @@ export const NumericKeypadKm = ({
               <Button
                 color="info"
                 style={{ fontSize: "3rem", width: "5rem", height: "4rem" }}
-                variant="contained"
+                variant="outlined"
                 onClick={() => handleNumberClick(0)}
               >
                 0
@@ -83,7 +83,7 @@ export const NumericKeypadKm = ({
               <Button
                 color="info"
                 style={{ width: "10.5rem", height: "4rem", fontSize: "1.5rem" }}
-                variant="contained"
+                variant="outlined"
                 onClick={handleClearClick}
               >
                 Cancella

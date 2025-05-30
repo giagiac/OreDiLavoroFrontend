@@ -1,26 +1,26 @@
 "use client";
 
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
-import Button from "@mui/material/Button";
+import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import HotelTwoToneIcon from "@mui/icons-material/HotelTwoTone";
+import NightsStayTwoToneIcon from "@mui/icons-material/NightsStayTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-
 function FormCreateUser() {
   const router = useRouter();
-
+  const { user } = useAuth();
   return (
     <Container maxWidth="md">
-      <Grid container spacing={3} pt={3}>
-        <Grid textAlign={{ xs: "right" }} size={12}>
-          {/* <Typography variant="h3" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`}
-          </Typography> */}
+      <Grid container>
+        <Grid textAlign="right" size={12} mb={10}>
           <Typography variant="h4" gutterBottom>
-            Sei rientrato?
+            {`${user?.firstName} ${user?.lastName}`} sei rientrato?
           </Typography>
         </Grid>
         <Grid size={12}>
@@ -28,66 +28,54 @@ function FormCreateUser() {
             <Grid
               container
               spacing={2}
-              mb={3}
-              mt={3}
               justifyContent="center"
               alignItems="center"
             >
-              <Grid size={{ xs: 12 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  style={{ height: 50, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/step1_FuoriSede")}
+              <Grid size={{ xs: 12 }} mb={5}>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="not_defined"
+                  onClickAction={() =>
+                    router.push("/hours/manage/step1_FuoriSede")
+                  }
+                  label="Fuori sede"
                   startIcon={<ArrowBackTwoToneIcon />}
                   endIcon={<FlightTakeoffTwoToneIcon />}
-                >
-                  Fuori sede
-                </Button>
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() =>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="in_giornata"
+                  onClickAction={() =>
                     router.push("/hours/manage/create/in_giornata")
                   }
-                  endIcon={"📅"}
-                >
-                  In giornata
-                </Button>
+                  label="In giornata"
+                  endIcon={<CalendarMonthTwoToneIcon />}
+                />
               </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() =>
+              <Grid size={{ xs: 12 }} mb={5}>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="in_giornata_dopo_21"
+                  onClickAction={() =>
                     router.push("/hours/manage/create/in_giornata_dopo_21")
                   }
-                  endIcon={"🌃"}
-                >
-                  In giornata dopo le 21:00
-                </Button>
+                  label="In giornata dopo le 21:00"
+                  endIcon={<NightsStayTwoToneIcon />}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Button
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="not_defined"
+                  onClickAction={() =>
+                    router.push("/hours/manage/step3_FuoriSede")
+                  }
+                  label="Pernotto fuori sede"
+                  endIcon={<HotelTwoToneIcon />}
+                  style={{ height: 80, fontSize: "1.5rem" }}
                   fullWidth
                   variant="outlined"
                   color="primary"
                   size="large"
-                  style={{ height: 80, fontSize: "1.5rem" }}
-                  onClick={() => router.push("/hours/manage/step3_FuoriSede")}
-                  endIcon={"🏩"}
-                >
-                  Pernotto fuori sede
-                </Button>
+                />
               </Grid>
             </Grid>
           </Container>

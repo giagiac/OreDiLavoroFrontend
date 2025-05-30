@@ -1,6 +1,5 @@
 "use client";
 
-import { FullPageLoader } from "@/components/full-page-loader";
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
@@ -80,6 +79,8 @@ type CreateFormDataChild = {
   NOTE?: string | null;
 };
 
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+
 function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{
     type: string;
@@ -94,75 +95,66 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
   let prepareLink = "/hours/manage";
   let prepareText = "In sede";
-  let buttonColor: "primary" | "secondary" | "info" = "secondary"; // Customizable button color
+
   let icon = <FactoryTwoToneIcon />;
 
   switch (tipoTrasferta) {
     case "in_sede":
       prepareLink = "/hours/manage";
       prepareText = "In sede";
-      buttonColor = "secondary";
+      icon = <FactoryTwoToneIcon />;
       break;
     // da qui in poi sono tutte
     // FUORI SEDE
     case "in_giornata":
       prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "in_giornata_dopo_21":
       prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata dopo le 21:00";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_andata":
       prepareText = "Fuori sede andata";
       prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_ritorno":
       prepareText = "Fuori sede ritorno";
       prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "ancora_in_missione_0":
+    case "ancora_in_trasferta_0":
       prepareText = "Ancora in trasferta 0 Km";
       prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
+
       icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "ancora_in_missione_10":
-      prepareText = "Ancora in trasferta 5 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      icon = <FlightTakeoffTwoToneIcon />;
-      break;
-    case "ancora_in_missione_20":
+    case "ancora_in_trasferta_10":
       prepareText = "Ancora in trasferta 10 Km";
       prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "ancora_in_missione_30":
-      prepareText = "Ancora in trasferta 15 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
-      icon = <FlightTakeoffTwoToneIcon />;
-      break;
-    case "ancora_in_missione_40":
+    case "ancora_in_trasferta_20":
       prepareText = "Ancora in trasferta 20 Km";
       prepareLink = "/hours/manage/step3_FuoriSede";
-      buttonColor = "primary";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "step1_KmAutista":
+    case "ancora_in_trasferta_30":
+      prepareText = "Ancora in trasferta 30 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
+      icon = <FlightTakeoffTwoToneIcon />;
+      break;
+    case "ancora_in_trasferta_40":
+      prepareText = "Ancora in trasferta 40 Km";
+      prepareLink = "/hours/manage/step3_FuoriSede";
+      icon = <FlightTakeoffTwoToneIcon />;
+      break;
+    case "step1_km_autista":
       prepareText = "Km Autista";
-      prepareLink = "/hours/manage/step1_KmAutista";
-      buttonColor = "info";
+      prepareLink = "/hours/manage/step1_km_autista";
       icon = <AirportShuttleTwoToneIcon />;
       break;
   }
@@ -286,9 +278,9 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         variant: "success",
       });
 
-      if (tipoTrasferta === "step1_KmAutista") {
+      if (tipoTrasferta === "step1_km_autista") {
         router.push(
-          `/hours/manage/create/step1_KmAutista?${searchParams}&id=${data.id}`
+          `/hours/manage/create/step1_km_autista?${searchParams}&id=${data.id}`
         );
         // Open confirmation dialog
         setDialogOpen(
@@ -407,19 +399,14 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       <Container maxWidth="md">
         <Grid container mb={3} justifyContent="center" alignItems="center">
           <Grid size={{ xs: 12 }}>
-            <Button
-              variant="contained"
-              size="large"
-              style={{ height: 50, fontSize: "1.5rem" }}
-              color={buttonColor} // Use customizable button color
-              onClick={() => {
+            <ButtonTipoTrasferta
+              onClickAction={() => {
                 router.push(prepareLink);
               }}
-              startIcon={<ArrowBackTwoToneIcon />}
               endIcon={icon}
-            >
-              {prepareText}
-            </Button>
+              label={prepareText}
+              startIcon={<ArrowBackTwoToneIcon />}
+            />
           </Grid>
         </Grid>
         <Grid container spacing={1}>
@@ -514,7 +501,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               />
             </Stack>
           </Grid>
-          <FullPageLoader isLoading={isLoading || isFetching} />
+          {/* <FullPageLoader isLoading={isLoading || isFetching} /> */}
           {isFetched && (
             <>
               {result.length === 0 &&
@@ -700,7 +687,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                           variant="contained"
                           onClick={async () => {
                             // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
-                            if (tipoTrasferta === "step1_KmAutista") {
+                            if (tipoTrasferta === "step1_km_autista") {
                               if (id) {
                                 await onSubmitChild();
                               } else {

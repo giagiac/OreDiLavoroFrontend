@@ -6,39 +6,12 @@ import Typography from "@mui/material/Typography";
 import { Stack, styled, useTheme } from "@mui/system";
 import React, { ReactElement } from "react";
 import { TipoTrasferta } from "../services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { TipoTrasfertaColors } from "../constants/theme-colors";
 
 export interface TipoTrasfertaProps {
   tipotrasferta: TipoTrasferta;
   children?: ReactElement;
 }
-
-// Costante per i colori di background in modalità light
-export const backgroundColorsLight: Record<TipoTrasferta, string> = {
-  in_sede: "#e0f7fa",
-  in_giornata: "#fbe9e7",
-  in_giornata_dopo_21: "#ffccbc",
-  fuori_sede_andata: "#dcedc8",
-  fuori_sede_ritorno: "#c5e1a5",
-  ancora_in_missione_10: "#f8bbd0",
-  ancora_in_missione_20: "#f48fb1",
-  ancora_in_missione_30: "#ce93d8",
-  ancora_in_missione_40: "#b39ddb",
-  step1_KmAutista: "#9fa8da",
-};
-
-// Costante per i colori di background in modalità dark
-export const backgroundColorsDark: Record<TipoTrasferta, string> = {
-  in_sede: "#263238",
-  in_giornata: "#3E2723",
-  in_giornata_dopo_21: "#3E2723",
-  fuori_sede_andata: "#1B5E20",
-  fuori_sede_ritorno: "#1B5E20",
-  ancora_in_missione_10: "#880E4F",
-  ancora_in_missione_20: "#880E4F",
-  ancora_in_missione_30: "#4A148C",
-  ancora_in_missione_40: "#311B92",
-  step1_KmAutista: "#1A237E",
-};
 
 const StyledPaper = styled(Paper)(({
   tipotrasferta,
@@ -46,13 +19,19 @@ const StyledPaper = styled(Paper)(({
   tipotrasferta: TipoTrasferta;
 }) => {
   const theme = useTheme();
+
+  const color =
+    theme.palette.mode === "dark"
+      ? TipoTrasfertaColors[tipotrasferta].dark
+      : TipoTrasfertaColors[tipotrasferta].light;
+
   return {
     padding: theme.spacing(1.5),
-    backgroundColor:
-      theme.palette.mode === "dark"
-        ? backgroundColorsDark[tipotrasferta]
-        : backgroundColorsLight[tipotrasferta],
-    color: theme.palette.mode === "dark" ? "#fff" : "#000",
+    backgroundColor: color.main,
+    color: theme.palette.getContrastText(color.main),
+    "&:hover": {
+      backgroundColor: color.hover,
+    },
   };
 });
 
@@ -84,25 +63,29 @@ const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "fuori sede ritorno";
       break;
-    case "ancora_in_missione_10":
+    case "ancora_in_trasferta_0":
       icon = <FlightTakeoffTwoToneIcon />;
-      descrizione = "ancora in missione 5";
+      descrizione = "ancora in trasferta 0";
       break;
-    case "ancora_in_missione_20":
+    case "ancora_in_trasferta_10":
       icon = <FlightTakeoffTwoToneIcon />;
-      descrizione = "ancora in missione 10";
+      descrizione = "ancora in trasferta 10";
       break;
-    case "ancora_in_missione_30":
+    case "ancora_in_trasferta_20":
       icon = <FlightTakeoffTwoToneIcon />;
-      descrizione = "ancora in missione 15";
+      descrizione = "ancora in trasferta 20";
       break;
-    case "ancora_in_missione_40":
+    case "ancora_in_trasferta_30":
       icon = <FlightTakeoffTwoToneIcon />;
-      descrizione = "ancora in missione 20";
+      descrizione = "ancora in trasferta 30";
       break;
-    case "step1_KmAutista":
+    case "ancora_in_trasferta_40":
+      icon = <FlightTakeoffTwoToneIcon />;
+      descrizione = "ancora in trasferta 40";
+      break;
+    case "step1_km_autista":
       icon = <AirportShuttleTwoToneIcon />;
-      descrizione = "KmAutista";
+      descrizione = "Km Autista";
       break;
   }
 

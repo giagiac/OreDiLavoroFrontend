@@ -58,7 +58,7 @@ function TableSortFilterCellWrapper(
 ) {
   const value =
     props.filters?.find((it) => it.columnName === props.column)?.value || "";
-  const [text, setText] = useState<string>(String(value));
+  const [text, setText] = useState<string | number>(value);
 
   const handleCancellaTesto = () => {
     setText("");

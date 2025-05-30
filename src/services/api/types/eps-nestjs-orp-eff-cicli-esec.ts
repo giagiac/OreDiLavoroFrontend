@@ -10,24 +10,12 @@ export type TipoTrasferta =
   | "in_giornata_dopo_21"
   | "fuori_sede_andata"
   | "fuori_sede_ritorno"
-  | "ancora_in_missione_10"
-  | "ancora_in_missione_20"
-  | "ancora_in_missione_30"
-  | "ancora_in_missione_40"
-  | "step1_KmAutista";
-
-// export enum TipoTrasferta {
-//   "in_sede" = "in_sede",
-//   "in_giornata" = "in_giornata",
-//   "in_giornata_dopo_21" = "in_giornata_dopo_21",
-//   "fuori_sede_andata" = "fuori_sede_andata",
-//   "fuori_sede_ritorno" = "fuori_sede_ritorno",
-//   "ancora_in_missione_10" = "ancora_in_missione_10",
-//   "ancora_in_missione_20" = "ancora_in_missione_20",
-//   "ancora_in_missione_30" = "ancora_in_missione_30",
-//   "ancora_in_missione_40" = "ancora_in_missione_40",
-//   "step1_KmAutista" = "step1_KmAutista",
-// }
+  | "ancora_in_trasferta_0"
+  | "ancora_in_trasferta_10"
+  | "ancora_in_trasferta_20"
+  | "ancora_in_trasferta_30"
+  | "ancora_in_trasferta_40"
+  | "step1_km_autista";
 
 export type EpsNestjsOrpEffCicliEsec = {
   id: string;

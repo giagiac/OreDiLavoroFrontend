@@ -1,34 +1,26 @@
-import TipoTrasfertaComponent, {
-  backgroundColorsDark,
-  backgroundColorsLight,
-} from "@/components/tipo-trasferta";
-import TipoTrasfertaLeftConnectComponent from "@/components/tipo-trasferta-left-connect";
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
-import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
-import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
+
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import Button from "@mui/material/Button";
+
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
 import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
 interface Props {
   epsNestjsOrpEffCicliEsec: EpsNestjsOrpEffCicliEsec;
-  renderOrdCliTrasDialog: (
-    linkOrpOrd: Array<LinkOrpOrd>
-  ) => React.ReactNode | null;
-  onDelete: (id: string) => void;
 }
 
 export function ChildEpsNestjsOrpEffCicliEsecCardMini({
   epsNestjsOrpEffCicliEsec,
-  renderOrdCliTrasDialog,
-  onDelete,
 }: Props) {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [childContentVisible, setChildContentVisible] = useState<{
@@ -46,18 +38,23 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
     }));
   };
 
+  const theme = useTheme();
+
+  const color =
+    theme.palette.mode === "dark"
+      ? TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA].dark
+      : TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA].light;
+
   return (
     <>
       <Card
         sx={(theme) => ({
-          minWidth: 250,
+          minWidth: 200,
+          width: 220,
           padding: theme.spacing(1),
           borderRadius: 1,
-          border: `1px solid ${
-            theme.palette.mode === "dark"
-              ? backgroundColorsDark[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-              : backgroundColorsLight[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-          }`,
+          border: `1px solid`,
+          borderColor: color.main,
         })}
       >
         <Grid container>
@@ -73,16 +70,11 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                   <LockTwoToneIcon fontSize="small" /> {/* Using small icon */}
                 </Icon>
               ) : (
-                <Button
-                  onClick={() => {
-                    onDelete(epsNestjsOrpEffCicliEsec?.id);
-                  }}
-                  variant="contained"
-                  size="small" // Using small button size
-                  endIcon={<DeleteForeverTwoTone fontSize="small" />} // Using small icon
-                >
-                  {epsNestjsOrpEffCicliEsec?.id}
-                </Button>
+                <Stack direction="column" textAlign="center">
+                  <Typography variant="caption">
+                    {epsNestjsOrpEffCicliEsec?.id ?? ""}
+                  </Typography>
+                </Stack>
               )}
             </TipoTrasfertaComponent>
           </Grid>
@@ -94,12 +86,6 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                 (it) => it.ordCliRighe?.cf.RAG_SOC_CF
               )}
             </Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-              renderOrdCliTrasDialog(
-                epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-              )}
           </Grid>
           <Grid size={{ xs: 12 }} container alignItems="center" spacing={1}>
             <Grid size={{ xs: 10 }}>
@@ -153,29 +139,24 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
         <Card
           key={child.id}
           sx={(theme) => ({
-            minWidth: 250,
+            minWidth: 200,
+            width: 220,
             padding: theme.spacing(1),
             borderRadius: 1,
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? backgroundColorsDark[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-                : backgroundColorsLight[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
-            }`,
+            border: `1px solid`,
+            borderColor: color.main,
           })}
         >
           <Grid container>
             <Grid size={{ xs: 12 }}>
-              <TipoTrasfertaLeftConnectComponent
+              <TipoTrasfertaComponent
                 tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
               >
-                <Button
-                  disabled={true}
-                  variant="contained"
-                  size="small" // Using small button size
-                >
-                  {`${child?.id ?? ""} [${child?.idfk ?? ""}]`}
-                </Button>
-              </TipoTrasfertaLeftConnectComponent>
+                <Stack direction="column" textAlign="center">
+                  <Typography variant="caption">{child?.id ?? ""}</Typography>
+                  <Typography variant="caption">{child?.idfk ?? ""}</Typography>
+                </Stack>
+              </TipoTrasfertaComponent>
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Typography variant="body2">
@@ -185,12 +166,6 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                   (it) => it.ordCliRighe?.cf.RAG_SOC_CF
                 )}
               </Typography>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-                renderOrdCliTrasDialog(
-                  epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-                )}
             </Grid>
             <Grid size={{ xs: 12 }} container alignItems="center" spacing={1}>
               <Grid size={{ xs: 10 }}>

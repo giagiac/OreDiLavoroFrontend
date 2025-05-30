@@ -1,5 +1,6 @@
 "use client";
 
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
@@ -274,6 +275,7 @@ function UserHours() {
       >
         <Grid size={{ xs: 12 }}>
           <Stack textAlign="right" direction="column">
+            <Typography variant="subtitle2">{`${user?.firstName} ${user?.lastName}`}</Typography>
             <Typography variant="h6">{data?.targetDateInizio}</Typography>
             <Typography variant="subtitle2">
               ore totali della giornata
@@ -343,38 +345,31 @@ function UserHours() {
           user?.role?.id as RoleEnum
         ) && (
           <Grid>
-            <Button
-              size="large"
-              variant="contained"
-              color="info"
-              onClick={() => router.push("/hours/manage/step1_KmAutista")}
+            <ButtonTipoTrasferta
+              tipoTrasfertaButton="km_autista_button"
+              label="Km Autista"
+              onClickAction={() =>
+                router.push("/hours/manage/step1_km_autista")
+              }
               endIcon={<AirportShuttleTwoToneIcon />}
-            >
-              Km Autista
-            </Button>
+            />
           </Grid>
         )}
         <Grid>
-          <Button
-            size="large"
-            variant="contained"
-            color="primary"
-            onClick={() => router.push("/hours/manage/step1_FuoriSede")}
+          <ButtonTipoTrasferta
+            tipoTrasfertaButton="fuori_sede_button"
+            onClickAction={() => router.push("/hours/manage/step1_FuoriSede")}
             endIcon={<FlightTakeoffTwoToneIcon />}
-          >
-            Fuori Sede
-          </Button>
+            label="Fuori Sede"
+          />
         </Grid>
         <Grid>
-          <Button
-            size="large"
-            variant="contained"
-            color="secondary"
-            onClick={() => router.push("/hours/manage/create/in_sede")}
+          <ButtonTipoTrasferta
+            tipoTrasfertaButton="in_sede_button"
+            label="In Sede"
+            onClickAction={() => router.push("/hours/manage/create/in_sede")}
             endIcon={<FactoryTwoToneIcon />}
-          >
-            In Sede
-          </Button>
+          />
         </Grid>
       </Grid>
     </Container>

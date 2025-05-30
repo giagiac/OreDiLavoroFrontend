@@ -1,9 +1,5 @@
 "use client";
 
-import TipoTrasfertaComponent, {
-  backgroundColorsDark,
-  backgroundColorsLight,
-} from "@/components/tipo-trasferta";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -43,6 +39,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { TipoTrasfertaColors } from "@/constants/theme-colors";
+import { useTheme } from "@mui/material/styles";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -133,6 +132,8 @@ function UserHours() {
   const handleCloseCf = () => {
     setSelectedCf(null);
   };
+
+  const theme = useTheme();
 
   const renderOrdCliTrasDialog = (linkOrpOrd: Array<LinkOrpOrd>) => {
     if (!linkOrpOrd || linkOrpOrd.length === 0)
@@ -301,75 +302,77 @@ function UserHours() {
           </Stack>
         </Grid>
 
-        {result.map((epsNestjsOrpEffCicliEsec) => (
-          <Grid
-            container
-            size={{ xs: 12, sm: 6, md: 4 }}
-            key={epsNestjsOrpEffCicliEsec?.id}
-            justifyContent="center"
-          >
-            <Card
-              sx={(theme) => ({
-                minWidth: "100%",
-                padding: theme.spacing(1),
-                borderRadius: 1,
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? backgroundColorsDark[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                    : backgroundColorsLight[
-                        epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
-                      ]
-                }`,
-              })}
+        {result.map((epsNestjsOrpEffCicliEsec) => {
+          const color =
+            theme.palette.mode === "dark"
+              ? TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
+                  .dark
+              : TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
+                  .light;
+
+          return (
+            <Grid
+              container
+              size={{ xs: 12, sm: 6, md: 4 }}
+              key={epsNestjsOrpEffCicliEsec?.id}
+              justifyContent="center"
             >
-              <Grid size={{ xs: 12 }}>
-                <TipoTrasfertaComponent
-                  tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body1">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
-                    (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                  )}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-                  renderOrdCliTrasDialog(
-                    epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-                  )}
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="caption">
-                  {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
-                      epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                        : ""
-                    }`}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="h4" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
-                </Typography>
-              </Grid>
-            </Card>
-          </Grid>
-        ))}
+              <Card
+                sx={(theme) => ({
+                  minWidth: "100%",
+                  padding: theme.spacing(1),
+                  borderRadius: 1,
+                  border: `1px solid`,
+                  borderColor: color.main,
+                })}
+              >
+                <Grid size={{ xs: 12 }}>
+                  <TipoTrasfertaComponent
+                    tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body1">
+                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
+                      (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                    )}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
+                    renderOrdCliTrasDialog(
+                      epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
+                    )}
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="caption">
+                    {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body2">
+                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body2" textAlign="right">
+                    {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
+                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
+                        epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
+                          ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
+                          : ""
+                      }`}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="h4" textAlign="right">
+                    {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                  </Typography>
+                </Grid>
+              </Card>
+            </Grid>
+          );
+        })}
 
         {isFetchingNextPage && (
           <Grid size={{ xs: 12 }}>

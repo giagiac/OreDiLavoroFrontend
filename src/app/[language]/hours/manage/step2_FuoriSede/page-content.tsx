@@ -11,10 +11,16 @@ import NightsStayTwoToneIcon from "@mui/icons-material/NightsStayTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 function FormCreateUser() {
   const router = useRouter();
   const { user } = useAuth();
+
+  const searchParams = useSearchParams();
+
+  const COD_ART = searchParams.get("COD_ART");
+  const km: number = parseFloat(searchParams.get("KM") || "0");
+
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
@@ -29,7 +35,9 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
-                  router.push("/hours/manage/step1_FuoriSede")
+                  router.push(
+                    `/hours/manage/step1_FuoriSede?COD_ART=${COD_ART}&KM=${km}`
+                  )
                 }
                 label="Fuori sede"
                 startIcon={<ArrowBackTwoToneIcon />}
@@ -40,7 +48,9 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="in_giornata"
                 onClickAction={() =>
-                  router.push("/hours/manage/create/in_giornata")
+                  router.push(
+                    `/hours/manage/create/in_giornata?COD_ART=${COD_ART}&KM=${km}`
+                  )
                 }
                 label="In giornata"
                 endIcon={<CalendarMonthTwoToneIcon />}
@@ -50,7 +60,9 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="in_giornata_dopo_21"
                 onClickAction={() =>
-                  router.push("/hours/manage/create/in_giornata_dopo_21")
+                  router.push(
+                    `/hours/manage/create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}`
+                  )
                 }
                 label="In giornata dopo le 21:00"
                 endIcon={<NightsStayTwoToneIcon />}
@@ -60,7 +72,9 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
-                  router.push("/hours/manage/step3_FuoriSede")
+                  router.push(
+                    `/hours/manage/step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}`
+                  )
                 }
                 label="Pernotto fuori sede"
                 endIcon={<HotelTwoToneIcon />}

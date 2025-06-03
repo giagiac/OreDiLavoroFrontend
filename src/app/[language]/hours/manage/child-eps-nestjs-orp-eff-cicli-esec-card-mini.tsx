@@ -119,7 +119,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               <Grid size={{ xs: 12 }}>
                 <Typography variant="caption" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
                       epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
                         ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
                         : ""
@@ -201,7 +201,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="caption" textAlign="right">
                     {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.COD_ART}${
+                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
                         epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
                           ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
                           : ""
@@ -212,7 +212,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
             )}
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6" textAlign="right">
-                {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                {child?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
               </Typography>
             </Grid>
           </Grid>

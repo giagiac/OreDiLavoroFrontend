@@ -153,8 +153,8 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                 tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
               >
                 <Stack direction="column" textAlign="center">
-                  <Typography variant="caption">{child?.id ?? ""}</Typography>
-                  <Typography variant="caption">{child?.idfk ?? ""}</Typography>
+                  <Typography variant="caption">{child?.id}</Typography>
+                  <Typography variant="caption">[{child?.idfk}]</Typography>
                 </Stack>
               </TipoTrasfertaComponent>
             </Grid>

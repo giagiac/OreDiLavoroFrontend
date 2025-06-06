@@ -132,7 +132,7 @@ function SelectExtendedInputRaw<T extends object>(
             sx={{
               position: "absolute",
               zIndex: 100,
-              width: "auto",
+              width: 400,
             }}
           >
             <CardContent

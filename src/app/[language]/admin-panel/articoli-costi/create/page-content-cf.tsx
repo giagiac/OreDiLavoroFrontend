@@ -26,6 +26,8 @@ import { useGetArtAnaQuery } from "../queries/queries-art-ana";
 
 type ArtAnaKeys = keyof ArtAna;
 
+const DEFAULT_START_FILTER = "PR14";
+
 function Label(props: { artAna?: ArtAna | null }) {
   const { artAna } = props;
   if (artAna?.artCosti && artAna.artCosti.length > 0) {
@@ -69,7 +71,7 @@ export default function FormCreateEdit(props: { cf: Cf }) {
 
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
   const [filters, setFilters] = useState<Array<FilterItem<ArtAna>>>(() => {
-    return [];
+    return [{ columnName: "COD_ART", value: DEFAULT_START_FILTER }];
   });
 
   const [{ order, orderBy }] = useState<{

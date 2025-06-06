@@ -93,7 +93,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_0"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0`
                         )
                       }
                       label="0 km"
@@ -104,7 +104,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_10"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10`
                         )
                       }
                       label="10 km"
@@ -115,7 +115,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_20"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20`
                         )
                       }
                       label="20 km"
@@ -126,7 +126,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_30"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30`
                         )
                       }
                       label="30 km"
@@ -137,7 +137,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_40"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40`
                         )
                       }
                       label="40 km"

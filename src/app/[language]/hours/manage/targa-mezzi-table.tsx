@@ -221,7 +221,7 @@ const TargaMezziTable = ({
                     }}
                   >
                     <Typography variant="body1" sx={{ flex: 1 }}>
-                      {targaMezzi?.COD_ART} · {targaMezzi.artAna?.DES_ART}
+                      {targaMezzi.artAna?.DES_ART}
                     </Typography>
                     <Button
                       color="info"

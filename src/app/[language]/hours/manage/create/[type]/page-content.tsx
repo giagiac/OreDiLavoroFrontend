@@ -34,15 +34,25 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, Fragment, KeyboardEvent, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  KeyboardEvent,
+  useRef,
+  useMemo,
+  useState,
+} from "react";
 import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import Children from "./children";
+import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
 const TEMPO_OPERATORE_DEFAULT = "00:00";
 const CODICE_BREVE_DEFAULT = ""; // 2414014-1
+
+const LAST_SCAN_BARCODE_WITH_ONFOCUS = "wasTextFieldFocused";
 
 type CreateFormData = {
   // OBBLIGATORI
@@ -188,10 +198,28 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     setCodiceBreve(target.value);
   };
 
-  // QR_CODE SCANNER
-  const [isScannerOpen, setScannerOpen] = useState(false);
-  const handleOpenScanner = () => setScannerOpen(true);
-  const handleCloseScanner = () => setScannerOpen(false);
+  const [isScannerOpen, setScannerOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      const wasTextFieldFocused =
+        localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) === "true";
+      return !wasTextFieldFocused;
+    }
+    return false;
+  });
+
+  const handleOpenScanner = () => {
+    localStorage.setItem(LAST_SCAN_BARCODE_WITH_ONFOCUS, "false");
+    setScannerOpen(true);
+  };
+
+  const handleCloseScanner = () => {
+    setScannerOpen(false);
+  };
+
+  // Handle TextField focus state
+  const handleTextFieldFocus = () => {
+    localStorage.setItem(LAST_SCAN_BARCODE_WITH_ONFOCUS, "true");
+  };
 
   // FILTERS
   const [{ order, orderBy }] = useState<{
@@ -236,6 +264,12 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       setCodiceBreve(newValue);
       return [{ columnName: "CODICE_BREVE", value: newValue }];
     });
+
+    const wasTextFieldFocused =
+      localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) === "true";
+    if (!wasTextFieldFocused) {
+      setScannerOpen(true);
+    }
   };
 
   const onSubmit = async () => {
@@ -367,15 +401,17 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         <DialogContent>
           <Scanner
             onScan={(result) => {
+              setCodiceBreve(result[0].rawValue);
+              setFilters([
+                {
+                  columnName: "CODICE_BREVE",
+                  value: result[0].rawValue,
+                },
+              ]);
+              handleCloseScanner();
+
               if (result.length === 1) {
-                setCodiceBreve(result[0].rawValue);
-                setFilters([
-                  {
-                    columnName: "CODICE_BREVE",
-                    value: result[0].rawValue,
-                  },
-                ]);
-                handleCloseScanner();
+                // TODO :
                 setMultipleScannerDetected(null);
               } else if (result.length > 1) {
                 {
@@ -397,29 +433,41 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         </DialogActions>
       </Dialog>
       <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
-        <Grid container mb={3} justifyContent="center">
-          <Grid size={{ xs: 12 }}>
-            <ButtonTipoTrasferta
-              onClickAction={() => {
-                router.push(prepareLink);
+        <Stack direction="row" mb={3} spacing={1}>
+          {prepareText != "In sede" && (
+            <Button
+              onClick={() => {
+                router.push("/hours/manage", { scroll: true });
               }}
-              endIcon={icon}
-              label={prepareText}
-              startIcon={<ArrowBackTwoToneIcon />}
-            />
-          </Grid>
-        </Grid>
+            >
+              <HomeTwoToneIcon />
+            </Button>
+          )}
+          <ButtonTipoTrasferta
+            onClickAction={() => {
+              router.push(prepareLink);
+            }}
+            endIcon={icon}
+            label={prepareText}
+            startIcon={<ArrowBackTwoToneIcon />}
+          />
+        </Stack>
         <Grid container spacing={1} justifyContent="center">
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
-                autoFocus={false}
+                autoFocus={
+                  localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) ===
+                  "true"
+                }
+                inputMode="text"
                 autoComplete="off"
                 fullWidth
                 label="Codice Breve"
                 variant="outlined"
                 value={codiceBreveValue}
                 onChange={(e) => handleCustomInputChange(e)}
+                onFocus={handleTextFieldFocus}
                 onKeyDown={(e) =>
                   handleCustomInputChange(
                     e as React.KeyboardEvent<HTMLInputElement>
@@ -555,7 +603,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 sx={{ borderBottom: "none", p: 0.5 }}
                               >
                                 <Typography
-                                  variant="h4"
+                                  variant="body1"
                                   gutterBottom
                                   textAlign="center"
                                 >
@@ -574,7 +622,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 sx={{ borderBottom: "none", p: 0.5 }}
                               >
                                 <Typography
-                                  variant="h4"
+                                  variant="body1"
                                   gutterBottom
                                   textAlign="center"
                                 >
@@ -595,7 +643,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 {(item?.linkOrpOrd?.length ?? 0) > 0 ? (
                                   <Fragment>
                                     <Typography
-                                      variant="body1"
+                                      variant="h4"
                                       gutterBottom
                                       textAlign="center"
                                     >
@@ -605,7 +653,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                       }
                                     </Typography>
                                     <Typography
-                                      variant="body1"
+                                      variant="h4"
                                       gutterBottom
                                       textAlign="center"
                                     >
@@ -633,7 +681,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 sx={{ borderBottom: "none", p: 0.5 }}
                               >
                                 <Typography
-                                  variant="body1"
+                                  variant="h4"
                                   gutterBottom
                                   textAlign="center"
                                 >
@@ -641,26 +689,61 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 </Typography>
                               </TableCell>
                             </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
-                                <Typography variant="caption">Ciclo</Typography>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{ borderBottom: "none", p: 0.5 }}
-                              >
-                                <Typography
-                                  variant="body1"
-                                  gutterBottom
-                                  textAlign="center"
-                                >
-                                  {item?.DES_CICLO?.replace(
-                                    item?.orpEff?.DES_PROD || "",
-                                    ""
-                                  )}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
+                            {item?.DES_CICLO &&
+                              (item.linkOrpOrd?.length ?? 0) > 0 &&
+                              item.DES_CICLO !==
+                                item.linkOrpOrd?.[0]?.ordCliRighe?.DES_RIGA && (
+                                <TableRow>
+                                  <TableCell
+                                    sx={{ borderBottom: "none", p: 0.5 }}
+                                  >
+                                    <Typography variant="caption">
+                                      Riga ordine
+                                    </Typography>
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ borderBottom: "none", p: 0.5 }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      gutterBottom
+                                      textAlign="center"
+                                    >
+                                      {(() => {
+                                        const desCiclo = item?.DES_CICLO ?? "";
+                                        const desRiga =
+                                          item?.linkOrpOrd &&
+                                          item.linkOrpOrd[0]?.ordCliRighe
+                                            ?.DES_RIGA
+                                            ? item.linkOrpOrd[0].ordCliRighe
+                                                .DES_RIGA
+                                            : "";
+
+                                        if (desCiclo && desRiga) {
+                                          if (desCiclo.includes(desRiga)) {
+                                            // Show the part of desCiclo that is not in desRiga
+                                            return desCiclo
+                                              .replace(desRiga, "")
+                                              .trim();
+                                          } else if (
+                                            desRiga.includes(desCiclo)
+                                          ) {
+                                            // Show the part of desRiga that is not in desCiclo
+                                            return desRiga
+                                              .replace(desCiclo, "")
+                                              .trim();
+                                          } else {
+                                            // Show both if no containment
+                                            return `${desCiclo} / ${desRiga}`;
+                                          }
+                                        }
+                                        return desCiclo || desRiga;
+                                      })()}
+                                    </Typography>
+                                  </TableCell>
+                                </TableRow>
+                              )}
                           </TableBody>
                         </Table>
                       </TableContainer>

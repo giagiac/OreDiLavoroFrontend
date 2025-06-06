@@ -138,12 +138,20 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 <TipoTrasfertaComponent
                   tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
                 >
-                  <Stack direction="column" textAlign="center">
-                    <Typography variant="caption">{child?.id ?? ""}</Typography>
-                    <Typography variant="caption">
-                      {child?.idfk ?? ""}
-                    </Typography>
-                  </Stack>
+                  {child.HYPSERV_REQ2_COD_CHIAVE !== null ||
+                  child.APP_REQ3_HYPSERV_COD_CHIAVE !==
+                    null ? (
+                    <Icon>
+                      <LockTwoToneIcon />
+                    </Icon>
+                  ) : (
+                    <Stack direction="column" textAlign="center">
+                      <Typography variant="caption">
+                        {child?.id ?? ""}
+                      </Typography>
+                      <Typography variant="caption">[{child?.idfk}]</Typography>
+                    </Stack>
+                  )}
                 </TipoTrasfertaComponent>
               </Grid>
               <Grid size={{ xs: 12 }}>

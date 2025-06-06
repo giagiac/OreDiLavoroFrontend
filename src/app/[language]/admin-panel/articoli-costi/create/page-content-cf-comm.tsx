@@ -26,6 +26,8 @@ import { useGetArtAnaQuery } from "../queries/queries-art-ana";
 
 type ArtAnaKeys = keyof ArtAna;
 
+const DEFAULT_START_FILTER = "PR14";
+
 // const useValidationSchema = () => {
 //   // const { t } = useTranslation("admin-panel-users-create");
 
@@ -50,7 +52,7 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
 
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
   const [filters, setFilters] = useState<Array<FilterItem<ArtAna>>>(() => {
-    return [];
+    return [{ columnName: "COD_ART", value: DEFAULT_START_FILTER }];
   });
 
   const [{ order, orderBy }] = useState<{

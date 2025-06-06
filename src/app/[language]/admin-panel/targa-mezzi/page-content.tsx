@@ -260,13 +260,15 @@ function TargaMezziPage() {
             <Typography variant="h3">{"Targhe mezzi"}</Typography>
           </Grid>
         </Grid>
-        <Grid size={{ xs: 12 }} mb={2}>
+        <Grid size={{ xs: 12 }} mb={5}>
           <FormCreateEdit
             onChangeCallback={(artAna: ArtAna) => {
               console.log(artAna);
               refetch();
             }}
           />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
           <TableContainer component={Paper} elevation={3}>
             <Table size="small">
               <TableHead>
@@ -296,13 +298,13 @@ function TargaMezziPage() {
                   borderCollapse: "collapse",
                 }}
               >
-                {result.map((targaMezzi) => {
+                {result.map((targaMezzi, index) => {
                   return (
                     <TableRow
                       key={targaMezzi.COD_ART}
                       style={{
                         backgroundColor:
-                          Number(targaMezzi.id) % 2 === 0
+                          index % 2 === 0
                             ? theme.palette.divider
                             : theme.palette.background.paper,
                       }}
@@ -311,27 +313,23 @@ function TargaMezziPage() {
                         <Grid container direction="row">
                           <Grid size={{ xs: 11 }}>
                             <Typography variant="body2">
-                              {targaMezzi?.COD_ART} ·{" "}
+                              {targaMezzi?.COD_ART}
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </TableCell>
+                      <TableCell>
+                        <Grid container direction="row">
+                          <Grid size={{ xs: 11 }}>
+                            <Typography variant="body2">
                               {targaMezzi.artAna?.DES_ART}
                             </Typography>
                           </Grid>
+                        </Grid>
+                      </TableCell>
+                      <TableCell>
+                        <Grid container direction="row">
                           <Grid size={{ xs: 1 }}>
-                            {/* // TODO: 
-                            <ButtonDeleteConfirm
-                              item={targaMezzi}
-                              refetch={() => {
-                                refetch();
-                              }}
-                              useDeleteService={() =>
-                                (params: { id: string }) => {
-                                  return fetchPostTargaMezzi({
-                                    id: params.id,
-                                  });
-                                }}
-                              confirmTitle={"Confermi l'eliminazione"}
-                              confirmMessage={"Vuoi confermare?"}
-                              successMessage={"Articolo cancellato"}
-                            /> */}
                             <ButtonDelete
                               targaMezzi={targaMezzi}
                               refetch={() => {

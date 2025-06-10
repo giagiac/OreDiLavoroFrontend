@@ -10,10 +10,10 @@ import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-ef
 import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
+import { Operatori } from "@/services/api/types/operatori";
 import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
-import { User } from "@/services/api/types/user";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
@@ -38,19 +38,26 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
+import { FormProvider } from "react-hook-form";
 import imageLogo from "../../../../../public/emotions.png";
-import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
+import EditOperatori from "../../admin-panel/operatori/edit-operatori";
+import { ChildEpsNestjsOrpEffCicliEsecCard } from "../manage//child-eps-nestjs-orp-eff-cicli-esec-card";
 import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
   useGetMeQuery,
-} from "./queries/queries";
+} from "../manage/queries/queries";
+
+import { User } from "@/services/api/types/user";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: EpsNestjsOrpEffCicliEsecKeys;
@@ -73,21 +80,6 @@ function UserHours() {
     return undefined;
   }, [searchParams]);
 
-  const { user } = useAuth();
-  const [userSelected, setUserSelected] = useState<User | null>();
-  const fetchGetMe = useGetMeQuery();
-  useMemo(() => {
-    const fetchUser = async () => {
-      const { data, status } = await fetchGetMe({
-        COD_OP: user?.COD_OP ?? undefined,
-      });
-      if (status === HTTP_CODES_ENUM.OK) {
-        setUserSelected(data as User);
-      }
-    };
-    fetchUser();
-  }, []);
-
   const { data, isFetchingNextPage, isLoading, refetch } =
     useGetEpsNestjsOrpEffCicliEsecQuery({
       filters: filter,
@@ -103,7 +95,6 @@ function UserHours() {
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
-  const { enqueueSnackbar } = useSnackbar();
   const { confirmDialog } = useConfirmDialog();
   const fetchEpsNestjsOrpEffCicliEsecDelete =
     useDeleteEpsNestjsOrpEffCicliEsecService();
@@ -280,13 +271,46 @@ function UserHours() {
     );
   };
 
-  if (user?.COD_OP === null) {
-    return (
-      <Typography color="warning">
-        Att.ne nessun Operatore definito per questo utente!
-      </Typography>
-    );
-  }
+  const [operatori] = useState();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { user } = useAuth();
+  const [userSelected, setUserSelected] = useState<User | null>();
+  const fetchGetMe = useGetMeQuery();
+  useMemo(() => {
+    const fetchUser = async () => {
+      const codOpValue = filter?.find(
+        (it) => it.columnName === "COD_OP"
+      )?.value;
+      const { data, status } = await fetchGetMe({
+        COD_OP:
+          codOpValue !== undefined && codOpValue !== null
+            ? String(codOpValue)
+            : undefined,
+      });
+      if (status === HTTP_CODES_ENUM.OK) {
+        setUserSelected(data as User);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const validationSchema: yup.ObjectSchema<EditOperatoreFormData> = yup
+    .object()
+    .shape({
+      operatori: yup.object().shape({
+        COD_OP: yup.string().required("COD_OP è obbligatorio"),
+        NOME_OP: yup.string().required("NOME_OP è obbligatorio"),
+      }),
+    });
+
+  const methods = useForm<EditOperatoreFormData>({
+    resolver: yupResolver(validationSchema), // yupResolver(validationSchema),
+    defaultValues: {
+      operatori: operatori,
+    },
+  });
 
   return (
     <Container
@@ -296,128 +320,165 @@ function UserHours() {
         m: 0,
       }}
     >
-      <Grid
-        container
-        spacing={1}
-        sx={(theme) => ({
-          marginTop: theme.spacing(0),
-          marginBottom: theme.spacing(5),
-        })}
-        justifyContent="center"
-      >
-        <Grid size={{ xs: 12 }}>
-          <Stack textAlign="right" direction="column">
-            <Typography variant="subtitle2">{`${userSelected?.firstName} ${userSelected?.lastName}`}</Typography>
-            <Typography variant="h6">{data?.targetDateInizio}</Typography>
-            <Typography variant="subtitle2">
-              ore totali della giornata
-            </Typography>
-            <Typography variant="h2">{data?.totale}</Typography>
-          </Stack>
-        </Grid>
-        <Grid container spacing={2} justifyContent="center" alignItems="unset">
-          {result.map((epsNestjsOrpEffCicliEsec) => (
-            <ChildEpsNestjsOrpEffCicliEsecCard
-              key={epsNestjsOrpEffCicliEsec.id}
-              epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
-              onDelete={onDelete}
-              renderOrdCliTrasDialog={renderOrdCliTrasDialog}
-            />
-          ))}
-        </Grid>
-
-        {isFetchingNextPage && (
-          <Grid size={{ xs: 12 }}>
-            <LinearProgress />
-          </Grid>
-        )}
-
-        {result.length === 0 && !isLoading && (
-          <Grid size={{ xs: 12 }}>
-            <Box
-              display="flex-column"
+      <FormProvider {...methods}>
+        <EditOperatori
+          join={true}
+          onSubmit={function (operatori: Operatori): void {
+            console.log(operatori);
+            if (operatori.user) {
+              //setOperatoreSelected(operatori);
+              const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
+                columnName: "COD_OP",
+                value: operatori.COD_OP,
+              };
+              const searchParams = new URLSearchParams(window.location.search);
+              searchParams.set("filter", JSON.stringify([filter]));
+              router.push(
+                window.location.pathname + "?" + searchParams.toString()
+              );
+            }
+          }}
+        />
+      </FormProvider>
+      {userSelected === null && (
+        <Typography textAlign="center" mt={5} variant="h5">
+          Nessun operatore selezionato
+        </Typography>
+      )}
+      {userSelected !== null && (
+        <>
+          <Grid
+            container
+            spacing={1}
+            sx={(theme) => ({
+              marginTop: theme.spacing(0),
+              marginBottom: theme.spacing(5),
+            })}
+            justifyContent="center"
+          >
+            <Grid size={{ xs: 12 }}>
+              <Stack textAlign="right" direction="column">
+                <Typography variant="subtitle2">{`${userSelected?.firstName} ${userSelected?.lastName}`}</Typography>
+                <Typography variant="h6">{data?.targetDateInizio}</Typography>
+                <Typography variant="subtitle2">
+                  ore totali della giornata
+                </Typography>
+                <Typography variant="h2">{data?.totale}</Typography>
+              </Stack>
+            </Grid>
+            <Grid
+              container
+              spacing={2}
               justifyContent="center"
-              alignItems="center"
-              height="40vh"
-              textAlign="center"
+              alignItems="unset"
             >
-              <Image src={imageLogo} alt="No records image" height={200} />
-              <Typography variant="h2">
-                Nessuna registrazione effettuata!
-              </Typography>
-            </Box>
-          </Grid>
-        )}
-      </Grid>
-      <Grid
-        container
-        justifyContent="center"
-        spacing={2}
-        mt={2}
-        sx={(theme) => ({
-          position: "fixed",
-          bottom: 0, // Add some space from the bottom edge
-          left: 0,
-          width: "100%", // Adjust width to content
-          // Apply card-like styling with backdrop effect
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark"
-              ? "rgba(40, 40, 40, 0.25)" // Semi-transparent dark background
-              : "rgba(255, 255, 255, 0.25)", // Semi-transparent light background
-          backdropFilter: "blur(3px)", // Backdrop blur effect
-          borderRadius: (theme) => theme.shape.borderRadius, // Rounded corners like a Card
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
-          boxShadow: (theme) => theme.shadows[10], // Elevation effect
+              {result.map((epsNestjsOrpEffCicliEsec) => (
+                <ChildEpsNestjsOrpEffCicliEsecCard
+                  key={epsNestjsOrpEffCicliEsec.id}
+                  epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
+                  onDelete={onDelete}
+                  renderOrdCliTrasDialog={renderOrdCliTrasDialog}
+                />
+              ))}
+            </Grid>
 
-          padding: theme.spacing(1),
-        })}
-      >
-        {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
-          user?.role?.id as RoleEnum
-        ) && (
-          <Grid>
-            <ButtonTipoTrasferta
-              tipoTrasfertaButton="km_autista_button"
-              label="Km Autista"
-              onClickAction={() =>
-                router.push(
-                  `/hours/manage/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
-                )
-              }
-              endIcon={<AirportShuttleTwoToneIcon />}
-            />
+            {isFetchingNextPage && (
+              <Grid size={{ xs: 12 }}>
+                <LinearProgress />
+              </Grid>
+            )}
+
+            {result.length === 0 && !isLoading && (
+              <Grid size={{ xs: 12 }}>
+                <Box
+                  display="flex-column"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="40vh"
+                  textAlign="center"
+                >
+                  <Image src={imageLogo} alt="No records image" height={200} />
+                  <Typography variant="h2">
+                    Nessuna registrazione effettuata!
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
           </Grid>
-        )}
-        <Grid>
-          <ButtonTipoTrasferta
-            tipoTrasfertaButton="fuori_sede_button"
-            onClickAction={() =>
-              router.push(
-                `/hours/manage/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
-              )
-            }
-            endIcon={<FlightTakeoffTwoToneIcon />}
-            label="Fuori Sede"
-          />
-        </Grid>
-        <Grid>
-          <ButtonTipoTrasferta
-            tipoTrasfertaButton="in_sede_button"
-            label="In Sede"
-            onClickAction={() =>
-              router.push(
-                `/hours/manage/create/in_sede?COD_OP=${userSelected?.COD_OP}`
-              )
-            }
-            endIcon={<FactoryTwoToneIcon />}
-          />
-        </Grid>
-      </Grid>
+          <Grid
+            container
+            justifyContent="center"
+            spacing={2}
+            mt={2}
+            sx={(theme) => ({
+              position: "fixed",
+              bottom: 0, // Add some space from the bottom edge
+              left: 0,
+              width: "100%", // Adjust width to content
+              // Apply card-like styling with backdrop effect
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "rgba(40, 40, 40, 0.25)" // Semi-transparent dark background
+                  : "rgba(255, 255, 255, 0.25)", // Semi-transparent light background
+              backdropFilter: "blur(3px)", // Backdrop blur effect
+              borderRadius: (theme) => theme.shape.borderRadius, // Rounded corners like a Card
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              boxShadow: (theme) => theme.shadows[10], // Elevation effect
+
+              padding: theme.spacing(1),
+            })}
+          >
+            {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+              <Grid>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="km_autista_button"
+                  label="Km Autista"
+                  onClickAction={() =>
+                    router.push("/hours/manage/step1_km_autista")
+                  }
+                  endIcon={<AirportShuttleTwoToneIcon />}
+                />
+              </Grid>
+            )}
+            {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+              <Grid>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="fuori_sede_button"
+                  onClickAction={() =>
+                    router.push("/hours/manage-badge/step1_FuoriSede")
+                  }
+                  endIcon={<FlightTakeoffTwoToneIcon />}
+                  label="Fuori Sede"
+                />
+              </Grid>
+            )}
+            {[RoleEnum.ADMIN, RoleEnum.BADGE].includes(
+              user?.role?.id as RoleEnum
+            ) && (
+              <Grid>
+                <ButtonTipoTrasferta
+                  tipoTrasfertaButton="in_sede_button"
+                  label="In Sede"
+                  onClickAction={() => {
+                    router.push(
+                      `/hours/manage/create/in_sede?COD_OP=${userSelected?.COD_OP}`,
+                      {
+                        scroll: true,
+                      }
+                    );
+                  }}
+                  endIcon={<FactoryTwoToneIcon />}
+                />
+              </Grid>
+            )}
+          </Grid>
+        </>
+      )}
     </Container>
   );
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
+  roles: [RoleEnum.BADGE, RoleEnum.ADMIN],
 });

@@ -119,11 +119,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               <Grid size={{ xs: 12 }}>
                 <Typography variant="caption" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
-                      epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                        : ""
-                    }`}
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
                 </Typography>
               </Grid>
             </>
@@ -201,11 +197,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="caption" textAlign="right">
                     {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
-                        epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                          ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                          : ""
-                      }`}
+                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${child?.KM} Km`}
                   </Typography>
                 </Grid>
               </>

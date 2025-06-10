@@ -35,99 +35,97 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
 
   return (
     <Fragment key={epsNestjsOrpEffCicliEsec.id}>
-      <Grid key={epsNestjsOrpEffCicliEsec?.id}>
+      <Grid
+        key={epsNestjsOrpEffCicliEsec?.id}
+        size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+      >
         <Card
           sx={{
-            minWidth: 300,
-            maxWidth: 360,
-            minHeight: "100%",
+            height: "100%",
             padding: theme.spacing(1),
             borderRadius: 1,
             border: `1px solid`,
             borderColor: color.main,
           }}
         >
-          <Grid size={{ xs: 12 }}>
-            <TipoTrasfertaComponent
-              tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
-            >
-              {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
-              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !== null ? (
-                <Icon>
-                  <LockTwoToneIcon />
-                </Icon>
-              ) : (
-                <Button
-                  sx={{
-                    backgroundColor: theme.palette.augmentColor({
-                      color: {
-                        main: color.main,
+          <Grid container>
+            <Grid size={{ xs: 12 }}>
+              <TipoTrasfertaComponent
+                tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
+              >
+                {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
+                epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !==
+                  null ? (
+                  <Icon>
+                    <LockTwoToneIcon />
+                  </Icon>
+                ) : (
+                  <Button
+                    sx={{
+                      backgroundColor: theme.palette.augmentColor({
+                        color: {
+                          main: color.main,
+                        },
+                        mainShade: 900,
+                      }).main,
+                      color: theme.palette.getContrastText(color.main),
+                      "&:hover": {
+                        backgroundColor: color.hover,
                       },
-                      mainShade: 900,
-                    }).main,
-                    color: theme.palette.getContrastText(color.main),
-                    "&:hover": {
-                      backgroundColor: color.hover,
-                    },
-                  }}
-                  onClick={() => {
-                    onDelete(epsNestjsOrpEffCicliEsec?.id);
-                  }}
-                  variant="contained"
-                  endIcon={<DeleteForeverTwoTone />}
-                >
-                  {epsNestjsOrpEffCicliEsec?.id}
-                </Button>
-              )}
-            </TipoTrasfertaComponent>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="body1">
-              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
-                (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-              )}
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-              renderOrdCliTrasDialog(
-                epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-              )}
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="caption">
-              {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="body2">
-              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="body2" textAlign="right">
-              {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
-                  epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                    ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                    : ""
-                }`}
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="h4" textAlign="right">
-              {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
-            </Typography>
+                    }}
+                    onClick={() => {
+                      onDelete(epsNestjsOrpEffCicliEsec?.id);
+                    }}
+                    variant="contained"
+                    endIcon={<DeleteForeverTwoTone />}
+                  >
+                    {epsNestjsOrpEffCicliEsec?.id}
+                  </Button>
+                )}
+              </TipoTrasfertaComponent>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="body1">
+                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
+                  (it) => it.ordCliRighe?.cf.RAG_SOC_CF
+                )}
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
+                renderOrdCliTrasDialog(
+                  epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
+                )}
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="caption">
+                {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="body2">
+                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="body2" textAlign="right">
+                {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
+                  `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="h4" textAlign="right">
+                {epsNestjsOrpEffCicliEsec?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+              </Typography>
+            </Grid>
           </Grid>
         </Card>
       </Grid>
       {epsNestjsOrpEffCicliEsec?.epsNestjsOrpEffCicliEsecChild?.map((child) => (
-        <Grid key={child.id}>
+        <Grid key={child.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Card
             sx={(theme) => ({
-              minWidth: 300,
-              maxWidth: 360,
-              minHeight: "100%",
+              height: "100%",
               padding: theme.spacing(1),
               border: `1px solid`,
               borderColor: color.main,
@@ -139,8 +137,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                   tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
                 >
                   {child.HYPSERV_REQ2_COD_CHIAVE !== null ||
-                  child.APP_REQ3_HYPSERV_COD_CHIAVE !==
-                    null ? (
+                  child.APP_REQ3_HYPSERV_COD_CHIAVE !== null ? (
                     <Icon>
                       <LockTwoToneIcon />
                     </Icon>
@@ -180,11 +177,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
                   {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
-                      epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                        ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                        : ""
-                    }`}
+                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${child?.KM} Km`}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>

@@ -357,11 +357,7 @@ function UserHours() {
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="body2" textAlign="right">
                     {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART}${
-                        epsNestjsOrpEffCicliEsec?.KM?.toString() !== "0"
-                          ? ` · ${epsNestjsOrpEffCicliEsec?.KM} Km`
-                          : ""
-                      }`}
+                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
@@ -402,5 +398,5 @@ function UserHours() {
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA],
+  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
 });

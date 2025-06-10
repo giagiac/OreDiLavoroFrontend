@@ -11,7 +11,7 @@ import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import TargaMezziTable from "../targa-mezzi-table";
 
@@ -21,6 +21,9 @@ function FormCreateUser() {
   const [km, setKm] = useState("0");
 
   const { user } = useAuth();
+
+  const searchParams = useSearchParams();
+  const COD_OP = searchParams.get("COD_OP");
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -60,7 +63,7 @@ function FormCreateUser() {
                     tipoTrasfertaButton="km_autista_button"
                     onClickAction={async () => {
                       router.push(
-                        `/hours/manage/create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}`
+                        `/hours/manage/create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                       );
                     }}
                     icon={<ForwardTwoToneIcon />}
@@ -80,5 +83,5 @@ function CreateUser() {
 }
 
 export default withPageRequiredAuth(CreateUser, {
-  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA],
+  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER, RoleEnum.BADGE],
 });

@@ -128,7 +128,9 @@ export default function FormCreateEdit({
           options={result}
           renderSelected={(option) => option.COD_ART}
           renderOption={(option) =>
-            option?.COD_ART != null ? option.COD_ART + " " + option.DES_ART : ""
+            option?.COD_ART !== null
+              ? option.COD_ART + " " + option.DES_ART
+              : ""
           }
           keyExtractor={(option) => option.COD_ART}
           isSearchable={true}

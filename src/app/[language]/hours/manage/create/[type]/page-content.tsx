@@ -14,6 +14,7 @@ import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import CameraAltTwoToneIcon from "@mui/icons-material/CameraAltTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Dialog from "@mui/material/Dialog";
@@ -25,11 +26,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
@@ -38,14 +35,16 @@ import {
   ChangeEvent,
   Fragment,
   KeyboardEvent,
-  useRef,
+  useEffect,
   useMemo,
   useState,
 } from "react";
-import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
+import {
+  useGetMeQuery,
+  usePostEpsNestjsOrpEffCicliEsecChildService,
+} from "../../queries/queries";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import Children from "./children";
-import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 
 type OrpEffCicliKeys = keyof OrpEffCicli;
 
@@ -58,6 +57,8 @@ type CreateFormData = {
   // OBBLIGATORI
   TIPO_TRASFERTA: string;
   TEMPO_OPERATORE: string;
+  COD_OP: string;
+
   // Documento
   DOC_RIGA_ID: string;
   DOC_ID: string;
@@ -90,6 +91,8 @@ type CreateFormDataChild = {
 };
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import { User } from "@/services/api/types/user";
+import useAuth from "@/services/auth/use-auth";
 
 function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{
@@ -102,69 +105,59 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const COD_ART = searchParams.get("COD_ART");
   const KM: number = parseFloat(searchParams.get("KM") || "0");
   const id = searchParams.get("id");
+  const COD_OP = searchParams.get("COD_OP");
 
-  let prepareLink = "/hours/manage";
   let prepareText = "In sede";
 
   let icon = <FactoryTwoToneIcon />;
 
   switch (tipoTrasferta) {
     case "in_sede":
-      prepareLink = "/hours/manage";
       prepareText = "In sede";
       icon = <FactoryTwoToneIcon />;
       break;
     // da qui in poi sono tutte
     // FUORI SEDE
     case "in_giornata":
-      prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "in_giornata_dopo_21":
-      prepareLink = "/hours/manage/step2_FuoriSede";
       prepareText = "In giornata dopo le 21:00";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_andata":
       prepareText = "Fuori sede andata";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "fuori_sede_ritorno":
       prepareText = "Fuori sede ritorno";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_0":
       prepareText = "Ancora in trasferta 0 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
-
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_10":
       prepareText = "Ancora in trasferta 10 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_20":
       prepareText = "Ancora in trasferta 20 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_30":
       prepareText = "Ancora in trasferta 30 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_40":
       prepareText = "Ancora in trasferta 40 Km";
-      prepareLink = "/hours/manage/step3_FuoriSede";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
+    // da qui in poi sono tutte
+    // FUORI SEDE
     case "step1_km_autista":
       prepareText = "Km Autista";
-      prepareLink = "/hours/manage/step1_km_autista";
       icon = <AirportShuttleTwoToneIcon />;
       break;
   }
@@ -280,8 +273,16 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       return;
     }
 
+    if (COD_OP === null) {
+      enqueueSnackbar(`Operatore non definito`, {
+        variant: "error",
+      });
+      return;
+    }
+
     const formData: CreateFormData = {
       TIPO_TRASFERTA: tipoTrasferta,
+      COD_OP: COD_OP,
 
       TEMPO_OPERATORE: tempoOreOperatore,
       // Documento
@@ -395,6 +396,21 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     }
   };
 
+  const { user } = useAuth();
+  const [userSelected, setUserSelected] = useState<User | null>();
+  const fetchGetMe = useGetMeQuery();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, status } = await fetchGetMe({
+        COD_OP: COD_OP === null ? (user?.COD_OP ?? undefined) : COD_OP,
+      });
+      if (status === HTTP_CODES_ENUM.OK) {
+        setUserSelected(data as User);
+      }
+    };
+    fetchUser();
+  }, []);
+
   return (
     <>
       <Dialog open={isScannerOpen} onClose={handleCloseScanner} fullWidth>
@@ -434,7 +450,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       </Dialog>
       <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
         <Stack direction="row" mb={3} spacing={1}>
-          {prepareText != "In sede" && (
+          {prepareText !== "In sede" && (
             <Button
               onClick={() => {
                 router.push("/hours/manage", { scroll: true });
@@ -445,7 +461,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           )}
           <ButtonTipoTrasferta
             onClickAction={() => {
-              router.push(prepareLink);
+              router.back();
             }}
             endIcon={icon}
             label={prepareText}
@@ -453,6 +469,12 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           />
         </Stack>
         <Grid container spacing={1} justifyContent="center">
+          <Grid textAlign="right" size={12} mb={2}>
+            <Typography variant="h6" gutterBottom>
+              {`${userSelected?.firstName} ${userSelected?.lastName}`},
+              inserisci il codice della commessa
+            </Typography>
+          </Grid>
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
@@ -561,13 +583,13 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                     </Typography>
                   </Grid>
                 )}
-              {result.length === 0 && codiceBreveValue.length === 0 && (
+              {/* {result.length === 0 && codiceBreveValue.length === 0 && (
                 <Grid size={{ xs: 12 }} textAlign="center">
                   <Typography variant="h5" color="info">
                     Inserisci il codice commessa
                   </Typography>
                 </Grid>
-              )}
+              )} */}
               {result.length > 0 &&
                 result[0].orpEff !== null &&
                 result[0].orpEff.STATUS === 2 && (
@@ -590,162 +612,140 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         elevation={3}
                         sx={{ p: 2 }}
                       >
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
-                                <Typography variant="caption">
-                                  Commessa
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{ borderBottom: "none", p: 0.5 }}
-                              >
-                                <Typography
-                                  variant="body1"
-                                  gutterBottom
-                                  textAlign="center"
-                                >
-                                  {item?.DOC_ID}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
-                                <Typography variant="caption">
-                                  Articolo
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{ borderBottom: "none", p: 0.5 }}
-                              >
-                                <Typography
-                                  variant="body1"
-                                  gutterBottom
-                                  textAlign="center"
-                                >
-                                  {item?.orpEff?.COD_ART}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
-                                <Typography variant="caption">
-                                  Cliente
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{ borderBottom: "none", p: 0.5 }}
-                              >
-                                {(item?.linkOrpOrd?.length ?? 0) > 0 ? (
-                                  <Fragment>
-                                    <Typography
-                                      variant="h4"
-                                      gutterBottom
-                                      textAlign="center"
-                                    >
-                                      {
-                                        item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
-                                          .RAG_SOC_CF
-                                      }
-                                    </Typography>
-                                    <Typography
-                                      variant="h4"
-                                      gutterBottom
-                                      textAlign="center"
-                                    >
-                                      {item?.linkOrpOrd?.[0]?.ordCliRighe
-                                        ?.ordCli.cfComm?.INDI_SEDE ||
-                                        item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
-                                          .INDI_CF}
-                                    </Typography>
-                                  </Fragment>
-                                ) : (
-                                  <Typography variant="caption">
-                                    Nessun ordine associato
-                                  </Typography>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell sx={{ borderBottom: "none", p: 0.5 }}>
-                                <Typography variant="caption">
-                                  Prodotto
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{ borderBottom: "none", p: 0.5 }}
-                              >
-                                <Typography
-                                  variant="h4"
-                                  gutterBottom
-                                  textAlign="center"
-                                >
-                                  {item?.orpEff?.DES_PROD}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            {item?.DES_CICLO &&
-                              (item.linkOrpOrd?.length ?? 0) > 0 &&
-                              item.DES_CICLO !==
-                                item.linkOrpOrd?.[0]?.ordCliRighe?.DES_RIGA && (
-                                <TableRow>
-                                  <TableCell
-                                    sx={{ borderBottom: "none", p: 0.5 }}
-                                  >
-                                    <Typography variant="caption">
-                                      Riga ordine
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ borderBottom: "none", p: 0.5 }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      gutterBottom
-                                      textAlign="center"
-                                    >
-                                      {(() => {
-                                        const desCiclo = item?.DES_CICLO ?? "";
-                                        const desRiga =
-                                          item?.linkOrpOrd &&
-                                          item.linkOrpOrd[0]?.ordCliRighe
-                                            ?.DES_RIGA
-                                            ? item.linkOrpOrd[0].ordCliRighe
-                                                .DES_RIGA
-                                            : "";
+                        <Grid container spacing={{ xs: 0, sm: 1 }}>
+                          {/* Commessa */}
+                          <Grid
+                            size={{ xs: 12, sm: 1 }}
+                            textAlign={{ xs: "right", sm: "right" }}
+                          >
+                            <Typography variant="caption">Commessa</Typography>
+                          </Grid>
+                          <Grid
+                            size={{ xs: 12, sm: 11 }}
+                            textAlign={{ xs: "center", sm: "left" }}
+                          >
+                            <Typography variant="body1" gutterBottom>
+                              {item?.DOC_ID}
+                            </Typography>
+                          </Grid>
 
-                                        if (desCiclo && desRiga) {
-                                          if (desCiclo.includes(desRiga)) {
-                                            // Show the part of desCiclo that is not in desRiga
-                                            return desCiclo
-                                              .replace(desRiga, "")
-                                              .trim();
-                                          } else if (
-                                            desRiga.includes(desCiclo)
-                                          ) {
-                                            // Show the part of desRiga that is not in desCiclo
-                                            return desRiga
-                                              .replace(desCiclo, "")
-                                              .trim();
-                                          } else {
-                                            // Show both if no containment
-                                            return `${desCiclo} / ${desRiga}`;
-                                          }
+                          {/* Articolo */}
+                          <Grid
+                            size={{ xs: 12, sm: 1 }}
+                            textAlign={{ xs: "right", sm: "right" }}
+                          >
+                            <Typography variant="caption">Articolo</Typography>
+                          </Grid>
+                          <Grid
+                            size={{ xs: 12, sm: 11 }}
+                            textAlign={{ xs: "center", sm: "left" }}
+                          >
+                            <Typography variant="body1" gutterBottom>
+                              {item?.orpEff?.COD_ART}
+                            </Typography>
+                          </Grid>
+
+                          {/* Cliente */}
+                          <Grid
+                            size={{ xs: 12, sm: 1 }}
+                            textAlign={{ xs: "right", sm: "right" }}
+                          >
+                            <Typography variant="caption">Cliente</Typography>
+                          </Grid>
+                          <Grid
+                            size={{ xs: 12, sm: 11 }}
+                            textAlign={{ xs: "center", sm: "left" }}
+                          >
+                            {(item?.linkOrpOrd?.length ?? 0) > 0 ? (
+                              <Fragment>
+                                <Typography variant="h4" gutterBottom>
+                                  {
+                                    item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                                      .RAG_SOC_CF
+                                  }
+                                </Typography>
+                                <Typography variant="h4" gutterBottom>
+                                  {item?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
+                                    .cfComm?.INDI_SEDE ||
+                                    item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                                      .INDI_CF}
+                                </Typography>
+                              </Fragment>
+                            ) : (
+                              <Typography variant="caption">
+                                Nessun ordine associato
+                              </Typography>
+                            )}
+                          </Grid>
+
+                          {/* Prodotto */}
+                          <Grid
+                            size={{ xs: 12, sm: 1 }}
+                            textAlign={{ xs: "right", sm: "right" }}
+                          >
+                            <Typography variant="caption">Prodotto</Typography>
+                          </Grid>
+                          <Grid
+                            size={{ xs: 12, sm: 11 }}
+                            textAlign={{ xs: "center", sm: "left" }}
+                          >
+                            <Typography variant="h4" gutterBottom>
+                              {item?.orpEff?.DES_PROD}
+                            </Typography>
+                          </Grid>
+
+                          {/* Riga ordine (solo se necessario) */}
+                          {item?.DES_CICLO &&
+                            (item.linkOrpOrd?.length ?? 0) > 0 &&
+                            item.DES_CICLO !==
+                              item.linkOrpOrd?.[0]?.ordCliRighe?.DES_RIGA && (
+                              <>
+                                <Grid
+                                  size={{ xs: 12, sm: 1 }}
+                                  textAlign={{ xs: "right", sm: "right" }}
+                                >
+                                  <Typography variant="caption">
+                                    Riga ordine
+                                  </Typography>
+                                </Grid>
+                                <Grid
+                                  size={{ xs: 12, sm: 11 }}
+                                  textAlign={{ xs: "center", sm: "left" }}
+                                >
+                                  <Typography variant="body1" gutterBottom>
+                                    {(() => {
+                                      const desCiclo = item?.DES_CICLO ?? "";
+                                      const desRiga =
+                                        item?.linkOrpOrd &&
+                                        item.linkOrpOrd[0]?.ordCliRighe
+                                          ?.DES_RIGA
+                                          ? item.linkOrpOrd[0].ordCliRighe
+                                              .DES_RIGA
+                                          : "";
+
+                                      if (desCiclo && desRiga) {
+                                        if (desCiclo.includes(desRiga)) {
+                                          // Show the part of desCiclo that is not in desRiga
+                                          return desCiclo
+                                            .replace(desRiga, "")
+                                            .trim();
+                                        } else if (desRiga.includes(desCiclo)) {
+                                          // Show the part of desRiga that is not in desCiclo
+                                          return desRiga
+                                            .replace(desCiclo, "")
+                                            .trim();
+                                        } else {
+                                          // Show both if no containment
+                                          return `${desCiclo} / ${desRiga}`;
                                         }
-                                        return desCiclo || desRiga;
-                                      })()}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              )}
-                          </TableBody>
-                        </Table>
+                                      }
+                                      return desCiclo || desRiga;
+                                    })()}
+                                  </Typography>
+                                </Grid>
+                              </>
+                            )}
+                        </Grid>
                       </TableContainer>
                       <NumericKeypad
                         onNumberChange={(value) => {

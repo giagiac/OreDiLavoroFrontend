@@ -1,3 +1,4 @@
+import { Cf } from "./cf";
 import { FileEntity } from "./file-entity";
 import { Operatori } from "./operatori";
 import { Role } from "./role";
@@ -18,5 +19,8 @@ export type User = {
   role?: Role;
 
   COD_OP?: string | null;
+  CF_ORIGIN_DEFAULT?: string | null;
+
   operatori: Operatori | null;
+  cfOriginDefault: Cf | null;
 };

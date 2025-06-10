@@ -95,7 +95,13 @@ export type UserPatchRequest = {
   data: Partial<
     Pick<
       User,
-      "email" | "firstName" | "lastName" | "photo" | "role" | "COD_OP"
+      | "email"
+      | "firstName"
+      | "lastName"
+      | "photo"
+      | "role"
+      | "COD_OP"
+      | "CF_ORIGIN_DEFAULT"
     > & {
       password: string;
     }

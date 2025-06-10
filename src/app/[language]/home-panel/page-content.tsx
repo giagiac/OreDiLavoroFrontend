@@ -12,9 +12,12 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import imageWorker from "../../../../public/worker_pause.png";
+
 function AdminPanel() {
   const router = useRouter();
+
   const { t } = useTranslation("user-panel-home");
+
   const { user } = useAuth();
 
   return (
@@ -88,5 +91,5 @@ function AdminPanel() {
 }
 
 export default withPageRequiredAuth(AdminPanel, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA],
+  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
 });

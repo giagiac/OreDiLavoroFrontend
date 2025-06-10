@@ -34,7 +34,8 @@ import Typography from "@mui/material/Typography";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PropsWithChildren, useMemo, useRef, useState } from "react";
-import FormCreateEdit from "../operatori/create-operatori/page-content";
+import FormOperatoriCreateEdit from "../operatori/create-operatori/page-content";
+import FormCfOriginDefaultCreateEdit from "../operatori/create-cf-origin-default/page-content";
 import { useGetUsersQuery, usersQueryKeys } from "./queries/queries";
 import UserFilter from "./user-filter";
 import { UserFilterType, UserSortType } from "./user-filter-types";
@@ -348,6 +349,9 @@ function Users() {
                 </TableCell>
                 <TableCell style={{ width: 130 }}></TableCell>
                 <TableCell style={{ width: 230 }}>Operatore HG</TableCell>
+                <TableCell style={{ width: 230 }}>
+                  CF origin default HG
+                </TableCell>
               </TableRow>
               {isFetchingNextPage && (
                 <TableRow>
@@ -379,7 +383,10 @@ function Users() {
                       {!!user && <Actions user={user} />}
                     </TableCell>
                     <TableCell style={{ width: 230 }}>
-                      <FormCreateEdit user={user} />
+                      <FormOperatoriCreateEdit user={user} />
+                    </TableCell>
+                    <TableCell style={{ width: 230 }}>
+                      <FormCfOriginDefaultCreateEdit user={user} />
                     </TableCell>
                   </TableRow>
                 );

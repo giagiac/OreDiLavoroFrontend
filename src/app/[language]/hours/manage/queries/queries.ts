@@ -5,6 +5,7 @@ import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-ef
 import { EpsNestjsOrpEffCicliEsecChild } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-child";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { User } from "@/services/api/types/user";
 import useFetch from "@/services/api/use-fetch";
 import wrapperFetchJsonResponse from "@/services/api/wrapper-fetch-json-response";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
@@ -96,6 +97,30 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
   });
 
   return query;
+};
+
+// -----------------------------------------------------------------------------
+
+export type MeRequest = {
+  COD_OP?: String | undefined;
+};
+export const useGetMeQuery = () => {
+  const fetch = useFetch();
+
+  return useCallback(
+    (data: MeRequest, requestConfig?: RequestConfigType) => {
+      return fetch(
+        data.COD_OP
+          ? `${API_URL}/v1/auth/me_by_cod_op?COD_OP=${data.COD_OP}`
+          : `${API_URL}/v1/auth/me`,
+        {
+          method: "GET",
+          ...requestConfig,
+        }
+      ).then(wrapperFetchJsonResponse<User>);
+    },
+    [fetch]
+  );
 };
 
 // -----------------------------------------------------------------------------

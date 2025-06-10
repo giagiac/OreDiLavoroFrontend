@@ -1,0 +1,1 @@
+../manage/targa-mezzi-table.tsx

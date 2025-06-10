@@ -11,6 +11,10 @@ export type AuthLoginRequest = {
   password: string;
 };
 
+export type AuthLoginRequestBadge = {
+  COD_OP: string;
+};
+
 export type AuthLoginResponse = Tokens & {
   user: User;
 };
@@ -21,6 +25,20 @@ export function useAuthLoginService() {
   return useCallback(
     (data: AuthLoginRequest) => {
       return fetchBase(`${API_URL}/v1/auth/email/login`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      }).then(wrapperFetchJsonResponse<AuthLoginResponse>);
+    },
+    [fetchBase]
+  );
+}
+
+export function useAuthLoginServiceBadge() {
+  const fetchBase = useFetch();
+
+  return useCallback(
+    (data: AuthLoginRequestBadge) => {
+      return fetchBase(`${API_URL}/v1/auth/email/login_badge`, {
         method: "POST",
         body: JSON.stringify(data),
       }).then(wrapperFetchJsonResponse<AuthLoginResponse>);

@@ -9,7 +9,7 @@ import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import TargaMezziTable from "../targa-mezzi-table";
 import Typography from "@mui/material/Typography";
@@ -23,6 +23,9 @@ function FormCreateUser() {
   const tipoTrasferta = params.type;
 
   const { user } = useAuth();
+
+  const searchParams = useSearchParams();
+  const COD_OP = searchParams.get("COD_OP");
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -38,7 +41,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
                 label="Fuori sede"
-                onClickAction={() => router.push("/hours/manage")}
+                onClickAction={() => router.back()}
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}
               />
@@ -64,11 +67,11 @@ function FormCreateUser() {
                     onClickAction={async () => {
                       if (tipoTrasferta === "step1_km_autista") {
                         router.push(
-                          `/hours/manage/create/${tipoTrasferta}?COD_ART=${COD_ART}&KM=${km}`
+                          `/hours/manage/create/${tipoTrasferta}?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                         );
                       } else {
                         router.push(
-                          `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}`
+                          `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}&COD_OP=${COD_OP}`
                         );
                       }
                     }}
@@ -89,5 +92,5 @@ function CreateUser() {
 }
 
 export default withPageRequiredAuth(CreateUser, {
-  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA],
+  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER, RoleEnum.BADGE],
 });

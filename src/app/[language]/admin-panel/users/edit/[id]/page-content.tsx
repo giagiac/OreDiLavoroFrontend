@@ -32,7 +32,6 @@ export type EditUserFormData = {
   lastName: string;
   photo?: FileEntity;
   role: Role;
-  COD_OP?: string | null;
 };
 
 type ChangeUserPasswordFormData = {
@@ -67,7 +66,6 @@ const useValidationEditUserSchema = () => {
         name: yup.string(),
       })
       .required(t("admin-panel-users-edit:inputs.role.validation.required")),
-    COD_OP: yup.string().notRequired(),
   });
 };
 
@@ -146,7 +144,6 @@ function FormEditUser() {
       lastName: "",
       role: undefined,
       photo: undefined,
-      COD_OP: undefined,
     },
   });
 
@@ -254,6 +251,9 @@ function FormEditUser() {
                   },
                   {
                     id: RoleEnum.AUTISTA,
+                  },
+                  {
+                    id: RoleEnum.BADGE,
                   },
                 ]}
                 keyValue="id"

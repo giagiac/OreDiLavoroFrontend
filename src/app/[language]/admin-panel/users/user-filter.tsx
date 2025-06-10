@@ -88,6 +88,12 @@ function UserFilter() {
                     {
                       id: RoleEnum.USER,
                     },
+                    {
+                      id: RoleEnum.AUTISTA,
+                    },
+                    {
+                      id: RoleEnum.BADGE,
+                    },
                   ]}
                   keyValue="id"
                   renderOption={(option) =>

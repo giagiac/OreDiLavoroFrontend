@@ -1,10 +1,12 @@
 "use client";
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import { RoleEnum } from "@/services/api/types/role";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import HourglassTopTwoToneIcon from "@mui/icons-material/HourglassTopTwoTone";
 import TrendingUpTwoToneIcon from "@mui/icons-material/TrendingUpTwoTone";
 import UTurnLeftTwoToneIcon from "@mui/icons-material/UTurnLeftTwoTone";
 import Container from "@mui/material/Container";
@@ -12,7 +14,6 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import HourglassTopTwoToneIcon from "@mui/icons-material/HourglassTopTwoTone";
 function FormCreateUser() {
   const router = useRouter();
   const { user } = useAuth();
@@ -23,6 +24,7 @@ function FormCreateUser() {
 
   const COD_ART = searchParams.get("COD_ART");
   const km: number = parseFloat(searchParams.get("KM") || "0");
+  const COD_OP = searchParams.get("COD_OP");
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -44,7 +46,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 startIcon={<ArrowBackTwoToneIcon />}
@@ -57,7 +59,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="fuori_sede_andata"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 endIcon={<TrendingUpTwoToneIcon />}
@@ -93,7 +95,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_0"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0`
+                          `/hours/manage/create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}`
                         )
                       }
                       label="0 km"
@@ -104,7 +106,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_10"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10`
+                          `/hours/manage/create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}`
                         )
                       }
                       label="10 km"
@@ -115,7 +117,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_20"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20`
+                          `/hours/manage/create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}`
                         )
                       }
                       label="20 km"
@@ -126,7 +128,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_30"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30`
+                          `/hours/manage/create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}`
                         )
                       }
                       label="30 km"
@@ -137,7 +139,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_40"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40`
+                          `/hours/manage/create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}`
                         )
                       }
                       label="40 km"
@@ -151,7 +153,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="fuori_sede_ritorno"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/fuori_sede_ritorno?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/create/fuori_sede_ritorno?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 endIcon={<UTurnLeftTwoToneIcon />}
@@ -169,4 +171,6 @@ function CreateUser() {
   return <FormCreateUser />;
 }
 
-export default withPageRequiredAuth(CreateUser);
+export default withPageRequiredAuth(CreateUser, {
+  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER, RoleEnum.BADGE],
+});

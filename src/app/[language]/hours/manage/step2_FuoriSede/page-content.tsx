@@ -1,6 +1,7 @@
 "use client";
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import { RoleEnum } from "@/services/api/types/role";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
@@ -20,6 +21,7 @@ function FormCreateUser() {
 
   const COD_ART = searchParams.get("COD_ART");
   const km: number = parseFloat(searchParams.get("KM") || "0");
+  const COD_OP = searchParams.get("COD_OP");
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -36,7 +38,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/step1_FuoriSede?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/step1_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="Fuori sede"
@@ -49,7 +51,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="in_giornata"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/in_giornata?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/create/in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="In giornata"
@@ -61,7 +63,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="in_giornata_dopo_21"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="In giornata dopo le 21:00"
@@ -73,7 +75,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}`
+                    `/hours/manage/step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="Pernotto fuori sede"
@@ -96,4 +98,6 @@ function CreateUser() {
   return <FormCreateUser />;
 }
 
-export default withPageRequiredAuth(CreateUser);
+export default withPageRequiredAuth(CreateUser, {
+  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER, RoleEnum.BADGE],
+});

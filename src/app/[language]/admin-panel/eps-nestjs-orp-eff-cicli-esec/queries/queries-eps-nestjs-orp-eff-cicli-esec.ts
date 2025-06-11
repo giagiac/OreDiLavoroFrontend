@@ -75,6 +75,13 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           totale: data.totale,
           targetDateInizio: data.targetDateInizio,
         };
+      }else {
+        return {
+          data: [],
+          nextPage: 0,
+          totale: 0,
+          targetDateInizio: "",
+        };
       }
     },
     getNextPageParam: (lastPage) => {

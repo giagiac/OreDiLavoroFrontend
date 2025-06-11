@@ -1,0 +1,1 @@
+../../manage/queries/queries-orp-eff-cicli.ts

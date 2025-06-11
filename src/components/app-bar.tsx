@@ -370,6 +370,10 @@ function ResponsiveAppBar() {
                   <MenuItem
                     onClick={() => {
                       logOut();
+                      // if (typeof window !== "undefined" && window.history && window.history.pushState) {
+                      //   window.history.pushState(null, "", "/");
+                      //   window.history.go(-(window.history.length - 1));
+                      // }
                       handleCloseUserMenu();
                     }}
                     data-testid="logout-menu-item"

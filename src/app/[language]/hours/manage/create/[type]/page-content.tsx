@@ -77,6 +77,8 @@ type CreateFormDataChild = {
   // OBBLIGATORI
   TIPO_TRASFERTA: string;
   TEMPO_OPERATORE: string;
+  COD_OP: string;
+
   // Documento
   DOC_RIGA_ID: string;
   DOC_ID: string;
@@ -93,6 +95,7 @@ type CreateFormDataChild = {
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { User } from "@/services/api/types/user";
 import useAuth from "@/services/auth/use-auth";
+import { OperatoreSelected } from "../../opertore-selected";
 
 function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{
@@ -314,9 +317,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       });
 
       if (tipoTrasferta === "step1_km_autista") {
-        router.push(
-          `/hours/manage/create/step1_km_autista?${searchParams}&id=${data.id}`
-        );
+        router.push(`step1_km_autista?${searchParams}&id=${data.id}`);
         // Open confirmation dialog
         setDialogOpen(
           "La creazione è avvenuta con successo. Vuoi aggiungere altre COMMESSE?"
@@ -341,6 +342,13 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       return;
     }
 
+    if (COD_OP === null) {
+      enqueueSnackbar(`Operatore non definito`, {
+        variant: "error",
+      });
+      return;
+    }
+
     if (id === null) {
       enqueueSnackbar(`Non hai selezionato una commessa padre valida`, {
         variant: "error",
@@ -357,6 +365,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
     const formData: CreateFormDataChild = {
       TIPO_TRASFERTA: tipoTrasferta,
+      COD_OP: COD_OP,
 
       TEMPO_OPERATORE: tempoOreOperatore,
       // Documento
@@ -395,21 +404,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       );
     }
   };
-
-  const { user } = useAuth();
-  const [userSelected, setUserSelected] = useState<User | null>();
-  const fetchGetMe = useGetMeQuery();
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, status } = await fetchGetMe({
-        COD_OP: COD_OP === null ? (user?.COD_OP ?? undefined) : COD_OP,
-      });
-      if (status === HTTP_CODES_ENUM.OK) {
-        setUserSelected(data as User);
-      }
-    };
-    fetchUser();
-  }, []);
 
   return (
     <>
@@ -453,7 +447,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           {prepareText !== "In sede" && (
             <Button
               onClick={() => {
-                router.push("/hours/manage", { scroll: true });
+                if (window.location.pathname.indexOf("manage-badge") > -1) {
+                  router.push("/hours/manage-badge", { scroll: true });
+                } else {
+                  router.push("/hours/manage", { scroll: true });
+                }
               }}
             >
               <HomeTwoToneIcon />
@@ -470,10 +468,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         </Stack>
         <Grid container spacing={1} justifyContent="center">
           <Grid textAlign="right" size={12} mb={2}>
-            <Typography variant="h6" gutterBottom>
-              {`${userSelected?.firstName} ${userSelected?.lastName}`},
-              inserisci il codice della commessa
-            </Typography>
+            <OperatoreSelected text="inserisci il codice della commessa" />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={1} alignItems="center">
@@ -800,7 +795,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
             <Grid size={{ xs: 6 }}>
               <Button
                 onClick={() => {
-                  router.push("/hours/manage");
+                  if (window.location.pathname.indexOf("manage-badge") > -1) {
+                    router.push("/hours/manage-badge", { scroll: true });
+                  } else {
+                    router.push("/hours/manage", { scroll: true });
+                  }
                 }}
                 color="secondary"
                 variant="contained"

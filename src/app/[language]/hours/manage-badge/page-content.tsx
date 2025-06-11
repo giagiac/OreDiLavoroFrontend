@@ -56,6 +56,8 @@ import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operat
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
+  const { user } = useAuth();
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }] = useState<{
@@ -77,10 +79,12 @@ function UserHours() {
       >;
     }
 
-    return undefined;
+    return [{ columnName: "COD_OP", value: user?.COD_OP }] as Array<
+      FilterItem<EpsNestjsOrpEffCicliEsec>
+    >;
   }, [searchParams]);
 
-  const { data, isFetchingNextPage, isLoading, refetch } =
+  const { data, isFetchingNextPage, isLoading, refetch, status } =
     useGetEpsNestjsOrpEffCicliEsecQuery({
       filters: filter,
       sort: { order, orderBy },
@@ -275,7 +279,6 @@ function UserHours() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { user } = useAuth();
   const [userSelected, setUserSelected] = useState<User | null>();
   const fetchGetMe = useGetMeQuery();
   useMemo(() => {
@@ -293,8 +296,11 @@ function UserHours() {
         setUserSelected(data as User);
       }
     };
-    fetchUser();
-  }, []);
+
+    if ((filter?.length ?? 0) > 0) {
+      fetchUser();
+    }
+  }, [data]);
 
   const validationSchema: yup.ObjectSchema<EditOperatoreFormData> = yup
     .object()
@@ -322,7 +328,7 @@ function UserHours() {
     >
       <FormProvider {...methods}>
         <EditOperatori
-          join={true}
+          join={true} 
           onSubmit={function (operatori: Operatori): void {
             console.log(operatori);
             if (operatori.user) {
@@ -372,7 +378,7 @@ function UserHours() {
               justifyContent="center"
               alignItems="unset"
             >
-              {result.map((epsNestjsOrpEffCicliEsec) => (
+              {status == "success" && result.map((epsNestjsOrpEffCicliEsec) => (
                 <ChildEpsNestjsOrpEffCicliEsecCard
                   key={epsNestjsOrpEffCicliEsec.id}
                   epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
@@ -388,7 +394,7 @@ function UserHours() {
               </Grid>
             )}
 
-            {result.length === 0 && !isLoading && (
+            {status == "success" && result.length === 0 && !isLoading && (
               <Grid size={{ xs: 12 }}>
                 <Box
                   display="flex-column"
@@ -435,7 +441,9 @@ function UserHours() {
                   tipoTrasfertaButton="km_autista_button"
                   label="Km Autista"
                   onClickAction={() =>
-                    router.push("/hours/manage/step1_km_autista")
+                    router.push(
+                      `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
+                    )
                   }
                   endIcon={<AirportShuttleTwoToneIcon />}
                 />
@@ -446,7 +454,9 @@ function UserHours() {
                 <ButtonTipoTrasferta
                   tipoTrasfertaButton="fuori_sede_button"
                   onClickAction={() =>
-                    router.push("/hours/manage-badge/step1_FuoriSede")
+                    router.push(
+                      `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
+                    )
                   }
                   endIcon={<FlightTakeoffTwoToneIcon />}
                   label="Fuori Sede"
@@ -462,7 +472,7 @@ function UserHours() {
                   label="In Sede"
                   onClickAction={() => {
                     router.push(
-                      `/hours/manage/create/in_sede?COD_OP=${userSelected?.COD_OP}`,
+                      `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}`,
                       {
                         scroll: true,
                       }

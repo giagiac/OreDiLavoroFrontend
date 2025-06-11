@@ -1,0 +1,1 @@
+../../../manage/create/[type]/children.tsx

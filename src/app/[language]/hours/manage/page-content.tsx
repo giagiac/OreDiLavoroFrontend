@@ -48,6 +48,8 @@ import {
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
+  const { user } = useAuth();
+
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -70,10 +72,11 @@ function UserHours() {
       >;
     }
 
-    return undefined;
+    return [{ columnName: "COD_OP", value: user?.COD_OP }] as Array<
+        FilterItem<EpsNestjsOrpEffCicliEsec>
+      >;
   }, [searchParams]);
 
-  const { user } = useAuth();
   const [userSelected, setUserSelected] = useState<User | null>();
   const fetchGetMe = useGetMeQuery();
   useMemo(() => {
@@ -382,7 +385,7 @@ function UserHours() {
               label="Km Autista"
               onClickAction={() =>
                 router.push(
-                  `/hours/manage/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
+                  `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
                 )
               }
               endIcon={<AirportShuttleTwoToneIcon />}
@@ -394,7 +397,7 @@ function UserHours() {
             tipoTrasfertaButton="fuori_sede_button"
             onClickAction={() =>
               router.push(
-                `/hours/manage/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
+                `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
               )
             }
             endIcon={<FlightTakeoffTwoToneIcon />}
@@ -407,7 +410,7 @@ function UserHours() {
             label="In Sede"
             onClickAction={() =>
               router.push(
-                `/hours/manage/create/in_sede?COD_OP=${userSelected?.COD_OP}`
+                `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}`
               )
             }
             endIcon={<FactoryTwoToneIcon />}

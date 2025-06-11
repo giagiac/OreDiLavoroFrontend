@@ -1,7 +1,6 @@
 "use client";
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
-import { NumericKeypadKm } from "@/components/numeric-keypad-km";
 import { RoleEnum } from "@/services/api/types/role";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
@@ -9,31 +8,37 @@ import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { OperatoreSelected } from "../../manage/opertore-selected";
 import TargaMezziTable from "../targa-mezzi-table";
-import Typography from "@mui/material/Typography";
-import useAuth from "@/services/auth/use-auth";
 
 function FormCreateUser() {
   const router = useRouter();
 
-  const [km, setKm] = useState("0");
-  const params = useParams<{ type: string }>();
-  const tipoTrasferta = params.type;
-
-  const { user } = useAuth();
-
   const searchParams = useSearchParams();
   const COD_OP = searchParams.get("COD_OP");
+
+  // const [userSelected, setUserSelected] = useState<User | null>();
+  // const fetchGetMe = useGetMeQuery();
+  // useMemo(() => {
+  //   const fetchUser = async () => {
+  //     if (COD_OP) {
+  //       const { data, status } = await fetchGetMe({
+  //         COD_OP,
+  //       });
+  //       if (status === HTTP_CODES_ENUM.OK) {
+  //         setUserSelected(data as User);
+  //       }
+  //     }
+  //   };
+  //   fetchUser();
+  // }, []);
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
-        <Grid textAlign="right" size={12} mb={10}>
-          <Typography variant="h4" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`} seleziona la targa?
-          </Typography>
+        <Grid textAlign="right" size={12} mb={1}>
+          <OperatoreSelected text="seleziona la targa!" />
         </Grid>
         <Grid size={12}>
           <Grid container>
@@ -46,34 +51,26 @@ function FormCreateUser() {
                 endIcon={<FlightTakeoffTwoToneIcon />}
               />
             </Grid>
-            {tipoTrasferta === "step1_km_autista" && (
-              <Grid size={12}>
-                <Grid container justifyContent="center" alignItems="center">
-                  <Grid size={{ xs: 12 }}>
-                    <NumericKeypadKm
-                      onChange={(value) => {
-                        setKm(value);
-                      }}
-                    />
-                  </Grid>
+            {/* <Grid size={12}>
+              <Grid container justifyContent="center" alignItems="center">
+                <Grid size={{ xs: 12 }}>
+                  <NumericKeypadKm
+                    onChange={(value) => {
+                      setKm(value);
+                    }}
+                  />
                 </Grid>
               </Grid>
-            )}
+            </Grid> */}
             <Grid size={12} pt={3}>
               <TargaMezziTable
                 childrenCallBack={(COD_ART) => (
                   <ButtonTipoTrasferta
                     tipoTrasfertaButton="fuori_sede_button"
                     onClickAction={async () => {
-                      if (tipoTrasferta === "step1_km_autista") {
-                        router.push(
-                          `/hours/manage/create/${tipoTrasferta}?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
-                        );
-                      } else {
-                        router.push(
-                          `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}&COD_OP=${COD_OP}`
-                        );
-                      }
+                      router.push(
+                        `step2_FuoriSede?COD_ART=${COD_ART}&KM=${0}&COD_OP=${COD_OP}`
+                      );
                     }}
                     icon={<ForwardTwoToneIcon />}
                   />

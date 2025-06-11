@@ -76,7 +76,7 @@ export default function FormCreateEdit(props: { user: User }) {
   return (
     <FormProvider {...methods}>
       <form>
-        <EditOperatori onSubmit={onChange} />
+        <EditOperatori join={false} onSubmit={onChange} />
       </form>
     </FormProvider>
   );

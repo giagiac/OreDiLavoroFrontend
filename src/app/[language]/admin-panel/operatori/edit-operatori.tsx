@@ -5,7 +5,6 @@ import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { Operatori } from "@/services/api/types/operatori";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { join } from "path";
 import { useCallback, useMemo, useState } from "react";
 import { EditOperatoreFormData } from "./create-operatori/page-content";
 import { useGetOperatoriQuery } from "./quieries/queries-operatori";
@@ -13,12 +12,10 @@ import { useGetOperatoriQuery } from "./quieries/queries-operatori";
 type OperatoriKeys = keyof Operatori;
 
 function EditOperatori(props: {
-  join?: Boolean;
+  join: boolean;
   onSubmit: (operatori: Operatori) => void;
 }) {
-  // const { articoliCostiCfComm } = props;
-
-  const filter = join !== null ? [{ key: "join", value: "true" }] : null;
+  const filter = props.join === true ? [{ key: "join", value: "true" }] : null;
 
   const [othersFilters] = useState<Array<OthersFiltersItem>>(filter || []);
   const [filters, setFilters] = useState<Array<FilterItem<Operatori>>>(() => {

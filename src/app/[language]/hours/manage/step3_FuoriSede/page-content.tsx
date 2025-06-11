@@ -14,9 +14,9 @@ import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { OperatoreSelected } from "../opertore-selected";
 function FormCreateUser() {
   const router = useRouter();
-  const { user } = useAuth();
 
   const [showMissionPanel, setShowMissionPanel] = useState(false);
 
@@ -29,10 +29,8 @@ function FormCreateUser() {
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
-        <Grid textAlign="right" size={12} mb={10}>
-          <Typography variant="h4" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`} sei rientrato?
-          </Typography>
+        <Grid textAlign="right" size={12} mb={1}>
+          <OperatoreSelected text="sei rientrato?" />
         </Grid>
         <Grid size={12}>
           <Grid
@@ -44,11 +42,7 @@ function FormCreateUser() {
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
-                onClickAction={() =>
-                  router.push(
-                    `/hours/manage/step2_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
-                  )
-                }
+                onClickAction={() => router.back()}
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}
                 label="Pernotto fuori sede"
@@ -59,7 +53,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="fuori_sede_andata"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 endIcon={<TrendingUpTwoToneIcon />}
@@ -95,7 +89,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_0"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}`
                         )
                       }
                       label="0 km"
@@ -106,7 +100,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_10"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}`
                         )
                       }
                       label="10 km"
@@ -117,7 +111,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_20"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}`
                         )
                       }
                       label="20 km"
@@ -128,7 +122,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_30"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}`
                         )
                       }
                       label="30 km"
@@ -139,7 +133,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_40"
                       onClickAction={() =>
                         router.push(
-                          `/hours/manage/create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}`
                         )
                       }
                       label="40 km"
@@ -153,7 +147,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="fuori_sede_ritorno"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/fuori_sede_ritorno?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/fuori_sede_ritorno?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 endIcon={<UTurnLeftTwoToneIcon />}

@@ -11,6 +11,7 @@ import { ChildEpsNestjsOrpEffCicliEsecCardMini } from "../../child-eps-nestjs-or
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "../../queries/queries";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
+import { useSearchParams } from "next/navigation";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -19,6 +20,9 @@ interface Props {
 }
 
 function Children({ id }: Props) {
+  const searchParams = useSearchParams();
+  const COD_OP = searchParams.get("COD_OP") || "";
+
   // FILTERS
   const [{ order, orderBy }] = useState<{
     order: SortEnum;
@@ -27,14 +31,16 @@ function Children({ id }: Props) {
 
   const [filters] = useState<Array<FilterItem<EpsNestjsOrpEffCicliEsec>>>([
     { columnName: "id", value: id },
+    { columnName: "COD_OP", value: COD_OP },
   ]);
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
 
-  const { data, isFetching, isLoading } = useGetEpsNestjsOrpEffCicliEsecQuery({
-    sort: { order, orderBy },
-    filters,
-    othersFilters,
-  });
+  const { data, isFetching, isLoading, isFetched } =
+    useGetEpsNestjsOrpEffCicliEsecQuery({
+      sort: { order, orderBy },
+      filters,
+      othersFilters,
+    });
 
   const result = useMemo(() => {
     const result =
@@ -51,29 +57,31 @@ function Children({ id }: Props) {
     <>
       {/* Gradient overlay, fixed to the right, not scrolling with content */}
 
-      <Grid
-        component={Paper}
-        elevation={3}
-        container
-        spacing={1}
-        direction="row"
-        wrap="nowrap"
-        sx={{
-          padding: theme.spacing(1),
-          overflowX: "auto",
-          flexWrap: "nowrap",
-          flexDirection: "row",
-          scrollbarWidth: "auto",
-          position: "relative",
-        }}
-      >
-        {result.map((item) => (
-          <ChildEpsNestjsOrpEffCicliEsecCardMini
-            key={item.id}
-            epsNestjsOrpEffCicliEsec={item}
-          />
-        ))}
-      </Grid>
+      {isFetched && (
+        <Grid
+          component={Paper}
+          elevation={3}
+          container
+          spacing={1}
+          direction="row"
+          wrap="nowrap"
+          sx={{
+            padding: theme.spacing(1),
+            overflowX: "auto",
+            flexWrap: "nowrap",
+            flexDirection: "row",
+            scrollbarWidth: "auto",
+            position: "relative",
+          }}
+        >
+          {result.map((item) => (
+            <ChildEpsNestjsOrpEffCicliEsecCardMini
+              key={item.id}
+              epsNestjsOrpEffCicliEsec={item}
+            />
+          ))}
+        </Grid>
+      )}
       <FullPageLoader isLoading={isLoading || isFetching} />
     </>
   );

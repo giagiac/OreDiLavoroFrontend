@@ -1,0 +1,1 @@
+../../manage/step1_km_autista/page-content.tsx

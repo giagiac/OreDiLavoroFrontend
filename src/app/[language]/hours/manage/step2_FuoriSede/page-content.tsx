@@ -2,7 +2,6 @@
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { RoleEnum } from "@/services/api/types/role";
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
@@ -11,11 +10,10 @@ import HotelTwoToneIcon from "@mui/icons-material/HotelTwoTone";
 import NightsStayTwoToneIcon from "@mui/icons-material/NightsStayTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
+import { OperatoreSelected } from "../opertore-selected";
 function FormCreateUser() {
   const router = useRouter();
-  const { user } = useAuth();
 
   const searchParams = useSearchParams();
 
@@ -26,21 +24,15 @@ function FormCreateUser() {
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
-        <Grid textAlign="right" size={12} mb={10}>
-          <Typography variant="h4" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`} sei rientrato?
-          </Typography>
+        <Grid textAlign="right" size={12} mb={1}>
+          <OperatoreSelected text="sei rientrato?" />
         </Grid>
         <Grid size={12}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
-                onClickAction={() =>
-                  router.push(
-                    `/hours/manage/step1_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
-                  )
-                }
+                onClickAction={() => router.back()}
                 label="Fuori sede"
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}
@@ -51,7 +43,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="in_giornata"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="In giornata"
@@ -63,7 +55,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="in_giornata_dopo_21"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="In giornata dopo le 21:00"
@@ -75,7 +67,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
                   router.push(
-                    `/hours/manage/step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                   )
                 }
                 label="Pernotto fuori sede"

@@ -1,5 +1,7 @@
 "use client";
 
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -8,6 +10,7 @@ import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
+import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
@@ -23,6 +26,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid2";
 import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -39,13 +43,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import imageLogo from "../../../../public/emotions.png";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import TipoTrasfertaComponent from "@/components/tipo-trasferta";
-import { TipoTrasfertaColors } from "@/constants/theme-colors";
-import { useTheme } from "@mui/material/styles";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
+  const { user } = useAuth();
+
   const [dateSelected, setDateSelected] = useState<Dayjs | null>(
     dayjs().subtract(1, "day")
   );
@@ -80,6 +83,10 @@ function UserHours() {
         columnName: "DATA_INIZIO",
         value: dateSelected?.format("YYYY-MM-DD") || "",
       },
+      {
+        columnName: "COD_OP",
+        value: user?.COD_OP,
+      },
     ] as Array<FilterItem<EpsNestjsOrpEffCicliEsec>>;
   }
 
@@ -90,20 +97,22 @@ function UserHours() {
     });
 
   const handleRequestFilter = (value: string) => {
-    const columnName = "DATA_INIZIO";
-    const searchParams = new URLSearchParams(window.location.search);
+    if (user && user.COD_OP != null) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
+        {
+          columnName: "DATA_INIZIO",
+          value,
+        },
+        {
+          columnName: "COD_OP",
+          value: user.COD_OP,
+        },
+      ];
 
-    const oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
-      {
-        columnName,
-        value,
-      },
-    ];
-
-    searchParams.set("filter", JSON.stringify(oldFilter));
-
-    // setFilters(oldFilter);
-    router.push("/hours-history?" + searchParams.toString());
+      searchParams.set("filter", JSON.stringify(oldFilter));
+      router.push("/hours-history?" + searchParams.toString());
+    }
   };
 
   const result = useMemo(() => {

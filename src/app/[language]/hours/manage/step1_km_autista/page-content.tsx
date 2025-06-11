@@ -14,13 +14,12 @@ import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import TargaMezziTable from "../targa-mezzi-table";
+import { OperatoreSelected } from "../opertore-selected";
 
 function FormCreateUser() {
   const router = useRouter();
 
   const [km, setKm] = useState("0");
-
-  const { user } = useAuth();
 
   const searchParams = useSearchParams();
   const COD_OP = searchParams.get("COD_OP");
@@ -28,18 +27,15 @@ function FormCreateUser() {
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
-        <Grid textAlign="right" size={12} mb={5}>
-          <Typography variant="h5" gutterBottom>
-            {`${user?.firstName} ${user?.lastName}`} quanti km hai percorso in
-            tutto?
-          </Typography>
+        <Grid textAlign="right" size={12} mb={1}>
+          <OperatoreSelected text="quanti km hai percorso in tutto?" />
         </Grid>
         <Grid size={12}>
           <Grid container>
             <Grid size={{ xs: 12 }}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
-                onClickAction={() => router.push("/hours/manage")}
+                onClickAction={() => router.back()}
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<AirportShuttleTwoToneIcon />}
                 label="KM Autista"
@@ -63,7 +59,7 @@ function FormCreateUser() {
                     tipoTrasfertaButton="km_autista_button"
                     onClickAction={async () => {
                       router.push(
-                        `/hours/manage/create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                        `create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
                       );
                     }}
                     icon={<ForwardTwoToneIcon />}

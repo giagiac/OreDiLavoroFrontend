@@ -15,8 +15,8 @@ import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { useTranslation } from "@/services/i18n/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid2";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -142,7 +142,10 @@ export default function FormCreateEdit(props: { cf: Cf }) {
 
   const { setError } = methods;
 
-  const onChange = async (artAna: ArtAna | null, TIPO_TRASFERTA: TipoTrasferta) => {
+  const onChange = async (
+    artAna: ArtAna | null,
+    TIPO_TRASFERTA: TipoTrasferta
+  ) => {
     if (cf !== null) {
       const { data, status } = await fetchPostArticoliCostiCf({
         COD_CF: String(cf.COD_CF),

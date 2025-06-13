@@ -11,7 +11,7 @@ export type ArticoliCostiCf = {
   createdAt: Date;
   updatedAt: Date;
   COD_CF: string;
-  COD_ART: string;
+  COD_ART: string | null;
   TIPO_TRASFERTA: TipoTrasferta;
 
   artAna: ArtAna;

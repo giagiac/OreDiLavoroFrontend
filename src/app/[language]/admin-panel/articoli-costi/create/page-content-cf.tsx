@@ -142,12 +142,12 @@ export default function FormCreateEdit(props: { cf: Cf }) {
 
   const { setError } = methods;
 
-  const onChange = async (artAna: ArtAna, TIPO_TRASFERTA: TipoTrasferta) => {
+  const onChange = async (artAna: ArtAna | null, TIPO_TRASFERTA: TipoTrasferta) => {
     if (cf !== null) {
       const { data, status } = await fetchPostArticoliCostiCf({
         COD_CF: String(cf.COD_CF),
         data: {
-          COD_ART: artAna.COD_ART,
+          COD_ART: artAna?.COD_ART || null,
           TIPO_TRASFERTA: TIPO_TRASFERTA,
           COD_CF: String(cf.COD_CF),
         },
@@ -265,7 +265,7 @@ export default function FormCreateEdit(props: { cf: Cf }) {
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) => {
-                      if (artAna && it.TIPO_TRASFERTA) {
+                      if (it.TIPO_TRASFERTA) {
                         onChange(artAna, it.TIPO_TRASFERTA);
                       }
                     }}

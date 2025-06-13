@@ -31,18 +31,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import {
-  ChangeEvent,
-  Fragment,
-  KeyboardEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  useGetMeQuery,
-  usePostEpsNestjsOrpEffCicliEsecChildService,
-} from "../../queries/queries";
+import { ChangeEvent, Fragment, KeyboardEvent, useMemo, useState } from "react";
+import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
 import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import Children from "./children";
 
@@ -93,8 +83,6 @@ type CreateFormDataChild = {
 };
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
-import { User } from "@/services/api/types/user";
-import useAuth from "@/services/auth/use-auth";
 import { OperatoreSelected } from "../../opertore-selected";
 
 function FormCreateEpsNestjsOrpEffCicliEsec() {

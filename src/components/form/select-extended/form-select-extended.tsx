@@ -5,6 +5,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import ClearIcon from "@mui/icons-material/Clear";
 import React, {
   ForwardedRef,
   forwardRef,
@@ -33,7 +35,7 @@ type SelectExtendedInputProps<T extends object> = {
   renderOption: (option: T) => React.ReactNode;
   keyExtractor: (option: T) => string;
   onEndReached?: () => void;
-  onChangeCallback: (value: T) => void; // Tipo per la callback
+  onChangeCallback: (value: T | null) => void; // Tipo per la callback
 } & (
   | {
       isSearchable: true;
@@ -76,7 +78,7 @@ function SelectExtendedInputRaw<T extends object>(
   props: SelectExtendedInputProps<T> & {
     name: string;
     value: T | undefined | null;
-    onChange: (value: T) => void;
+    onChange: (value: T | null) => void;
     onBlur: () => void;
   },
   ref?: ForwardedRef<HTMLDivElement | null>
@@ -108,7 +110,6 @@ function SelectExtendedInputRaw<T extends object>(
             variant="outlined"
             onClick={() => {
               if (props.disabled) return;
-
               setIsOpen((prev) => !prev);
             }}
             fullWidth
@@ -116,10 +117,23 @@ function SelectExtendedInputRaw<T extends object>(
             data-testid={props.testId}
             helperText={props.error}
             disabled={props.disabled}
+            InputProps={{
+              readOnly: true,
+              endAdornment: props.value ? (
+                <IconButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.onChange(null);
+                    props.onChangeCallback(null);
+                  }}
+                  data-testid={`${props.testId}-clear`}
+                >
+                  <ClearIcon />
+                </IconButton>
+              ) : null,
+            }}
             slotProps={{
-              input: {
-                readOnly: true,
-              },
               formHelperText: {
                 ["data-testid" as string]: `${props.testId}-error`,
               },

@@ -11,6 +11,7 @@ async function wrapperFetchJsonResponse<T>(
       HTTP_CODES_ENUM.NO_CONTENT,
       HTTP_CODES_ENUM.SERVICE_UNAVAILABLE,
       HTTP_CODES_ENUM.INTERNAL_SERVER_ERROR,
+      HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY,
     ].includes(status)
       ? undefined
       : await response.json(),

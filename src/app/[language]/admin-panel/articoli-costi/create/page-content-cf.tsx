@@ -143,53 +143,55 @@ export default function FormCreateEdit(props: { cf: Cf }) {
   const { setError } = methods;
 
   const onChange = async (artAna: ArtAna, TIPO_TRASFERTA: TipoTrasferta) => {
-    const { data, status } = await fetchPostArticoliCostiCf({
-      COD_CF: cf.COD_CF,
-      data: {
-        COD_ART: artAna.COD_ART,
-        TIPO_TRASFERTA: TIPO_TRASFERTA,
-        COD_CF: cf.COD_CF,
-      },
-    });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      // (Object.keys(data.errors) as Array<keyof EditArtAnaFormData>).forEach(
-      //   (key) => {
-      //     setError(key, {
-      //       type: "manual",
-      //       message: t(
-      //         `admin-panel-users-create:inputs.${key}.validation.server.${data.errors[key]}`
-      //       ),
-      //     });
-      //   }
-      // );
-      setError("in_giornata", {
-        type: "manual",
-        message: `Errore salvataggio dati...`,
+    if (cf !== null) {
+      const { data, status } = await fetchPostArticoliCostiCf({
+        COD_CF: String(cf.COD_CF),
+        data: {
+          COD_ART: artAna.COD_ART,
+          TIPO_TRASFERTA: TIPO_TRASFERTA,
+          COD_CF: String(cf.COD_CF),
+        },
       });
-      return;
-    }
-    if (status === HTTP_CODES_ENUM.CREATED) {
-      setCf((oldCf) => {
-        let newArticoliCostiCf: Array<ArticoliCostiCf> = [];
-        newArticoliCostiCf =
-          oldCf.articoliCostiCf?.filter(
-            (it) => it.TIPO_TRASFERTA !== data.TIPO_TRASFERTA
-          ) ?? [];
-        newArticoliCostiCf?.push(data);
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        // (Object.keys(data.errors) as Array<keyof EditArtAnaFormData>).forEach(
+        //   (key) => {
+        //     setError(key, {
+        //       type: "manual",
+        //       message: t(
+        //         `admin-panel-users-create:inputs.${key}.validation.server.${data.errors[key]}`
+        //       ),
+        //     });
+        //   }
+        // );
+        setError("in_giornata", {
+          type: "manual",
+          message: `Errore salvataggio dati...`,
+        });
+        return;
+      }
+      if (status === HTTP_CODES_ENUM.CREATED) {
+        setCf((oldCf) => {
+          let newArticoliCostiCf: Array<ArticoliCostiCf> = [];
+          newArticoliCostiCf =
+            oldCf.articoliCostiCf?.filter(
+              (it) => it.TIPO_TRASFERTA !== data.TIPO_TRASFERTA
+            ) ?? [];
+          newArticoliCostiCf?.push(data);
 
-        const newCfComm: Cf = {
-          ...cf,
-          articoliCostiCf: newArticoliCostiCf,
-        };
+          const newCfComm: Cf = {
+            ...cf,
+            articoliCostiCf: newArticoliCostiCf,
+          };
 
-        return newCfComm;
-      });
-      enqueueSnackbar(
-        t("admin-panel-articoli-costi:alerts.articolicosti.success"),
-        {
-          variant: "success",
-        }
-      );
+          return newCfComm;
+        });
+        enqueueSnackbar(
+          t("admin-panel-articoli-costi:alerts.articolicosti.success"),
+          {
+            variant: "success",
+          }
+        );
+      }
     }
   };
 

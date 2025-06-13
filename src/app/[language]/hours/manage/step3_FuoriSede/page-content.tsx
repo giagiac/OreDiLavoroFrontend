@@ -2,7 +2,6 @@
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { RoleEnum } from "@/services/api/types/role";
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
@@ -11,7 +10,6 @@ import TrendingUpTwoToneIcon from "@mui/icons-material/TrendingUpTwoTone";
 import UTurnLeftTwoToneIcon from "@mui/icons-material/UTurnLeftTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { OperatoreSelected } from "../opertore-selected";

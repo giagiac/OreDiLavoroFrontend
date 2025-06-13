@@ -36,7 +36,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Fragment, useMemo, useState } from "react";
 import { FormProvider } from "react-hook-form";
 import imageLogo from "../../../../../public/emotions.png";
@@ -48,41 +48,38 @@ import {
 } from "../manage/queries/queries";
 
 import { User } from "@/services/api/types/user";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
   const { user } = useAuth();
 
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }] = useState<{
     order: SortEnum;
     orderBy: EpsNestjsOrpEffCicliEsecKeys;
   }>(() => {
-    const searchParamsSort = searchParams.get("sort");
-    if (searchParamsSort) {
-      return JSON.parse(searchParamsSort);
-    }
+    // const searchParamsSort = searchParams.get("sort");
+    // if (searchParamsSort) {
+    //   return JSON.parse(searchParamsSort);
+    // }
     return { order: SortEnum.DESC, orderBy: "id" };
   });
 
-  const filter = useMemo(() => {
-    const searchParamsFilter = searchParams.get("filter");
-    if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter) as Array<
-        FilterItem<EpsNestjsOrpEffCicliEsec>
-      >;
-    }
-
-    return [{ columnName: "COD_OP", value: user?.COD_OP }] as Array<
-      FilterItem<EpsNestjsOrpEffCicliEsec>
-    >;
-  }, [searchParams]);
+  const [filter, setFilter] = useState<
+    Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
+  >([
+    {
+      columnName: "COD_OP",
+      value: user?.COD_OP || "",
+    },
+  ]);
 
   const { data, isFetchingNextPage, isLoading, refetch, status } =
     useGetEpsNestjsOrpEffCicliEsecQuery({
@@ -275,32 +272,41 @@ function UserHours() {
     );
   };
 
-  const [operatori] = useState();
+  // const [operatori] = useState();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const [userSelected, setUserSelected] = useState<User | null>();
   const fetchGetMe = useGetMeQuery();
-  useMemo(() => {
-    const fetchUser = async () => {
+
+  useEffect(() => {
+    const fetchUser = async (
+      filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
+    ) => {
       const codOpValue = filter?.find(
         (it) => it.columnName === "COD_OP"
       )?.value;
-      const { data, status } = await fetchGetMe({
-        COD_OP:
-          codOpValue !== undefined && codOpValue !== null
-            ? String(codOpValue)
-            : undefined,
-      });
-      if (status === HTTP_CODES_ENUM.OK) {
-        setUserSelected(data as User);
+
+      if (codOpValue) {
+        try {
+          const { data, status } = await fetchGetMe({
+            COD_OP: String(codOpValue),
+          });
+          if (status === HTTP_CODES_ENUM.OK) {
+            setUserSelected(data as User);
+          }
+        } catch (error) {
+          console.log(error);
+          setUserSelected(null);
+        }
+      } else {
+        setUserSelected(null);
       }
     };
+    fetchUser(filter);
+  }, [filter]);
 
-    if ((filter?.length ?? 0) > 0) {
-      fetchUser();
-    }
-  }, [data]);
+  const [operatori] = useState();
 
   const validationSchema: yup.ObjectSchema<EditOperatoreFormData> = yup
     .object()
@@ -318,6 +324,70 @@ function UserHours() {
     },
   });
 
+  // Keyboard listener for COD_OP input (max 8 chars)
+
+  useEffect(() => {
+    let buffer = "";
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const resetBuffer = () => {
+      buffer = "";
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      console.info("Baffer reset");
+    };
+
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      // Ignore if focus is on an input, textarea or contenteditable
+      const active = document.activeElement;
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          (active as HTMLElement).isContentEditable)
+      ) {
+        return;
+      }
+
+      // Only allow alphanumeric chars (adjust if COD_OP allows other chars)
+      if (/^[0-9]$/.test(e.key)) {
+        buffer += e.key;
+        if (buffer.length > 10) {
+          resetBuffer();
+          buffer += e.key; // start new buffer with current key
+        }
+        // Reset buffer if no key pressed for 1.5s
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(resetBuffer, 1000);
+
+        if (buffer.length === 10) {
+          console.log("COD_OP -> ", buffer);
+          // Update filter and route
+          const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
+            columnName: "COD_OP",
+            value: buffer,
+          };
+          resetBuffer();
+          // const searchParams = new URLSearchParams(window.location.search);
+          // searchParams.set("filter", JSON.stringify([filter]));
+          // router.push(window.location.pathname + "?" + searchParams.toString());
+          setFilter([filter]);
+        }
+      } else {
+        resetBuffer();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      resetBuffer();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Container
       maxWidth="xl"
@@ -326,26 +396,38 @@ function UserHours() {
         m: 0,
       }}
     >
-      <FormProvider {...methods}>
-        <EditOperatori
-          join={true} 
-          onSubmit={function (operatori: Operatori): void {
-            console.log(operatori);
-            if (operatori.user) {
-              //setOperatoreSelected(operatori);
-              const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
-                columnName: "COD_OP",
-                value: operatori.COD_OP,
-              };
-              const searchParams = new URLSearchParams(window.location.search);
-              searchParams.set("filter", JSON.stringify([filter]));
-              router.push(
-                window.location.pathname + "?" + searchParams.toString()
-              );
-            }
+      {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) ? (
+        <FormProvider {...methods}>
+          <EditOperatori
+            join={true}
+            onSubmit={function (operatori: Operatori | null): void {
+              if (operatori?.user) {
+                //setOperatoreSelected(operatori);
+                const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
+                  columnName: "COD_OP",
+                  value: operatori.COD_OP,
+                };
+                setFilter([filter]);
+              } else {
+                setFilter([]);
+                setUserSelected(null);
+              }
+            }}
+          />
+        </FormProvider>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={() => {
+            setFilter([]);
+            setUserSelected(null);
           }}
-        />
-      </FormProvider>
+          size="large"
+          fullWidth
+        >
+          ESCI
+        </Button>
+      )}
       {userSelected === null && (
         <Typography textAlign="center" mt={5} variant="h5">
           Nessun operatore selezionato
@@ -378,14 +460,15 @@ function UserHours() {
               justifyContent="center"
               alignItems="unset"
             >
-              {status == "success" && result.map((epsNestjsOrpEffCicliEsec) => (
-                <ChildEpsNestjsOrpEffCicliEsecCard
-                  key={epsNestjsOrpEffCicliEsec.id}
-                  epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
-                  onDelete={onDelete}
-                  renderOrdCliTrasDialog={renderOrdCliTrasDialog}
-                />
-              ))}
+              {status === "success" &&
+                result.map((epsNestjsOrpEffCicliEsec) => (
+                  <ChildEpsNestjsOrpEffCicliEsecCard
+                    key={epsNestjsOrpEffCicliEsec.id}
+                    epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
+                    onDelete={onDelete}
+                    renderOrdCliTrasDialog={renderOrdCliTrasDialog}
+                  />
+                ))}
             </Grid>
 
             {isFetchingNextPage && (
@@ -394,7 +477,7 @@ function UserHours() {
               </Grid>
             )}
 
-            {status == "success" && result.length === 0 && !isLoading && (
+            {status === "success" && result.length === 0 && !isLoading && (
               <Grid size={{ xs: 12 }}>
                 <Box
                   display="flex-column"

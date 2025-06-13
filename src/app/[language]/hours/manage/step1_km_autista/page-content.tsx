@@ -3,18 +3,16 @@
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { NumericKeypadKm } from "@/components/numeric-keypad-km";
 import { RoleEnum } from "@/services/api/types/role";
-import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
 import ForwardTwoToneIcon from "@mui/icons-material/ForwardTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import TargaMezziTable from "../targa-mezzi-table";
 import { OperatoreSelected } from "../opertore-selected";
+import TargaMezziTable from "../targa-mezzi-table";
 
 function FormCreateUser() {
   const router = useRouter();

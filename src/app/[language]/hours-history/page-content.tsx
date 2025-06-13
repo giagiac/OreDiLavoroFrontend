@@ -97,7 +97,7 @@ function UserHours() {
     });
 
   const handleRequestFilter = (value: string) => {
-    if (user && user.COD_OP != null) {
+    if (user && user.COD_OP !== null) {
       const searchParams = new URLSearchParams(window.location.search);
       const oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
         {
@@ -106,7 +106,7 @@ function UserHours() {
         },
         {
           columnName: "COD_OP",
-          value: user.COD_OP,
+          value: String(user.COD_OP),
         },
       ];
 

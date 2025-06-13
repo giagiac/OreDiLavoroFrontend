@@ -13,7 +13,7 @@ type OperatoriKeys = keyof Operatori;
 
 function EditOperatori(props: {
   join: boolean;
-  onSubmit: (operatori: Operatori) => void;
+  onSubmit: (operatori: Operatori | null) => void;
 }) {
   const filter = props.join === true ? [{ key: "join", value: "true" }] : null;
 

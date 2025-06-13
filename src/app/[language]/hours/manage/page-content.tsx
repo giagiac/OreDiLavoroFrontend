@@ -37,7 +37,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import {
@@ -73,13 +73,13 @@ function UserHours() {
     }
 
     return [{ columnName: "COD_OP", value: user?.COD_OP }] as Array<
-        FilterItem<EpsNestjsOrpEffCicliEsec>
-      >;
+      FilterItem<EpsNestjsOrpEffCicliEsec>
+    >;
   }, [searchParams]);
 
   const [userSelected, setUserSelected] = useState<User | null>();
   const fetchGetMe = useGetMeQuery();
-  useMemo(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       const { data, status } = await fetchGetMe({
         COD_OP: user?.COD_OP ?? undefined,

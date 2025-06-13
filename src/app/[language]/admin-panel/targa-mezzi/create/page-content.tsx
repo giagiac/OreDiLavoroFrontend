@@ -145,9 +145,11 @@ export default function FormCreateEdit({
           }}
           onEndReached={handleScroll}
           onChangeCallback={async (artAna) => {
-            const result = await onChange(artAna);
-            console.log(result);
-            onChangeCallback(artAna);
+            if (artAna) {
+              const result = await onChange(artAna);
+              console.log(result);
+              onChangeCallback(artAna);
+            }
           }}
         />
       </form>

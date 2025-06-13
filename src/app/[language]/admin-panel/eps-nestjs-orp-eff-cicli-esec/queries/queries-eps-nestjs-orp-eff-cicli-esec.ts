@@ -75,7 +75,7 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           totale: data.totale,
           targetDateInizio: data.targetDateInizio,
         };
-      }else {
+      } else {
         return {
           data: [],
           nextPage: 0,

@@ -11,26 +11,13 @@ import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import EditOperatori from "../edit-operatori";
 
-// type OperatoriKeys = keyof Operatori;
-
 export type EditOperatoreFormData = {
   operatori?: Operatori | null | undefined;
 };
 
-// const useValidationEditUserSchema = () => {
-//   return yup.object().shape({
-//     operatori: yup.object<Operatori | null | undefined>().notRequired(),
-//   });
-// };
-
 export default function FormCreateEdit(props: { user: User }) {
   const { user } = props;
   const [operatori] = useState(user.operatori);
-
-  // const router = useRouter();
-  // const fetchPostArticoliCostiCf = usePatchArticoliCostiCfService();
-  // const { t } = useTranslation("admin-panel-users-create");
-  // const validationSchema = useValidationEditUserSchema();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -54,11 +41,11 @@ export default function FormCreateEdit(props: { user: User }) {
 
   const fetchPatchUser = usePatchUserService();
 
-  const onChange = async (operatori: Operatori) => {
+  const onChange = async (operatori: Operatori | null) => {
     const { status } = await fetchPatchUser({
       id: user.id,
       data: {
-        COD_OP: operatori.COD_OP,
+        COD_OP: operatori?.COD_OP !== null ? operatori?.COD_OP : null,
       },
     });
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {

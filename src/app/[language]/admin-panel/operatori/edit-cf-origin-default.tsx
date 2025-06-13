@@ -11,7 +11,7 @@ import { useGetCfQuery } from "./quieries/queries-cf";
 
 type CfKeys = keyof Cf;
 
-function EditCf(props: { onSubmit: (cf: Cf) => void }) {
+function EditCf(props: { onSubmit: (cf: Cf | null) => void }) {
   // const { articoliCostiCfComm } = props;
 
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);

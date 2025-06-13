@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
-import Typography from "@mui/material/Typography";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { User } from "@/services/api/types/user";
-import { useGetMeQuery } from "./queries/queries";
+import Typography from "@mui/material/Typography";
 import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useGetMeQuery } from "./queries/queries";
 
 interface OperatoreSelectedProps {
   text: string;
@@ -17,7 +17,7 @@ export const OperatoreSelected: React.FC<OperatoreSelectedProps> = ({
 
   const [userSelected, setUserSelected] = useState<User | null>();
   const fetchGetMe = useGetMeQuery();
-  useMemo(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       if (COD_OP) {
         const { data, status } = await fetchGetMe({

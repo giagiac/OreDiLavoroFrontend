@@ -16,6 +16,7 @@ import {
   EpsNestjsOrpEffCicliEsecSortType,
   OthersFiltersType,
 } from "../esp-nestjs-orp-eff-cicli-filter-types";
+import { useSnackbar } from "@/hooks/use-snackbar";
 
 export const epsNestjsOrpEffCicliEsecQueryKeys = createQueryKeys(
   ["EpsNestjsOrpEffCicliEsec"],
@@ -49,6 +50,7 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
   const fetch = useGetEpsNestjsOrpEffCicliEsecService();
+  const { enqueueSnackbar } = useSnackbar();
 
   const query = useInfiniteQuery({
     queryKey: epsNestjsOrpEffCicliEsecQueryKeys.list().sub.by({
@@ -79,12 +81,15 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           targetDateInizio: data.targetDateInizio,
         };
       } else {
+        enqueueSnackbar("Codice operatore non trovato!", {
+          variant: "error",
+        });
         return {
           data: [],
           nextPage: 0,
           totale: 0,
           targetDateInizio: "",
-        }
+        };
       }
     },
     getNextPageParam: (lastPage) => {

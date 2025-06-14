@@ -48,11 +48,11 @@ import {
 } from "../manage/queries/queries";
 
 import { User } from "@/services/api/types/user";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -374,6 +374,7 @@ function UserHours() {
           // searchParams.set("filter", JSON.stringify([filter]));
           // router.push(window.location.pathname + "?" + searchParams.toString());
           setFilter([filter]);
+          playConfirmationBeep();
         }
       } else {
         resetBuffer();
@@ -388,6 +389,25 @@ function UserHours() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function playConfirmationBeep() {
+    const AudioCtx = window.AudioContext || window.AudioContext;
+    const ctx = new AudioCtx();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = 880; // Hz, a pleasant beep
+    gain.gain.value = 1.0; // volume
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.15); // 150ms beep
+
+    oscillator.onended = () => ctx.close();
+  }
+
   return (
     <Container
       maxWidth="xl"
@@ -396,37 +416,27 @@ function UserHours() {
         m: 0,
       }}
     >
-      {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) ? (
-        <FormProvider {...methods}>
-          <EditOperatori
-            join={true}
-            onSubmit={function (operatori: Operatori | null): void {
-              if (operatori?.user) {
-                //setOperatoreSelected(operatori);
-                const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
-                  columnName: "COD_OP",
-                  value: operatori.COD_OP,
-                };
-                setFilter([filter]);
-              } else {
-                setFilter([]);
-                setUserSelected(null);
-              }
-            }}
-          />
-        </FormProvider>
-      ) : (
-        <Button
-          variant="contained"
-          onClick={() => {
-            setFilter([]);
-            setUserSelected(null);
-          }}
-          size="large"
-          fullWidth
-        >
-          ESCI
-        </Button>
+      {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+        <>
+          <FormProvider {...methods}>
+            <EditOperatori
+              join={true}
+              onSubmit={function (operatori: Operatori | null): void {
+                if (operatori?.user) {
+                  //setOperatoreSelected(operatori);
+                  const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
+                    columnName: "COD_OP",
+                    value: operatori.COD_OP,
+                  };
+                  setFilter([filter]);
+                } else {
+                  setFilter([]);
+                  setUserSelected(null);
+                }
+              }}
+            />
+          </FormProvider>
+        </>
       )}
       {userSelected === null && (
         <Typography textAlign="center" mt={5} variant="h5">
@@ -453,6 +463,18 @@ function UserHours() {
                 </Typography>
                 <Typography variant="h2">{data?.totale}</Typography>
               </Stack>
+            </Grid>
+            <Grid size={{ xs: 12 }} textAlign="right">
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setFilter([]);
+                  setUserSelected(null);
+                }}
+                size="large"
+              >
+                ESCI
+              </Button>
             </Grid>
             <Grid
               container

@@ -168,10 +168,14 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     if ("key" in event && event.key === "Enter") {
       // Logica per gestire l'invio a capo
       console.log("Invio a capo rilevato:", target.value);
+      let value = target.value;
+      if (value.length > 0) {
+        value = value.slice(0, -1) + "-" + value.slice(-1);
+      }
       setFilters([
         {
           columnName: "CODICE_BREVE",
-          value: target.value,
+          value,
         },
       ]);
       setEnterPressed(true);
@@ -465,7 +469,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) ===
                   "true"
                 }
-                inputMode="text"
+                type="number"
+                inputMode="numeric"
                 autoComplete="off"
                 fullWidth
                 label="Codice Breve"

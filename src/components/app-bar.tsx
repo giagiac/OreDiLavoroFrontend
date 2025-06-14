@@ -135,7 +135,7 @@ function ResponsiveAppBar() {
                     component={Link}
                     href="/hours/manage-badge"
                   >
-                    <Typography textAlign="center">{"BADGE"}</Typography>
+                    <Typography textAlign="center">{"Badge"}</Typography>
                   </MenuItem>,
                 ]}
 

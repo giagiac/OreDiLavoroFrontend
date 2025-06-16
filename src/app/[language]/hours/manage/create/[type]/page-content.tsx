@@ -168,10 +168,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     if ("key" in event && event.key === "Enter") {
       // Logica per gestire l'invio a capo
       console.log("Invio a capo rilevato:", target.value);
-      let value = target.value;
-      if (value.length > 0) {
-        value = value.slice(0, -1) + "-" + value.slice(-1);
-      }
+      const value = target.value;
       setFilters([
         {
           columnName: "CODICE_BREVE",
@@ -470,7 +467,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   "true"
                 }
                 type="number"
-                inputMode="numeric"
+                inputMode="text"
                 autoComplete="off"
                 fullWidth
                 label="Codice Breve"
@@ -601,6 +598,23 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         sx={{ p: 2 }}
                       >
                         <Grid container spacing={{ xs: 0, sm: 1 }}>
+                          {/* Ordine di produzione */}
+                          <Grid
+                            size={{ xs: 12, sm: 1 }}
+                            textAlign={{ xs: "right", sm: "right" }}
+                          >
+                            <Typography variant="caption">
+                              Ord. Prod.
+                            </Typography>
+                          </Grid>
+                          <Grid
+                            size={{ xs: 12, sm: 11 }}
+                            textAlign={{ xs: "center", sm: "left" }}
+                          >
+                            <Typography variant="body1" gutterBottom>
+                              {item?.DOC_ID}
+                            </Typography>
+                          </Grid>
                           {/* Commessa */}
                           <Grid
                             size={{ xs: 12, sm: 1 }}

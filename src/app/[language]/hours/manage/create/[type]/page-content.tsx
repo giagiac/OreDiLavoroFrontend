@@ -613,7 +613,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             textAlign={{ xs: "center", sm: "left" }}
                           >
                             <Typography variant="body1" gutterBottom>
-                              {item?.DOC_ID}
+                              {item?.linkOrpOrd?.[0]?.ordCliRighe?.DOC_ID}
                             </Typography>
                           </Grid>
 
@@ -653,10 +653,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                   }
                                 </Typography>
                                 <Typography variant="h4" gutterBottom>
-                                  {item?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
-                                    .cfComm?.INDI_SEDE ||
-                                    item?.linkOrpOrd?.[0]?.ordCliRighe?.cf
-                                      .INDI_CF}
+                                  {
+                                    item?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
+                                      .cfComm?.DES_SEDE
+                                  }
                                 </Typography>
                               </Fragment>
                             ) : (
@@ -710,7 +710,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                           ? item.linkOrpOrd[0].ordCliRighe
                                               .DES_RIGA
                                           : "";
-
                                       if (desCiclo && desRiga) {
                                         if (desCiclo.includes(desRiga)) {
                                           // Show the part of desCiclo that is not in desRiga

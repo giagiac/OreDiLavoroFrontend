@@ -466,7 +466,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) ===
                   "true"
                 }
-                type="number"
+                type="text"
                 inputMode="text"
                 autoComplete="off"
                 fullWidth

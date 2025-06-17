@@ -124,58 +124,53 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
 
   const { setError } = methods;
 
-  const onChange = async (artAna: ArtAna, TIPO_TRASFERTA: TipoTrasferta) => {
-    const { data, status } = await fetchPostArticoliCostiCfComm({
-      CF_COMM_ID: cfComm.CF_COMM_ID,
-      data: {
-        COD_ART: artAna.COD_ART,
-        TIPO_TRASFERTA: TIPO_TRASFERTA,
+  const onChange = async (
+    artAna: ArtAna | null,
+    TIPO_TRASFERTA: TipoTrasferta
+  ) => {
+    if (cfComm !== null) {
+      const { data, status } = await fetchPostArticoliCostiCfComm({
         CF_COMM_ID: cfComm.CF_COMM_ID,
-      },
-    });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      // (Object.keys(data.errors) as Array<keyof EditArtAnaFormData>).forEach(
-      //   (key) => {
-      //     setError(key, {
-      //       type: "manual",
-      //       message: t(
-      //         `admin-panel-users-create:inputs.${key}.validation.server.${data.errors[key]}`
-      //       ),
-      //     });
-      //   }
-      // );
-      setError("in_giornata", {
-        type: "manual",
-        message: `Errore salvataggio dati...`,
+        data: {
+          COD_ART: artAna?.COD_ART || null,
+          TIPO_TRASFERTA: TIPO_TRASFERTA,
+          CF_COMM_ID: cfComm.CF_COMM_ID,
+        },
       });
-      return;
-    }
-    if (status === HTTP_CODES_ENUM.CREATED) {
-      setCfComm((oldCfComm) => {
-        let newArticoliCostiCfComm: Array<ArticoliCostiCfComm> = [];
-        if (
-          oldCfComm.articoliCostiCfComm !== undefined &&
-          oldCfComm.articoliCostiCfComm !== null
-        ) {
-          newArticoliCostiCfComm = oldCfComm.articoliCostiCfComm.filter(
-            (it) => it.TIPO_TRASFERTA !== data.TIPO_TRASFERTA
-          );
-        }
-        newArticoliCostiCfComm?.push(data);
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        setError("in_giornata", {
+          type: "manual",
+          message: `Errore salvataggio dati...`,
+        });
+        return;
+      }
+      if (status === HTTP_CODES_ENUM.CREATED) {
+        setCfComm((oldCfComm) => {
+          let newArticoliCostiCfComm: Array<ArticoliCostiCfComm> = [];
+          if (
+            oldCfComm.articoliCostiCfComm !== undefined &&
+            oldCfComm.articoliCostiCfComm !== null
+          ) {
+            newArticoliCostiCfComm = oldCfComm.articoliCostiCfComm.filter(
+              (it) => it.TIPO_TRASFERTA !== data.TIPO_TRASFERTA
+            );
+          }
+          newArticoliCostiCfComm?.push(data);
 
-        const newCfComm: CfComm = {
-          ...cfComm,
-          articoliCostiCfComm: newArticoliCostiCfComm,
-        };
+          const newCfComm: CfComm = {
+            ...cfComm,
+            articoliCostiCfComm: newArticoliCostiCfComm,
+          };
 
-        return newCfComm;
-      });
-      enqueueSnackbar(
-        t("admin-panel-articoli-costi:alerts.articolicosti.success"),
-        {
-          variant: "success",
-        }
-      );
+          return newCfComm;
+        });
+        enqueueSnackbar(
+          t("admin-panel-articoli-costi:alerts.articolicosti.success"),
+          {
+            variant: "success",
+          }
+        );
+      }
     }
   };
 
@@ -247,7 +242,7 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
                     }}
                     onEndReached={handleScroll}
                     onChangeCallback={(artAna) => {
-                      if (artAna) {
+                      if (it.TIPO_TRASFERTA) {
                         onChange(artAna, it.TIPO_TRASFERTA);
                       }
                       // Consider handling deselection if needed

@@ -156,16 +156,6 @@ export default function FormCreateEdit(props: { cf: Cf }) {
         },
       });
       if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-        // (Object.keys(data.errors) as Array<keyof EditArtAnaFormData>).forEach(
-        //   (key) => {
-        //     setError(key, {
-        //       type: "manual",
-        //       message: t(
-        //         `admin-panel-users-create:inputs.${key}.validation.server.${data.errors[key]}`
-        //       ),
-        //     });
-        //   }
-        // );
         setError("in_giornata", {
           type: "manual",
           message: `Errore salvataggio dati...`,

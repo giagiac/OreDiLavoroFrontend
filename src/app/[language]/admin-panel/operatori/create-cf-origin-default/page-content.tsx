@@ -48,23 +48,21 @@ export default function FormCreateEdit(props: { user: User }) {
   const fetchPatchUser = usePatchUserService();
 
   const onChange = async (cf: Cf | null) => {
-    if (cf !== null) {
-      const { status } = await fetchPatchUser({
-        id: user.id,
-        data: {
-          CF_ORIGIN_DEFAULT: cf.COD_CF,
-        },
+    const { status } = await fetchPatchUser({
+      id: user.id,
+      data: {
+        CF_ORIGIN_DEFAULT: cf?.COD_CF !== undefined ? cf.COD_CF : null,
+      },
+    });
+    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+      enqueueSnackbar("Impossibile salvare", {
+        variant: "error",
       });
-      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-        enqueueSnackbar("Impossibile salvare", {
-          variant: "error",
-        });
-      }
-      if (status === HTTP_CODES_ENUM.OK) {
-        enqueueSnackbar("Cliente aggiornato", {
-          variant: "success",
-        });
-      }
+    }
+    if (status === HTTP_CODES_ENUM.OK) {
+      enqueueSnackbar("Cliente aggiornato", {
+        variant: "success",
+      });
     }
   };
 

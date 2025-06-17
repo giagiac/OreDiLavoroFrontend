@@ -45,7 +45,7 @@ export default function FormCreateEdit(props: { user: User }) {
     const { status } = await fetchPatchUser({
       id: user.id,
       data: {
-        COD_OP: operatori?.COD_OP !== null ? operatori?.COD_OP : null,
+        COD_OP: operatori?.COD_OP !== undefined ? operatori?.COD_OP : null,
       },
     });
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {

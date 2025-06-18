@@ -65,7 +65,7 @@ function AdminPanel() {
             </Grid>
           </Grid>
         </Grid>
-        {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+        {/* {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
           <Grid size={{ xs: 12 }}>
             <iframe
               width="100%"
@@ -74,7 +74,7 @@ function AdminPanel() {
               style={{ border: 0 }}
             ></iframe>
           </Grid>
-        )}
+        )} */}
       </Grid>
       <Typography
         sx={{

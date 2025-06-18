@@ -33,7 +33,13 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Typography from "@mui/material/Typography";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PropsWithChildren, useMemo, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import FormOperatoriCreateEdit from "../operatori/create-operatori/page-content";
 import FormCfOriginDefaultCreateEdit from "../operatori/create-cf-origin-default/page-content";
 import { useGetUsersQuery, usersQueryKeys } from "./queries/queries";
@@ -276,15 +282,16 @@ function Users() {
     return undefined;
   }, [searchParams]);
 
-  const { data, isFetchingNextPage } = useGetUsersQuery({
-    filter,
-    sort: { order, orderBy },
-  });
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useGetUsersQuery({
+      filter,
+      sort: { order, orderBy },
+    });
 
-  // const handleScroll = useCallback(() => {
-  //   if (!hasNextPage || isFetchingNextPage) return;
-  //   fetchNextPage();
-  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const handleScroll = useCallback(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const result = useMemo(() => {
     const result =
@@ -393,6 +400,13 @@ function Users() {
               })}
             </TableBody>
           </Table>
+          <Grid mt={2} textAlign={"center"}>
+            <Grid>
+              <Button variant="contained" onClick={() => handleScroll()}>
+                NEXT
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

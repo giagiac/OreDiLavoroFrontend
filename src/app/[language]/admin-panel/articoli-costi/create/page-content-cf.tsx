@@ -233,7 +233,7 @@ export default function FormCreateEdit(props: { cf: Cf }) {
                 <Grid
                   key={`${it.TIPO_TRASFERTA ?? ""}-${cf.COD_CF ?? ""}`}
                   size={{ xs: 3 }}
-                  padding={0.5}
+                  padding={0.1}
                 >
                   <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
                     name={`${it.TIPO_TRASFERTA}`}

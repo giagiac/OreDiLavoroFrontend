@@ -297,7 +297,7 @@ function Cfs() {
 
         <Grid size={{ xs: 12 }} mb={2}>
           <TableContainer>
-            <Table size="small" sx={{ "& > *": { borderBottom: "unset" } }}>
+            <Table size="small" sx={{ borderBottom: "unset" }}>
               <TableHead>
                 <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
                   <TableCell style={{ width: "10%" }} />
@@ -346,15 +346,12 @@ function Cfs() {
               <TableBody sx={{ border: "none" }}>
                 {result.map((cf, index) => {
                   return (
-                    <TableRow
-                      sx={{ "& > *": { borderBottom: "unset" } }}
-                      key={cf.COD_CF}
-                    >
+                    <TableRow sx={{ border: "unset" }} key={cf.COD_CF}>
                       <TableCell
                         colSpan={4}
                         sx={(theme) => ({
                           borderBottom: "none",
-                          padding: theme.spacing(2),
+                          padding: theme.spacing(0.1),
                         })}
                       >
                         <Paper

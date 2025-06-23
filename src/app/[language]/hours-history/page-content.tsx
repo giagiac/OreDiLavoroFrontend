@@ -152,6 +152,14 @@ function UserHours() {
         </Typography>
       );
 
+    if (user?.COD_OP === null) {
+      return (
+        <Typography color="warning">
+          Att.ne nessun Operatore definito per questo utente!
+        </Typography>
+      );
+    }
+
     return (
       <>
         {linkOrpOrd.map((it) => {

@@ -33,7 +33,7 @@ export function ButtonTipoTrasferta({
 }: ButtonTipoTrasfertaProps) {
   const theme = useTheme();
   const params = useParams<{
-    type: string;
+    type: TipoTrasferta;
   }>();
   const tipoTrasferta = params.type || tipoTrasfertaButton;
 

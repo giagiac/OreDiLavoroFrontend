@@ -120,11 +120,20 @@ function ResponsiveAppBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              <MenuItem onClick={handleCloseNavMenu} component={Link} href="/">
-                <Typography textAlign="center">
-                  {t("common:navigation.home")}
-                </Typography>
-              </MenuItem>
+              {!!user?.role &&
+                [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER].includes(
+                  Number(user?.role?.id)
+                ) && (
+                  <MenuItem
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/"
+                  >
+                    <Typography textAlign="center">
+                      {t("common:navigation.home")}
+                    </Typography>
+                  </MenuItem>
+                )}
               {!!user?.role &&
                 [RoleEnum.BADGE, RoleEnum.ADMIN].includes(
                   Number(user?.role?.id)
@@ -241,14 +250,19 @@ function ResponsiveAppBar() {
             {t("common:app-name")}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "inherit", display: "block" }}
-              component={Link}
-              href="/"
-            >
-              {t("common:navigation.home")}
-            </Button>
+            {!!user?.role &&
+              [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER].includes(
+                Number(user?.role?.id)
+              ) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "inherit", display: "block" }}
+                  component={Link}
+                  href="/"
+                >
+                  {t("common:navigation.home")}
+                </Button>
+              )}
             {!!user?.role &&
               [RoleEnum.BADGE, RoleEnum.ADMIN].includes(
                 Number(user?.role?.id)

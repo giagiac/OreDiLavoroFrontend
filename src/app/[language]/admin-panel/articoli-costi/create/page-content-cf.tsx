@@ -46,19 +46,6 @@ function Label(props: { artAna?: ArtAna | null }) {
   }
 }
 
-// const useValidationSchema = () => {
-//   // const { t } = useTranslation("admin-panel-users-create");
-
-//   return yup.object().shape({
-//     TIPO_TRASFERTA: yup.string(),
-//     COD_ART: yup.string(),
-//     in_giornata: yup.string(),
-//     in_giornata_dopo_21: yup.string(),
-//     fuori_sede_andata: yup.string(),
-//     fuori_sede_ritorno: yup.string(),
-//   });
-// };
-
 export default function FormCreateEdit(props: { cf: Cf }) {
   const [cf, setCf] = useState(props.cf);
 
@@ -110,7 +97,10 @@ export default function FormCreateEdit(props: { cf: Cf }) {
     fuori_sede_andata: yup.object().shape({
       COD_ART: yup.string().notRequired(),
     }),
-    fuori_sede_ritorno: yup.object().shape({
+    fuori_sede_ritorno_in_giornata: yup.object().shape({
+      COD_ART: yup.string().notRequired(),
+    }),
+    fuori_sede_ritorno_dopo_21: yup.object().shape({
       COD_ART: yup.string().notRequired(),
     }),
   });
@@ -132,9 +122,14 @@ export default function FormCreateEdit(props: { cf: Cf }) {
           (it) => it.TIPO_TRASFERTA === "fuori_sede_andata"
         )?.artAna,
       },
-      fuori_sede_ritorno: {
+      fuori_sede_ritorno_in_giornata: {
         ...cf.articoliCostiCf?.find(
-          (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno"
+          (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno_in_giornata"
+        )?.artAna,
+      },
+      fuori_sede_ritorno_dopo_21: {
+        ...cf.articoliCostiCf?.find(
+          (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno_dopo_21"
         )?.artAna,
       },
     },
@@ -214,10 +209,18 @@ export default function FormCreateEdit(props: { cf: Cf }) {
       artAna: null,
     },
     cf.articoliCostiCf?.find(
-      (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno"
+      (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno_in_giornata"
     ) || {
-      TIPO_TRASFERTA: "fuori_sede_ritorno",
+      TIPO_TRASFERTA: "fuori_sede_ritorno_in_giornata",
       id: 3,
+      COD_ART: null,
+      artAna: null,
+    },
+    cf.articoliCostiCf?.find(
+      (it) => it.TIPO_TRASFERTA === "fuori_sede_ritorno_dopo_21"
+    ) || {
+      TIPO_TRASFERTA: "fuori_sede_ritorno_dopo_21",
+      id: 4,
       COD_ART: null,
       artAna: null,
     },

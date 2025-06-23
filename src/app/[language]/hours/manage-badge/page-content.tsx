@@ -3,7 +3,11 @@
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { useSnackbar } from "@/hooks/use-snackbar";
-import { useDeleteEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import {
+  EpsNestjsOrpEffCicliEsecsResponse,
+  useDeleteEpsNestjsOrpEffCicliEsecService,
+  useGetEpsNestjsOrpEffCicliEsecService,
+} from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -14,9 +18,13 @@ import { Operatori } from "@/services/api/types/operatori";
 import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
+import { User } from "@/services/api/types/user";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
+import { useTranslation } from "@/services/i18n/client";
+import useLanguage from "@/services/i18n/use-language";
+import { yupResolver } from "@hookform/resolvers/yup";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
@@ -28,70 +36,72 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid2";
-import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
+import "dayjs/locale/en";
+import "dayjs/locale/it";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Fragment, useMemo, useState } from "react";
-import { FormProvider } from "react-hook-form";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import * as yup from "yup";
 import imageLogo from "../../../../../public/emotions.png";
+import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "../manage//child-eps-nestjs-orp-eff-cicli-esec-card";
-import {
-  useGetEpsNestjsOrpEffCicliEsecQuery,
-  useGetMeQuery,
-} from "../manage/queries/queries";
-
-import { User } from "@/services/api/types/user";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
-
-type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
+import { useGetMeQuery } from "../manage/queries/queries";
 
 function UserHours() {
   const { user } = useAuth();
 
-  // const searchParams = useSearchParams();
   const router = useRouter();
-  const [{ order, orderBy }] = useState<{
-    order: SortEnum;
-    orderBy: EpsNestjsOrpEffCicliEsecKeys;
-  }>(() => {
-    // const searchParamsSort = searchParams.get("sort");
-    // if (searchParamsSort) {
-    //   return JSON.parse(searchParamsSort);
-    // }
-    return { order: SortEnum.DESC, orderBy: "id" };
-  });
+
+  const { t } = useTranslation("hours-history");
+
+  const language = useLanguage();
+
+  const [dateSelected, setDateSelected] = useState<Dayjs>(dayjs());
 
   const [filter, setFilter] = useState<
     Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
-  >([
-    {
-      columnName: "COD_OP",
-      value: user?.COD_OP || "",
-    },
-  ]);
+  >([]);
 
-  const { data, isFetchingNextPage, isLoading, refetch, status } =
-    useGetEpsNestjsOrpEffCicliEsecQuery({
-      filters: filter,
-      sort: { order, orderBy },
-    });
+  const fetch = useGetEpsNestjsOrpEffCicliEsecService();
+  const [data, setData] = useState<EpsNestjsOrpEffCicliEsecsResponse | null>(
+    null
+  );
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { status, data: responseData } = await fetch({
+        filters: filter,
+        page: 0,
+        limit: 0,
+        sort: [{ order: SortEnum.DESC, orderBy: "id" }],
+      });
+      if (status === HTTP_CODES_ENUM.OK) {
+        setData(responseData);
+      } else {
+        setData(null);
+      }
+    };
+    if (filter.length > 0) {
+      fetchData();
+    }
+  }, [filter, index, fetch]);
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap(
-        (page) => page?.data
-      ) as EpsNestjsOrpEffCicliEsec[]) ?? ([] as EpsNestjsOrpEffCicliEsec[]);
+      (data?.data.flatMap((page) => page) as EpsNestjsOrpEffCicliEsec[]) ??
+      ([] as EpsNestjsOrpEffCicliEsec[]);
 
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
@@ -120,7 +130,7 @@ function UserHours() {
         });
       }
 
-      refetch();
+      setIndex((index) => index + 1);
     }
   };
 
@@ -272,8 +282,6 @@ function UserHours() {
     );
   };
 
-  // const [operatori] = useState();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const [userSelected, setUserSelected] = useState<User | null>();
@@ -365,16 +373,19 @@ function UserHours() {
         if (buffer.length === 10) {
           console.log("COD_OP -> ", buffer);
           // Update filter and route
-          const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
-            columnName: "COD_OP",
-            value: buffer,
-          };
-          resetBuffer();
-          // const searchParams = new URLSearchParams(window.location.search);
-          // searchParams.set("filter", JSON.stringify([filter]));
-          // router.push(window.location.pathname + "?" + searchParams.toString());
-          setFilter([filter]);
+          const filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
+            {
+              columnName: "COD_OP",
+              value: buffer,
+            },
+            {
+              columnName: "DATA_INIZIO",
+              value: dateSelected.format("YYYY-MM-DD"),
+            },
+          ];
+          setFilter(filter);
           playConfirmationBeep();
+          resetBuffer();
         }
       } else {
         resetBuffer();
@@ -408,35 +419,59 @@ function UserHours() {
     oscillator.onended = () => ctx.close();
   }
 
+  const handleRequestFilter = (value: Dayjs | null) => {
+    if (value !== null) {
+      setDateSelected(value);
+      setFilter([
+        {
+          columnName: "DATA_INIZIO",
+          value: value.format("YYYY-MM-DD"),
+        },
+        {
+          columnName: "COD_OP",
+          value: userSelected?.COD_OP || "",
+        },
+      ]);
+    }
+  };
+
+  const DATA_INIZIO_FORMATTED = data?.dateInizio
+    ? dayjs(data?.dateInizio).format("ddd DD MMM YY")
+    : "";
+
   return (
     <Container
       maxWidth="xl"
       sx={{
-        p: 1,
+        p: 0,
         m: 0,
       }}
     >
       {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
-        <>
-          <FormProvider {...methods}>
-            <EditOperatori
-              join={true}
-              onSubmit={function (operatori: Operatori | null): void {
-                if (operatori?.user) {
-                  //setOperatoreSelected(operatori);
-                  const filter: FilterItem<EpsNestjsOrpEffCicliEsec> = {
+        <FormProvider {...methods}>
+          <EditOperatori
+            join={true}
+            onSubmit={function (operatori: Operatori | null): void {
+              if (operatori?.user) {
+                //setOperatoreSelected(operatori);
+                const filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
+                  {
                     columnName: "COD_OP",
                     value: operatori.COD_OP,
-                  };
-                  setFilter([filter]);
-                } else {
-                  setFilter([]);
-                  setUserSelected(null);
-                }
-              }}
-            />
-          </FormProvider>
-        </>
+                  },
+                  {
+                    columnName: "DATA_INIZIO",
+                    value: dateSelected.format("YYYY-MM-DD"),
+                  },
+                ];
+                setFilter(filter);
+              } else {
+                setFilter([]);
+                setUserSelected(null);
+              }
+            }}
+          />
+        </FormProvider>
       )}
       {userSelected === null && (
         <Typography textAlign="center" mt={5} variant="h5">
@@ -445,19 +480,42 @@ function UserHours() {
       )}
       {userSelected !== null && (
         <>
-          <Grid
-            container
-            spacing={1}
-            sx={(theme) => ({
-              marginTop: theme.spacing(0),
-              marginBottom: theme.spacing(5),
-            })}
-            justifyContent="center"
-          >
+          <Grid container spacing={1} justifyContent="center">
+            <Grid size={{ xs: 12 }} mt={1}>
+              <Typography
+                textAlign="right"
+                variant="subtitle2"
+              >{`${userSelected?.lastName} ${userSelected?.firstName}`}</Typography>
+            </Grid>
             <Grid size={{ xs: 12 }}>
-              <Stack textAlign="right" direction="column">
-                <Typography variant="subtitle2">{`${userSelected?.firstName} ${userSelected?.lastName}`}</Typography>
-                <Typography variant="h6">{data?.targetDateInizio}</Typography>
+              <Stack
+                textAlign="right"
+                direction="column"
+                alignItems={"flex-end"}
+              >
+                {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) ? (
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale={language}
+                  >
+                    <DatePicker
+                      label={t("hours-history:formInputs.dateFilter.label")}
+                      format="ddd DD MMM YYYY"
+                      value={dateSelected}
+                      onChange={(newValue) => {
+                        handleRequestFilter(newValue);
+                      }}
+                      maxDate={dayjs()}
+                    />
+                  </LocalizationProvider>
+                ) : (
+                  <Fragment>
+                    <Typography variant="h6">
+                      {DATA_INIZIO_FORMATTED}
+                    </Typography>
+                  </Fragment>
+                )}
+
                 <Typography variant="subtitle2">
                   ore totali della giornata
                 </Typography>
@@ -482,24 +540,16 @@ function UserHours() {
               justifyContent="center"
               alignItems="unset"
             >
-              {status === "success" &&
-                result.map((epsNestjsOrpEffCicliEsec) => (
-                  <ChildEpsNestjsOrpEffCicliEsecCard
-                    key={epsNestjsOrpEffCicliEsec.id}
-                    epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
-                    onDelete={onDelete}
-                    renderOrdCliTrasDialog={renderOrdCliTrasDialog}
-                  />
-                ))}
+              {result.map((epsNestjsOrpEffCicliEsec) => (
+                <ChildEpsNestjsOrpEffCicliEsecCard
+                  key={epsNestjsOrpEffCicliEsec.id}
+                  epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
+                  onDelete={onDelete}
+                  renderOrdCliTrasDialog={renderOrdCliTrasDialog}
+                />
+              ))}
             </Grid>
-
-            {isFetchingNextPage && (
-              <Grid size={{ xs: 12 }}>
-                <LinearProgress />
-              </Grid>
-            )}
-
-            {status === "success" && result.length === 0 && !isLoading && (
+            {result.length === 0 && (
               <Grid size={{ xs: 12 }}>
                 <Box
                   display="flex-column"
@@ -540,53 +590,49 @@ function UserHours() {
               padding: theme.spacing(1),
             })}
           >
-            {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+            {[RoleEnum.AUTISTA].includes(
+              userSelected?.role?.id as RoleEnum
+            ) && (
               <Grid>
                 <ButtonTipoTrasferta
                   tipoTrasfertaButton="km_autista_button"
                   label="Km Autista"
                   onClickAction={() =>
                     router.push(
-                      `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
+                      `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`
                     )
                   }
                   endIcon={<AirportShuttleTwoToneIcon />}
                 />
               </Grid>
             )}
-            {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
-              <Grid>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="fuori_sede_button"
-                  onClickAction={() =>
-                    router.push(
-                      `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
-                    )
-                  }
-                  endIcon={<FlightTakeoffTwoToneIcon />}
-                  label="Fuori Sede"
-                />
-              </Grid>
-            )}
-            {[RoleEnum.ADMIN, RoleEnum.BADGE].includes(
-              user?.role?.id as RoleEnum
-            ) && (
-              <Grid>
-                <ButtonTipoTrasferta
-                  tipoTrasfertaButton="in_sede_button"
-                  label="In Sede"
-                  onClickAction={() => {
-                    router.push(
-                      `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}`,
-                      {
-                        scroll: true,
-                      }
-                    );
-                  }}
-                  endIcon={<FactoryTwoToneIcon />}
-                />
-              </Grid>
-            )}
+            <Grid>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="fuori_sede_button"
+                onClickAction={() =>
+                  router.push(
+                    `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`
+                  )
+                }
+                endIcon={<FlightTakeoffTwoToneIcon />}
+                label="Trasferta"
+              />
+            </Grid>
+            <Grid>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="in_sede_button"
+                label="In Sede"
+                onClickAction={() => {
+                  router.push(
+                    `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`,
+                    {
+                      scroll: true,
+                    }
+                  );
+                }}
+                endIcon={<FactoryTwoToneIcon />}
+              />
+            </Grid>
           </Grid>
         </>
       )}

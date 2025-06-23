@@ -33,7 +33,7 @@ export const OperatoreSelected: React.FC<OperatoreSelectedProps> = ({
 
   return (
     <Typography variant="h5" gutterBottom>
-      {userSelected?.firstName} {userSelected?.lastName}, {text}
+      {userSelected?.lastName} {userSelected?.firstName} , {text}
     </Typography>
   );
 };

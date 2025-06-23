@@ -111,7 +111,7 @@ export const TipoTrasfertaColors: Record<
       hover: brown[800],
     },
   },
-  fuori_sede_ritorno: {
+  fuori_sede_ritorno_in_giornata: {
     dark: {
       main: brown[900],
       hover: brown[800],
@@ -119,6 +119,16 @@ export const TipoTrasfertaColors: Record<
     light: {
       main: brown[300],
       hover: brown[400],
+    },
+  },
+  fuori_sede_ritorno_dopo_21: {
+    dark: {
+      main: brown["A200"],
+      hover: brown["A100"],
+    },
+    light: {
+      main: brown[500],
+      hover: brown[600],
     },
   },
   ancora_in_trasferta_0: {

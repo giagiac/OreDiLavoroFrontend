@@ -60,7 +60,7 @@ export const NumericKeypad = ({
     <Paper
       elevation={3}
       sx={(theme) => ({
-        mt: theme.spacing(3),
+        // mt: theme.spacing(3),
         pb: theme.spacing(3),
         minWidth: { xs: 290 },
       })}

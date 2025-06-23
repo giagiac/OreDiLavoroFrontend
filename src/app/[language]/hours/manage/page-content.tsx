@@ -35,6 +35,8 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import dayjs from "dayjs";
+import "dayjs/locale/it";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
@@ -44,6 +46,7 @@ import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
   useGetMeQuery,
 } from "./queries/queries";
+dayjs.locale("it");
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
@@ -291,11 +294,15 @@ function UserHours() {
     );
   }
 
+  const DATA_INIZIO_FORMATTED = data?.dateInizio
+    ? dayjs(data?.dateInizio).format("ddd DD MMM YY")
+    : "";
+
   return (
     <Container
       maxWidth="xl"
       sx={{
-        p: 1,
+        p: 0,
         m: 0,
       }}
     >
@@ -310,8 +317,8 @@ function UserHours() {
       >
         <Grid size={{ xs: 12 }}>
           <Stack textAlign="right" direction="column">
-            <Typography variant="subtitle2">{`${userSelected?.firstName} ${userSelected?.lastName}`}</Typography>
-            <Typography variant="h6">{data?.targetDateInizio}</Typography>
+            <Typography variant="subtitle2">{`${userSelected?.lastName} ${userSelected?.firstName}`}</Typography>
+            <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
             <Typography variant="subtitle2">
               ore totali della giornata
             </Typography>
@@ -376,7 +383,7 @@ function UserHours() {
           padding: theme.spacing(1),
         })}
       >
-        {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
+        {[RoleEnum.AUTISTA, RoleEnum.ADMIN, RoleEnum.BADGE].includes(
           user?.role?.id as RoleEnum
         ) && (
           <Grid>
@@ -385,7 +392,7 @@ function UserHours() {
               label="Km Autista"
               onClickAction={() =>
                 router.push(
-                  `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}`
+                  `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${data?.dateInizio}`
                 )
               }
               endIcon={<AirportShuttleTwoToneIcon />}
@@ -397,11 +404,11 @@ function UserHours() {
             tipoTrasfertaButton="fuori_sede_button"
             onClickAction={() =>
               router.push(
-                `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}`
+                `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${data?.dateInizio}`
               )
             }
             endIcon={<FlightTakeoffTwoToneIcon />}
-            label="Fuori Sede"
+            label="Trasferta"
           />
         </Grid>
         <Grid>
@@ -410,7 +417,7 @@ function UserHours() {
             label="In Sede"
             onClickAction={() =>
               router.push(
-                `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}`
+                `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${data?.dateInizio}`
               )
             }
             endIcon={<FactoryTwoToneIcon />}

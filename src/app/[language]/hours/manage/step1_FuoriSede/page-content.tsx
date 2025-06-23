@@ -11,28 +11,21 @@ import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import { OperatoreSelected } from "../../manage/opertore-selected";
 import TargaMezziTable from "../targa-mezzi-table";
+import Typography from "@mui/material/Typography";
+import dayjs from "dayjs";
+import "dayjs/locale/it";
+dayjs.locale("it");
 
 function FormCreateUser() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const COD_OP = searchParams.get("COD_OP");
+  const DATA_INIZIO = searchParams.get("DATA_INIZIO");
 
-  // const [userSelected, setUserSelected] = useState<User | null>();
-  // const fetchGetMe = useGetMeQuery();
-  // useMemo(() => {
-  //   const fetchUser = async () => {
-  //     if (COD_OP) {
-  //       const { data, status } = await fetchGetMe({
-  //         COD_OP,
-  //       });
-  //       if (status === HTTP_CODES_ENUM.OK) {
-  //         setUserSelected(data as User);
-  //       }
-  //     }
-  //   };
-  //   fetchUser();
-  // }, []);
+  const DATA_INIZIO_FORMATTED = DATA_INIZIO
+    ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
+    : "";
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -40,28 +33,20 @@ function FormCreateUser() {
         <Grid textAlign="right" size={12} mb={1}>
           <OperatoreSelected text="seleziona la targa!" />
         </Grid>
+        <Grid textAlign="right" size={12} mb={2}>
+          <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
+        </Grid>
         <Grid size={12}>
           <Grid container>
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
-                label="Fuori sede"
+                label="Trasferta"
                 onClickAction={() => router.back()}
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}
               />
             </Grid>
-            {/* <Grid size={12}>
-              <Grid container justifyContent="center" alignItems="center">
-                <Grid size={{ xs: 12 }}>
-                  <NumericKeypadKm
-                    onChange={(value) => {
-                      setKm(value);
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            </Grid> */}
             <Grid size={12} pt={3}>
               <TargaMezziTable
                 childrenCallBack={(COD_ART) => (
@@ -69,7 +54,7 @@ function FormCreateUser() {
                     tipoTrasfertaButton="fuori_sede_button"
                     onClickAction={async () => {
                       router.push(
-                        `step2_FuoriSede?COD_ART=${COD_ART}&KM=${0}&COD_OP=${COD_OP}`
+                        `step2_FuoriSede?COD_ART=${COD_ART}&KM=${0}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                       );
                     }}
                     icon={<ForwardTwoToneIcon />}

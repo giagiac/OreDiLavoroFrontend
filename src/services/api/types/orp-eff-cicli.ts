@@ -3,17 +3,6 @@ import { LinkOrpOrd } from "./link-orp-ord";
 import { OrpEff } from "./orp-eff";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
 
-export type TipoTrasferta =
-  | "in_giornata"
-  | "in_giornata_dopo_21"
-  | "fuori_sede_andata"
-  | "fuori_sede_ritorno"
-  | "ancora_in_trasferta_10"
-  | "ancora_in_trasferta_20"
-  | "ancora_in_trasferta_30"
-  | "ancora_in_trasferta_40"
-  | "step1_km_autista";
-
 export type OrpEffCicli = {
   CODICE_BREVE?: string | null;
 

@@ -21,7 +21,8 @@ export type EditArtAnaFormData = {
   in_giornata?: string | undefined;
   in_giornata_dopo_21?: string | undefined;
   fuori_sede_andata?: string | undefined;
-  fuori_sede_ritorno?: string | undefined;
+  fuori_sede_ritorno_in_giornata?: string | undefined;
+  fuori_sede_ritorno_dopo_21?: string | undefined;
 };
 
 function EditArt(props: {

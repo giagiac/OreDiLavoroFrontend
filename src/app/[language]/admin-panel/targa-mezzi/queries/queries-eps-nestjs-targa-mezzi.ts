@@ -54,7 +54,7 @@ export const useGetTargaMezziQuery = ({
       const { status, data } = await fetch(
         {
           page: pageParam,
-          limit: 10,
+          limit: 500,
           filters,
           sort: sort ? [sort] : undefined,
           othersFilters,

@@ -23,6 +23,7 @@ export type EpsNestjsOrpEffCicliEsecsResponse =
   InfinityPaginationType<EpsNestjsOrpEffCicliEsec> & {
     totale: String;
     targetDateInizio: String;
+    dateInizio: Date;
   };
 
 export function useGetEpsNestjsOrpEffCicliEsecService() {

@@ -79,6 +79,7 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           nextPage: data.hasNextPage ? pageParam + 1 : undefined,
           totale: data.totale,
           targetDateInizio: data.targetDateInizio,
+          dateInizio: data.dateInizio,
         };
       } else {
         enqueueSnackbar("Codice operatore non trovato!", {
@@ -89,6 +90,7 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           nextPage: 0,
           totale: 0,
           targetDateInizio: "",
+          dateInizio: "",
         };
       }
     },
@@ -100,10 +102,12 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
       // Trasforma i dati per includere informazioni aggiuntive
       const totale = data.pages[0]?.totale;
       const targetDateInizio = data.pages[0]?.targetDateInizio;
+      const dateInizio = data.pages[0]?.dateInizio;
       return {
         ...data,
         totale,
         targetDateInizio,
+        dateInizio,
       };
     },
   });

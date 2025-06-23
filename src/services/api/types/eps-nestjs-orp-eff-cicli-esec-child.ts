@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { TipoTrasferta } from "./orp-eff-cicli";
+import { TipoTrasferta } from "./eps-nestjs-orp-eff-cicli-esec";
 
 export type EpsNestjsOrpEffCicliEsecChild = {
   id: string;

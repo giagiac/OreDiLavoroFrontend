@@ -6,7 +6,6 @@ import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
-import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
@@ -31,12 +30,16 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, Fragment, KeyboardEvent, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
-import { useGetOrpEffCicliQuery } from "../../queries/queries-orp-eff-cicli";
 import Children from "./children";
-
-type OrpEffCicliKeys = keyof OrpEffCicli;
 
 const TEMPO_OPERATORE_DEFAULT = "00:00";
 const CODICE_BREVE_DEFAULT = ""; // 2414014-1
@@ -53,6 +56,8 @@ type CreateFormData = {
   DOC_RIGA_ID: string;
   DOC_ID: string;
   AZIENDA_ID: number;
+  DATA_INIZIO: string | null;
+  DATA_FINE: string | null;
 
   // SEZIONE DEDICATA a KM AUTISTA
   COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
@@ -73,6 +78,8 @@ type CreateFormDataChild = {
   DOC_RIGA_ID: string;
   DOC_ID: string;
   AZIENDA_ID: number;
+  DATA_INIZIO: string | null;
+  DATA_FINE: string | null;
 
   // SEZIONE DEDICATA a KM AUTISTA
   COD_ART: string; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
@@ -83,11 +90,14 @@ type CreateFormDataChild = {
 };
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
+import { TipoTrasferta } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import dayjs from "dayjs";
 import { OperatoreSelected } from "../../opertore-selected";
 
 function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{
-    type: string;
+    type: TipoTrasferta;
   }>();
   const tipoTrasferta = params.type;
 
@@ -95,8 +105,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
   const COD_ART = searchParams.get("COD_ART");
   const KM: number = parseFloat(searchParams.get("KM") || "0");
-  const id = searchParams.get("id");
+  // const id = searchParams.get("id"); //nope this - passaggio a salvataggio locale
+  const [id, setId] = useState<string | null>(() => null);
   const COD_OP = searchParams.get("COD_OP");
+  const DATA_INIZIO = searchParams.get("DATA_INIZIO");
 
   let prepareText = "In sede";
 
@@ -121,8 +133,12 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       prepareText = "Fuori sede andata";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
-    case "fuori_sede_ritorno":
-      prepareText = "Fuori sede ritorno";
+    case "fuori_sede_ritorno_in_giornata":
+      prepareText = "Fuori sede ritorno in giornata";
+      icon = <FlightTakeoffTwoToneIcon />;
+      break;
+    case "fuori_sede_ritorno_dopo_21":
+      prepareText = "Fuori sede ritorno dopo le 21:00";
       icon = <FlightTakeoffTwoToneIcon />;
       break;
     case "ancora_in_trasferta_0":
@@ -207,25 +223,40 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   };
 
   // FILTERS
-  const [{ order, orderBy }] = useState<{
-    order: SortEnum;
-    orderBy: OrpEffCicliKeys;
-  }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
+  // const [{ order, orderBy }] = useState<{
+  //   order: SortEnum;
+  //   orderBy: OrpEffCicliKeys;
+  // }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
     { columnName: "CODICE_BREVE", value: codiceBreveValue },
   ]);
   const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
 
-  const { data, isFetched, isFetching, isLoading } = useGetOrpEffCicliQuery({
-    sort: { order, orderBy },
-    filters,
-    othersFilters,
-  });
+  const [data, setData] = useState<OrpEffCicli[] | null>(null);
+
+  const fetch = useGetOrpEffCicliService();
+  useEffect(() => {
+    async function handleScannerDetected() {
+      const { status, data } = await fetch({
+        page: 1,
+        limit: 10,
+        filters,
+        sort: undefined,
+        othersFilters,
+      });
+
+      if (status === HTTP_CODES_ENUM.OK) {
+        setData(data.data);
+      }
+    }
+    if (enterPressed) {
+      handleScannerDetected();
+    }
+  }, [enterPressed]);
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as OrpEffCicli[]) ??
-      ([] as OrpEffCicli[]);
+      (data?.flatMap((page) => page) as OrpEffCicli[]) ?? ([] as OrpEffCicli[]);
 
     return removeDuplicatesFromArrayObjects(result, "DOC_RIGA_ID");
   }, [data]);
@@ -249,6 +280,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       setCodiceBreve(newValue);
       return [{ columnName: "CODICE_BREVE", value: newValue }];
     });
+
+    setData(null);
 
     const wasTextFieldFocused =
       localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) === "true";
@@ -281,6 +314,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       DOC_RIGA_ID: result[0].DOC_RIGA_ID,
       DOC_ID: result[0].DOC_ID,
       AZIENDA_ID: result[0].AZIENDA_ID,
+      DATA_INIZIO: dayjs(DATA_INIZIO).format("YYYY-MM-DD"),
+      DATA_FINE: dayjs(DATA_INIZIO).format("YYYY-MM-DD"),
       // SEZIONE DEDICATA a KM AUTISTA
       COD_ART, // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
       KM,
@@ -304,9 +339,9 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       enqueueSnackbar("Ore commessa aggiunte", {
         variant: "success",
       });
-
       if (tipoTrasferta === "step1_km_autista") {
-        router.push(`step1_km_autista?${searchParams}&id=${data.id}`);
+        // router.push(`step1_km_autista?${searchParams}&id=${data.id}`);
+        setId(data.id);
         // Open confirmation dialog
         setDialogOpen(
           "La creazione è avvenuta con successo. Vuoi aggiungere altre COMMESSE?"
@@ -361,6 +396,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       DOC_RIGA_ID: result[0].DOC_RIGA_ID,
       DOC_ID: result[0].DOC_ID,
       AZIENDA_ID: result[0].AZIENDA_ID,
+      DATA_INIZIO: dayjs(DATA_INIZIO).format("YYYY-MM-DD"),
+      DATA_FINE: dayjs(DATA_INIZIO).format("YYYY-MM-DD"),
       // SEZIONE DEDICATA a KM AUTISTA
       COD_ART, // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
       KM,
@@ -393,6 +430,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       );
     }
   };
+
+  const DATA_INIZIO_FORMATTED = DATA_INIZIO
+    ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
+    : "";
 
   return (
     <>
@@ -431,7 +472,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
+      <Container maxWidth="xl" sx={{ m: 0, p: 1 }}>
         <Stack direction="row" mb={3} spacing={1}>
           {prepareText !== "In sede" && (
             <Button
@@ -456,8 +497,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           />
         </Stack>
         <Grid container spacing={1} justifyContent="center">
-          <Grid textAlign="right" size={12} mb={2}>
+          <Grid textAlign="right" size={12}>
             <OperatoreSelected text="inserisci il codice della commessa" />
+          </Grid>
+          <Grid textAlign="right" size={12}>
+            <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={1} alignItems="center">
@@ -504,40 +548,44 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                 InputProps={{
                   endAdornment: (
                     <>
-                      {(isLoading || isFetching) && (
-                        <InputAdornment position="end">
-                          <IconButton disabled>
-                            <span
-                              style={{
-                                display: "inline-block",
-                                width: 24,
-                                height: 24,
-                              }}
-                            >
-                              <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                style={{ animation: "spin 1s linear infinite" }}
+                      {codiceBreveValue.length > 0 &&
+                        enterPressed &&
+                        result.length === 0 && (
+                          <InputAdornment position="end">
+                            <IconButton disabled>
+                              <span
+                                style={{
+                                  display: "inline-block",
+                                  width: 24,
+                                  height: 24,
+                                }}
                               >
-                                <circle
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="#1976d2"
-                                  strokeWidth="4"
-                                  strokeDasharray="60"
-                                  strokeDashoffset="20"
+                                <svg
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
                                   fill="none"
-                                />
-                                <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-                              </svg>
-                            </span>
-                          </IconButton>
-                        </InputAdornment>
-                      )}
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  style={{
+                                    animation: "spin 1s linear infinite",
+                                  }}
+                                >
+                                  <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="#1976d2"
+                                    strokeWidth="4"
+                                    strokeDasharray="60"
+                                    strokeDashoffset="20"
+                                    fill="none"
+                                  />
+                                  <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                                </svg>
+                              </span>
+                            </IconButton>
+                          </InputAdornment>
+                        )}
                       <InputAdornment position="end">
                         <IconButton
                           onClick={handleOpenScanner}
@@ -555,47 +603,39 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                 }}
               />
             </Stack>
-          </Grid>
-          {/* <FullPageLoader isLoading={isLoading || isFetching} /> */}
-          {isFetched && (
-            <>
-              {result.length === 0 &&
-                codiceBreveValue.length > 0 &&
-                enterPressed && (
-                  <Grid size={{ xs: 12 }} textAlign="center">
-                    <Typography variant="h5" color="error">
-                      Nessuna commessa trovata
-                    </Typography>
-                  </Grid>
-                )}
-              {/* {result.length === 0 && codiceBreveValue.length === 0 && (
+            {codiceBreveValue.length > 0 &&
+              enterPressed &&
+              data?.length === 0 && (
                 <Grid size={{ xs: 12 }} textAlign="center">
-                  <Typography variant="h5" color="info">
-                    Inserisci il codice commessa
+                  <Typography variant="h5" color="error">
+                    Nessuna commessa trovata
                   </Typography>
                 </Grid>
-              )} */}
-              {result.length > 0 &&
-                result[0].orpEff !== null &&
-                result[0].orpEff.STATUS === 2 && (
-                  <Grid size={{ xs: 12 }} textAlign="center">
-                    <Typography variant="h5" color="warning">
-                      Commessa chiusa
-                    </Typography>
-                  </Grid>
-                )}
-              {id && <Children id={Number(id)} />}
-              {/* DETTAGLIO COMMESSE - possono essere liste - ma improbabile */}
-              {result.length > 0 &&
-                result[0].orpEff !== null &&
-                result[0].orpEff.STATUS !== 2 &&
-                result.map((item) => (
-                  <Fragment key={item.DOC_RIGA_ID}>
-                    <Grid size={{ xs: 12 }}>
+              )}
+            {result.length > 0 &&
+              result[0].orpEff !== null &&
+              result[0].orpEff.STATUS === 2 && (
+                <Grid size={{ xs: 12 }} textAlign="center">
+                  <Typography variant="h5" color="warning">
+                    Commessa chiusa
+                  </Typography>
+                </Grid>
+              )}
+            {tipoTrasferta === "step1_km_autista" && id !== null && (
+              <Children key={Number(id) + Math.random()} id={Number(id)} />
+            )}
+            {/* DETTAGLIO COMMESSE - possono essere liste - ma improbabile */}
+            {result.length > 0 &&
+              result[0].orpEff !== null &&
+              result[0].orpEff.STATUS !== 2 &&
+              result.map((item) => (
+                <Fragment key={item.DOC_RIGA_ID}>
+                  <Grid container pt={0.5}>
+                    <Grid size={{ xs: 12, md: 6 }} p={0.1}>
                       <TableContainer
                         component={Paper}
                         elevation={3}
-                        sx={{ p: 2 }}
+                        sx={{ p: 2, minHeight: "100%" }}
                       >
                         <Grid container spacing={{ xs: 0, sm: 1 }}>
                           {/* Ordine di produzione */}
@@ -620,7 +660,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 1 }}
                             textAlign={{ xs: "right", sm: "right" }}
                           >
-                            <Typography variant="caption">Commessa</Typography>
+                            <Typography variant="caption">Comm.</Typography>
                           </Grid>
                           <Grid
                             size={{ xs: 12, sm: 11 }}
@@ -636,7 +676,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 1 }}
                             textAlign={{ xs: "right", sm: "right" }}
                           >
-                            <Typography variant="caption">Articolo</Typography>
+                            <Typography variant="caption">Art.</Typography>
                           </Grid>
                           <Grid
                             size={{ xs: 12, sm: 11 }}
@@ -652,7 +692,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 1 }}
                             textAlign={{ xs: "right", sm: "right" }}
                           >
-                            <Typography variant="caption">Cliente</Typography>
+                            <Typography variant="caption">Cli.</Typography>
                           </Grid>
                           <Grid
                             size={{ xs: 12, sm: 11 }}
@@ -685,7 +725,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 1 }}
                             textAlign={{ xs: "right", sm: "right" }}
                           >
-                            <Typography variant="caption">Prodotto</Typography>
+                            <Typography variant="caption">Prod.</Typography>
                           </Grid>
                           <Grid
                             size={{ xs: 12, sm: 11 }}
@@ -748,48 +788,51 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             )}
                         </Grid>
                       </TableContainer>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }} p={0.1}>
                       <NumericKeypad
                         onNumberChange={(value) => {
                           setTempoOreOperatore(value);
                         }}
                       />
-                      <Grid size={{ xs: 12 }}>
-                        <Button
-                          style={{
-                            width: "100%",
-                            height: 50,
-                            fontSize: "1.5rem",
-                          }}
-                          sx={(theme) => ({
-                            width: "100%",
-                            height: theme.spacing(10),
-                            fontSize: "1.5rem",
-                            mt: theme.spacing(2),
-                          })}
-                          fullWidth
-                          size="large"
-                          variant="contained"
-                          onClick={async () => {
-                            // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
-                            if (tipoTrasferta === "step1_km_autista") {
-                              if (id) {
-                                await onSubmitChild();
-                              } else {
-                                await onSubmit();
-                              }
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Button
+                        style={{
+                          width: "100%",
+                          height: 50,
+                          fontSize: "1.5rem",
+                        }}
+                        sx={(theme) => ({
+                          width: "100%",
+                          height: theme.spacing(10),
+                          fontSize: "1.5rem",
+                          mt: theme.spacing(2),
+                        })}
+                        fullWidth
+                        size="large"
+                        variant="contained"
+                        onClick={async () => {
+                          // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
+                          if (tipoTrasferta === "step1_km_autista") {
+                            if (id) {
+                              await onSubmitChild();
                             } else {
                               await onSubmit();
                             }
-                          }}
-                        >
-                          CONFERMA
-                        </Button>
-                      </Grid>
+                          } else {
+                            await onSubmit();
+                          }
+                        }}
+                      >
+                        CONFERMA
+                      </Button>
                     </Grid>
-                  </Fragment>
-                ))}
-            </>
-          )}
+                  </Grid>
+                </Fragment>
+              ))}
+          </Grid>
+          {/* <FullPageLoader isLoading={isLoading || isFetching} /> */}
         </Grid>
       </Container>
       <Dialog open={isDialogOpen !== null} onClose={handleDialogClose}>
@@ -802,6 +845,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               <Button
                 onClick={() => {
                   if (window.location.pathname.indexOf("manage-badge") > -1) {
+                    //router.push("/hours/manage-badge", { scroll: true });
+                    history.replaceState(null, "", "/hours/manage-badge");
                     router.push("/hours/manage-badge", { scroll: true });
                   } else {
                     router.push("/hours/manage", { scroll: true });

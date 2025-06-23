@@ -255,33 +255,31 @@ function Cfs() {
     // searchParams
   ]);
 
+  // Miglior tipizzazione per ItemDetail
   interface ItemDetail {
-    [key: string]: string;
+    [key: string]: boolean;
   }
 
   const [open, setOpen] = useState<ItemDetail>({});
 
-  const handleOpen = (id: string) => {
-    setOpen(
-      (prevOpen) =>
-        ({
-          ...prevOpen,
-          [id]: !prevOpen[id],
-        }) as ItemDetail
-    );
-  };
+  const handleOpen = useCallback((id: string) => {
+    setOpen((prevOpen) => ({
+      ...prevOpen,
+      [id]: !prevOpen[id],
+    }));
+  }, []);
 
   const theme = useTheme();
 
   return (
     <Container maxWidth="xl">
       <Grid container pt={3}>
-        <Grid container size={{ xs: 12 }}>
-          <Grid size="grow">
+        <Grid container size={12}>
+          <Grid flexGrow={1}>
             <Typography variant="h3">{tArticoliCosti("title")}</Typography>
           </Grid>
-          <Grid container size="auto" wrap="nowrap">
-            <Grid size="auto">
+          <Grid container wrap="nowrap" sx={{ width: "auto" }}>
+            <Grid sx={{ width: "auto" }}>
               <ToggleButtonGroup
                 value={othersFilters.map((it) => it.key)}
                 onChange={handleRequestOthersFilters}
@@ -295,7 +293,7 @@ function Cfs() {
           </Grid>
         </Grid>
 
-        <Grid size={{ xs: 12 }} mb={2}>
+        <Grid size={12} mb={2}>
           <TableContainer>
             <Table size="small" sx={{ borderBottom: "unset" }}>
               <TableHead>
@@ -344,117 +342,121 @@ function Cfs() {
                 )}
               </TableHead>
               <TableBody sx={{ border: "none" }}>
-                {result.map((cf, index) => {
-                  return (
-                    <TableRow sx={{ border: "unset" }} key={cf.COD_CF}>
-                      <TableCell
-                        colSpan={4}
-                        sx={(theme) => ({
-                          borderBottom: "none",
-                          padding: theme.spacing(0.1),
-                        })}
+                {result.map((cf, index) => (
+                  <TableRow sx={{ border: "unset" }} key={cf.COD_CF}>
+                    <TableCell
+                      colSpan={4}
+                      sx={{
+                        borderBottom: "none",
+                        padding: theme.spacing(0.1),
+                      }}
+                    >
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          backgroundColor:
+                            index % 2 === 0
+                              ? theme.palette.action.hover
+                              : theme.palette.background.paper,
+                          padding: theme.spacing(1),
+                        }}
                       >
-                        <Paper
-                          elevation={2}
-                          sx={{
-                            backgroundColor:
-                              index % 2 === 0
-                                ? theme.palette.action.hover
-                                : theme.palette.background.paper,
-                            padding: theme.spacing(1), // Add padding inside the Paper
+                        <Table
+                          style={{
+                            borderCollapse: "separate",
+                            borderBottom: "none",
                           }}
                         >
-                          <Table
-                            style={{
-                              borderCollapse: "separate",
-                              borderBottom: "none",
-                            }}
-                          >
-                            <TableBody>
-                              <TableRow
-                                sx={{ "& > *": { borderBottom: "unset" } }}
+                          <TableBody>
+                            <TableRow
+                              sx={{ "& > *": { borderBottom: "unset" } }}
+                            >
+                              <TableCell
+                                style={{ width: "10%", border: "none" }}
                               >
-                                <TableCell
-                                  style={{ width: "10%", border: "none" }}
-                                >
-                                  {cf.COD_CF !== "DEFAULT_CF" &&
-                                    cf.articoliCostiCf && (
-                                      <IconButton
-                                        aria-label="expand row"
-                                        size="small"
-                                        onClick={() => handleOpen(cf.COD_CF)}
-                                      >
-                                        {open[cf.COD_CF] ? (
-                                          <KeyboardArrowUpIcon />
-                                        ) : (
-                                          <KeyboardArrowDownIcon />
-                                        )}
-                                      </IconButton>
-                                    )}
-                                </TableCell>
-                                <TableCell
-                                  style={{
-                                    width: "10%",
-                                    textAlign: "right",
-                                    border: "none",
-                                  }}
-                                >
-                                  <Typography variant="subtitle2">
-                                    {cf?.COD_CF}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell
-                                  style={{
-                                    width: "30%",
-                                    textAlign: "right",
-                                    border: "none",
-                                  }}
-                                >
-                                  {cf?.RAG_SOC_CF}
-                                </TableCell>
-                                <TableCell
-                                  style={{
-                                    width: "50%",
-                                    textAlign: "right",
-                                    border: "none",
-                                  }}
-                                >
-                                  {cf?.P_IVA_CF}
+                                {cf.COD_CF !== "DEFAULT_CF" &&
+                                  cf.articoliCostiCf && (
+                                    <IconButton
+                                      aria-label={
+                                        open[cf.COD_CF]
+                                          ? "Chiudi dettagli"
+                                          : "Espandi dettagli"
+                                      }
+                                      size="small"
+                                      onClick={() => handleOpen(cf.COD_CF)}
+                                    >
+                                      {open[cf.COD_CF] ? (
+                                        <KeyboardArrowUpIcon />
+                                      ) : (
+                                        <KeyboardArrowDownIcon />
+                                      )}
+                                    </IconButton>
+                                  )}
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  width: "10%",
+                                  textAlign: "right",
+                                  border: "none",
+                                }}
+                              >
+                                <Typography variant="subtitle2">
+                                  {cf?.COD_CF}
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  width: "30%",
+                                  textAlign: "right",
+                                  border: "none",
+                                }}
+                              >
+                                {cf?.RAG_SOC_CF}
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  width: "50%",
+                                  textAlign: "right",
+                                  border: "none",
+                                }}
+                              >
+                                {cf?.P_IVA_CF}
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell colSpan={4} padding="none">
+                                <FormCreateEdit cf={cf} />
+                              </TableCell>
+                            </TableRow>
+                            {open[cf.COD_CF] && (
+                              <TableRow
+                                sx={{
+                                  padding: theme.spacing(0),
+                                  "& > *": { borderBottom: "unset" },
+                                }}
+                              >
+                                <TableCell colSpan={4}>
+                                  <CfCommPage {...cf} />
                                 </TableCell>
                               </TableRow>
-                              <TableRow>
-                                <TableCell colSpan={4} padding="none">
-                                  <FormCreateEdit cf={cf} />
-                                </TableCell>
-                              </TableRow>
-                              {open[cf.COD_CF] && (
-                                <TableRow
-                                  sx={(theme) => ({
-                                    padding: theme.spacing(0),
-                                    "& > *": { borderBottom: "unset" },
-                                  })}
-                                >
-                                  <TableCell colSpan={4}>
-                                    <CfCommPage {...cf} />
-                                  </TableCell>
-                                </TableRow>
-                              )}
-                            </TableBody>
-                          </Table>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                            )}
+                          </TableBody>
+                        </Table>
+                      </Paper>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
-          <Grid mt={2} textAlign={"center"}>
-            <Grid>
-              <Button variant="contained" onClick={() => handleScroll()}>
-                NEXT
-              </Button>
-            </Grid>
+          <Grid mt={2} textAlign="center">
+            <Button
+              variant="contained"
+              onClick={handleScroll}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              NEXT
+            </Button>
           </Grid>
         </Grid>
       </Grid>

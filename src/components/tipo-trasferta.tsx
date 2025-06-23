@@ -59,9 +59,13 @@ const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
       icon = <FlightTakeoffTwoToneIcon />;
       descrizione = "fuori sede andata";
       break;
-    case "fuori_sede_ritorno":
+    case "fuori_sede_ritorno_in_giornata":
       icon = <FlightTakeoffTwoToneIcon />;
-      descrizione = "fuori sede ritorno";
+      descrizione = "fuori sede ritorno in giornata";
+      break;
+    case "fuori_sede_ritorno_dopo_21":
+      icon = <FlightTakeoffTwoToneIcon />;
+      descrizione = "fuori sede ritorno dopo le 21:00";
       break;
     case "ancora_in_trasferta_0":
       icon = <FlightTakeoffTwoToneIcon />;

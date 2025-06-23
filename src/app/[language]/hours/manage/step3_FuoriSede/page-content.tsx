@@ -13,6 +13,11 @@ import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { OperatoreSelected } from "../opertore-selected";
+import dayjs from "dayjs";
+import "dayjs/locale/it";
+import Typography from "@mui/material/Typography";
+dayjs.locale("it");
+
 function FormCreateUser() {
   const router = useRouter();
 
@@ -23,12 +28,20 @@ function FormCreateUser() {
   const COD_ART = searchParams.get("COD_ART");
   const km: number = parseFloat(searchParams.get("KM") || "0");
   const COD_OP = searchParams.get("COD_OP");
+  const DATA_INIZIO = searchParams.get("DATA_INIZIO");
+
+  const DATA_INIZIO_FORMATTED = DATA_INIZIO
+    ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
+    : "";
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
         <Grid textAlign="right" size={12} mb={1}>
           <OperatoreSelected text="sei rientrato?" />
+        </Grid>
+        <Grid textAlign="right" size={12} mb={2}>
+          <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
         </Grid>
         <Grid size={12}>
           <Grid
@@ -51,7 +64,7 @@ function FormCreateUser() {
                 tipoTrasfertaButton="fuori_sede_andata"
                 onClickAction={() =>
                   router.push(
-                    `create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }
                 endIcon={<TrendingUpTwoToneIcon />}
@@ -87,7 +100,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_0"
                       onClickAction={() =>
                         router.push(
-                          `create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
                       label="0 km"
@@ -98,7 +111,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_10"
                       onClickAction={() =>
                         router.push(
-                          `create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
                       label="10 km"
@@ -109,7 +122,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_20"
                       onClickAction={() =>
                         router.push(
-                          `create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
                       label="20 km"
@@ -120,7 +133,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_30"
                       onClickAction={() =>
                         router.push(
-                          `create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
                       label="30 km"
@@ -131,7 +144,7 @@ function FormCreateUser() {
                       tipoTrasfertaButton="ancora_in_trasferta_40"
                       onClickAction={() =>
                         router.push(
-                          `create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}`
+                          `create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
                       label="40 km"
@@ -142,10 +155,22 @@ function FormCreateUser() {
             </Grid>
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
-                tipoTrasfertaButton="fuori_sede_ritorno"
+                tipoTrasfertaButton="fuori_sede_ritorno_in_giornata"
                 onClickAction={() =>
                   router.push(
-                    `create/fuori_sede_ritorno?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}`
+                    `create/fuori_sede_ritorno_in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
+                  )
+                }
+                endIcon={<UTurnLeftTwoToneIcon />}
+                label="Ritorno"
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }} mb={5}>
+              <ButtonTipoTrasferta
+                tipoTrasfertaButton="fuori_sede_ritorno_dopo_21"
+                onClickAction={() =>
+                  router.push(
+                    `create/fuori_sede_ritorno_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }
                 endIcon={<UTurnLeftTwoToneIcon />}

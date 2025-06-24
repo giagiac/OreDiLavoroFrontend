@@ -8,13 +8,13 @@ import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import ClearIcon from "@mui/icons-material/Clear";
+import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
-import LinearProgress from "@mui/material/LinearProgress";
 import Paper from "@mui/material/Paper";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,22 +25,12 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { ButtonDelete } from "./button-delete";
 import FormCreateEdit from "./create/page-content";
 import { useGetTargaMezziQuery } from "./queries/queries-eps-nestjs-targa-mezzi";
 
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
-
-const TableCellLoadingContainer = styled(TableCell)(() => ({
-  padding: 0,
-}));
 
 function TableSortFilterCellWrapper(
   props: PropsWithChildren<{
@@ -234,13 +224,16 @@ function TargaMezziPage() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
-    useGetTargaMezziQuery({ sort: { order, orderBy }, filters, othersFilters });
+  const { data, refetch } = useGetTargaMezziQuery({
+    sort: { order, orderBy },
+    filters,
+    othersFilters,
+  });
 
-  const handleScroll = useCallback(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-    fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  // const handleScroll = useCallback(() => {
+  //   if (!hasNextPage || isFetchingNextPage) return;
+  //   fetchNextPage();
+  // }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const result = useMemo(() => {
     const result =
@@ -253,14 +246,29 @@ function TargaMezziPage() {
   // const fetchPostTargaMezzi = useDeleteTargaMezziService();
 
   return (
-    <Container maxWidth="md" sx={{ m: 0, p: 0 }}>
-      <Grid container spacing={3} pt={3}>
-        <Grid container spacing={3} size={{ xs: 12 }}>
+    <Container maxWidth="xl">
+      <Grid container spacing={1} pt={3}>
+        <Grid container spacing={1} size={{ xs: 12 }}>
           <Grid size="grow">
             <Typography variant="h3">{"Targhe mezzi"}</Typography>
           </Grid>
         </Grid>
-        <Grid size={{ xs: 12 }} mb={5}>
+        <Grid size={{ xs: 12 }}>
+          <Grid container size="auto" wrap="nowrap" justifyContent="flex-end">
+            <Grid>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  //invalidate query
+                  refetch();
+                }}
+              >
+                <RefreshTwoToneIcon />
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid size={{ xs: 12 }}>
           <FormCreateEdit
             onChangeCallback={(artAna: ArtAna) => {
               console.log(artAna);
@@ -284,13 +292,6 @@ function TargaMezziPage() {
                     {"Codice articoli"}
                   </TableSortFilterCellWrapper>
                 </TableRow>
-                {isFetchingNextPage && (
-                  <TableRow>
-                    <TableCellLoadingContainer>
-                      <LinearProgress />
-                    </TableCellLoadingContainer>
-                  </TableRow>
-                )}
               </TableHead>
               <TableBody
                 style={{
@@ -310,34 +311,22 @@ function TargaMezziPage() {
                       }}
                     >
                       <TableCell>
-                        <Grid container direction="row">
-                          <Grid size={{ xs: 11 }}>
-                            <Typography variant="body2">
-                              {targaMezzi?.COD_ART}
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                        <Typography variant="body2">
+                          {targaMezzi?.COD_ART}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Grid container direction="row">
-                          <Grid size={{ xs: 11 }}>
-                            <Typography variant="body2">
-                              {targaMezzi.artAna?.DES_ART}
-                            </Typography>
-                          </Grid>
-                        </Grid>
+                        <Typography variant="body2">
+                          {targaMezzi.artAna?.DES_ART}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Grid container direction="row">
-                          <Grid size={{ xs: 1 }}>
-                            <ButtonDelete
-                              targaMezzi={targaMezzi}
-                              refetch={() => {
-                                refetch();
-                              }}
-                            />
-                          </Grid>
-                        </Grid>
+                        <ButtonDelete
+                          targaMezzi={targaMezzi}
+                          refetch={() => {
+                            refetch();
+                          }}
+                        />
                       </TableCell>
                     </TableRow>
                   );
@@ -345,13 +334,13 @@ function TargaMezziPage() {
               </TableBody>
             </Table>
           </TableContainer>
-          <Grid mt={2} textAlign={"center"}>
+          {/* <Grid mt={2} textAlign={"center"}>
             <Grid>
               <Button variant="contained" onClick={() => handleScroll()}>
                 NEXT
               </Button>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </Container>

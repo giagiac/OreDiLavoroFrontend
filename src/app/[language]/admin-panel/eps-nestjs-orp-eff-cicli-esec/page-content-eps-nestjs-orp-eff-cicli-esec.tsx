@@ -60,7 +60,7 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
   const onScheduleTask = async (id: string) => {
     const isConfirmed = await confirmDialog({
       title: "Ore commessa",
-      message: "Vuoi confermare l'esecuzione?",
+      message: "Vuoi confermare l'esecuzione ed inviarla ad HG?",
     });
 
     if (isConfirmed) {

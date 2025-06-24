@@ -58,6 +58,7 @@ import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operat
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "../manage//child-eps-nestjs-orp-eff-cicli-esec-card";
 import { useGetMeQuery } from "../manage/queries/queries";
+import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 
 function UserHours() {
   const { user } = useAuth();
@@ -126,6 +127,32 @@ function UserHours() {
         });
       } else {
         enqueueSnackbar("Ore commessa eliminate!", {
+          variant: "success",
+        });
+      }
+
+      setIndex((index) => index + 1);
+    }
+  };
+
+  const fetchScheduleTask = useScheduleTaskService();
+
+  const onScheduleTask = async (id: string) => {
+    const isConfirmed = await confirmDialog({
+      title: "Ore commessa",
+      message: "Vuoi confermare l'esecuzione ed inviarla ad HG?",
+    });
+
+    if (isConfirmed) {
+      const { status } = await fetchScheduleTask({
+        id,
+      });
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        enqueueSnackbar("Impossibile processare!", {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar("Esecuzione processata!", {
           variant: "success",
         });
       }
@@ -545,6 +572,7 @@ function UserHours() {
                   key={epsNestjsOrpEffCicliEsec.id}
                   epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
                   onDelete={onDelete}
+                  onSendHG={onScheduleTask}
                   renderOrdCliTrasDialog={renderOrdCliTrasDialog}
                 />
               ))}

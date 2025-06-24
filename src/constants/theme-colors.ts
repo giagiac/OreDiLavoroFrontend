@@ -5,6 +5,7 @@ import {
   grey,
   indigo,
   lightBlue,
+  orange,
   purple,
   red,
 } from "@mui/material/colors";
@@ -123,12 +124,12 @@ export const TipoTrasfertaColors: Record<
   },
   fuori_sede_ritorno_dopo_21: {
     dark: {
-      main: brown["A200"],
-      hover: brown["A100"],
+      main: orange[900],
+      hover: orange[800],
     },
     light: {
-      main: brown[500],
-      hover: brown[600],
+      main: orange[500],
+      hover: orange[600],
     },
   },
   ancora_in_trasferta_0: {

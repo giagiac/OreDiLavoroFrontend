@@ -210,52 +210,53 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
   return (
     <FormProvider {...methods}>
       <form>
-        <Grid container>
-          <Grid size={{ xs: 12 }}>
-            <Grid container>
-              {articoliEdit.map((it) => (
-                <Grid
-                  key={`${it.TIPO_TRASFERTA + cfComm.CF_COMM_ID}`}
-                  size={{ xs: 3 }}
-                  pr={0.1}
-                >
-                  <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
-                    name={`${it.TIPO_TRASFERTA}`}
-                    label={`${it.TIPO_TRASFERTA}`}
-                    options={result}
-                    renderSelected={(option) => option?.COD_ART ?? ""}
-                    renderOption={(option) =>
-                      option?.COD_ART
-                        ? `${option.COD_ART} ${option.DES_ART ?? ""}`
-                        : ""
-                    }
-                    keyExtractor={(option) => option?.COD_ART ?? ""}
-                    isSearchable={true}
-                    searchLabel="Search"
-                    searchPlaceholder="Search options..."
-                    search={
-                      String(
-                        filters.find(
-                          (filter) => filter.columnName === "COD_ART"
-                        )?.value
-                      ) || ""
-                    }
-                    onSearchChange={(value) => {
-                      setFilters([{ columnName: "COD_ART", value }]);
-                    }}
-                    onEndReached={handleScroll}
-                    onChangeCallback={(artAna) => {
-                      if (it.TIPO_TRASFERTA) {
-                        onChange(artAna, it.TIPO_TRASFERTA);
-                      }
-                      // Consider handling deselection if needed
-                    }}
-                  />
-                  <Label artAna={it.artAna} />
-                </Grid>
-              ))}
+        <Grid
+          container
+          sx={{
+            justifyContent: "space-evenly",
+            alignItems: "flex-start",
+          }}
+        >
+          {articoliEdit.map((it) => (
+            <Grid
+              key={`${it.TIPO_TRASFERTA + cfComm.CF_COMM_ID}`}
+              size={{ xs: "auto" }}
+              pr={0.1}
+            >
+              <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
+                name={`${it.TIPO_TRASFERTA}`}
+                label={`${it.TIPO_TRASFERTA}`}
+                options={result}
+                renderSelected={(option) => option?.COD_ART ?? ""}
+                renderOption={(option) =>
+                  option?.COD_ART
+                    ? `${option.COD_ART} ${option.DES_ART ?? ""}`
+                    : ""
+                }
+                keyExtractor={(option) => option?.COD_ART ?? ""}
+                isSearchable={true}
+                searchLabel="Search"
+                searchPlaceholder="Search options..."
+                search={
+                  String(
+                    filters.find((filter) => filter.columnName === "COD_ART")
+                      ?.value
+                  ) || ""
+                }
+                onSearchChange={(value) => {
+                  setFilters([{ columnName: "COD_ART", value }]);
+                }}
+                onEndReached={handleScroll}
+                onChangeCallback={(artAna) => {
+                  if (it.TIPO_TRASFERTA) {
+                    onChange(artAna, it.TIPO_TRASFERTA);
+                  }
+                  // Consider handling deselection if needed
+                }}
+              />
+              <Label artAna={it.artAna} />
             </Grid>
-          </Grid>
+          ))}
         </Grid>
       </form>
     </FormProvider>

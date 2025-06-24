@@ -273,6 +273,11 @@ function Operatoris() {
   return (
     <Container maxWidth="xl">
       <Grid container pt={3}>
+        <Grid container spacing={3} size={{ xs: 12 }}>
+          <Grid size="grow">
+            <Typography variant="h3">{"Gestione ore operatori"}</Typography>
+          </Grid>
+        </Grid>
         <Grid size={{ xs: 12 }}>
           <Grid
             container
@@ -294,7 +299,6 @@ function Operatoris() {
             </Grid>
           </Grid>
         </Grid>
-
         <Grid size={{ xs: 12 }} mb={2}>
           <TableContainer component={Paper} elevation={3}>
             <Table size="small">

@@ -322,9 +322,9 @@ function UserHours() {
         {result.map((epsNestjsOrpEffCicliEsec) => {
           const color =
             theme.palette.mode === "dark"
-              ? TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
+              ? TipoTrasfertaColors[epsNestjsOrpEffCicliEsec?.TIPO_TRASFERTA]
                   .dark
-              : TipoTrasfertaColors[epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA]
+              : TipoTrasfertaColors[epsNestjsOrpEffCicliEsec?.TIPO_TRASFERTA]
                   .light;
 
           return (

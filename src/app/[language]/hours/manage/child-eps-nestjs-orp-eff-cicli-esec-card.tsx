@@ -2,6 +2,8 @@ import TipoTrasfertaComponent from "@/components/tipo-trasferta";
 import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
+import { RoleEnum } from "@/services/api/types/role";
+import useAuth from "@/services/auth/use-auth";
 import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import Button from "@mui/material/Button";
@@ -12,20 +14,23 @@ import Stack from "@mui/material/Stack";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { Fragment } from "react";
-
+import FileUploadTwoToneIcon from "@mui/icons-material/FileUploadTwoTone";
 interface Props {
   epsNestjsOrpEffCicliEsec: EpsNestjsOrpEffCicliEsec;
   renderOrdCliTrasDialog: (
     linkOrpOrd: Array<LinkOrpOrd>
   ) => React.ReactNode | null;
   onDelete: (id: string) => void;
+  onSendHG?: (id: string) => void;
 }
 
 export function ChildEpsNestjsOrpEffCicliEsecCard({
   epsNestjsOrpEffCicliEsec,
   renderOrdCliTrasDialog,
   onDelete,
+  onSendHG,
 }: Props) {
+  const { user } = useAuth();
   const theme = useTheme();
 
   const color =
@@ -60,27 +65,54 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                     <LockTwoToneIcon />
                   </Icon>
                 ) : (
-                  <Button
-                    sx={{
-                      backgroundColor: theme.palette.augmentColor({
-                        color: {
-                          main: color.main,
+                  <Stack direction="row" textAlign="center" spacing={1}>
+                    {user?.role?.id === RoleEnum.ADMIN && (
+                      <Button
+                        sx={{
+                          backgroundColor: theme.palette.augmentColor({
+                            color: {
+                              main: color.main,
+                            },
+                            mainShade: 900,
+                          }).main,
+                          color: theme.palette.getContrastText(color.main),
+                          "&:hover": {
+                            backgroundColor: color.hover,
+                          },
+                        }}
+                        onClick={() => {
+                          if (onSendHG) {
+                            onSendHG(epsNestjsOrpEffCicliEsec?.id);
+                          }
+                        }}
+                        variant="contained"
+                        endIcon={<FileUploadTwoToneIcon />}
+                      >
+                        HG
+                      </Button>
+                    )}
+                    <Button
+                      sx={{
+                        backgroundColor: theme.palette.augmentColor({
+                          color: {
+                            main: color.main,
+                          },
+                          mainShade: 900,
+                        }).main,
+                        color: theme.palette.getContrastText(color.main),
+                        "&:hover": {
+                          backgroundColor: color.hover,
                         },
-                        mainShade: 900,
-                      }).main,
-                      color: theme.palette.getContrastText(color.main),
-                      "&:hover": {
-                        backgroundColor: color.hover,
-                      },
-                    }}
-                    onClick={() => {
-                      onDelete(epsNestjsOrpEffCicliEsec?.id);
-                    }}
-                    variant="contained"
-                    endIcon={<DeleteForeverTwoTone />}
-                  >
-                    {epsNestjsOrpEffCicliEsec?.id}
-                  </Button>
+                      }}
+                      onClick={() => {
+                        onDelete(epsNestjsOrpEffCicliEsec?.id);
+                      }}
+                      variant="contained"
+                      endIcon={<DeleteForeverTwoTone />}
+                    >
+                      {epsNestjsOrpEffCicliEsec?.id}
+                    </Button>
+                  </Stack>
                 )}
               </TipoTrasfertaComponent>
             </Grid>

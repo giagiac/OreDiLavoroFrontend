@@ -36,7 +36,9 @@
         "label": "Role",
         "options": {
           "1": "Admin",
-          "2": "User"
+          "2": "User",
+          "3": "Autista",
+          "4": "Badge"
         }
       }
     }

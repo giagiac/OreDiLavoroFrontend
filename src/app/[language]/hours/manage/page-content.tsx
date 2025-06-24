@@ -46,6 +46,7 @@ import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
   useGetMeQuery,
 } from "./queries/queries";
+import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 dayjs.locale("it");
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
@@ -130,6 +131,32 @@ function UserHours() {
         });
       } else {
         enqueueSnackbar("Ore commessa eliminate!", {
+          variant: "success",
+        });
+      }
+
+      refetch();
+    }
+  };
+
+  const fetchScheduleTask = useScheduleTaskService();
+
+  const onScheduleTask = async (id: string) => {
+    const isConfirmed = await confirmDialog({
+      title: "Ore commessa",
+      message: "Vuoi confermare l'esecuzione ed inviarla ad HG?",
+    });
+
+    if (isConfirmed) {
+      const { status } = await fetchScheduleTask({
+        id,
+      });
+      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+        enqueueSnackbar("Impossibile processare!", {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar("Esecuzione processata!", {
           variant: "success",
         });
       }
@@ -331,6 +358,7 @@ function UserHours() {
               key={epsNestjsOrpEffCicliEsec.id}
               epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
               onDelete={onDelete}
+              onSendHG={onScheduleTask}
               renderOrdCliTrasDialog={renderOrdCliTrasDialog}
             />
           ))}

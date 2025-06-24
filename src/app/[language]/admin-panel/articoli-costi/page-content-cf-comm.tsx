@@ -60,14 +60,32 @@ export default function CfCommPage(cf: Cf) {
                     })}
                   >
                     <TableBody>
-                      <TableRow sx={{ "& > *": { borderBottom: "none" } }}>
-                        <TableCell sx={{ width: "10%", textAlign: "left" }}>
+                      <TableRow sx={{ "& > *": { border: "none" } }}>
+                        <TableCell
+                          sx={{
+                            width: "10%",
+                            textAlign: "left",
+                            border: "none",
+                          }}
+                        >
                           {cfComm?.NUM_SEDE}
                         </TableCell>
-                        <TableCell sx={{ width: "45%", textAlign: "left" }}>
+                        <TableCell
+                          sx={{
+                            width: "45%",
+                            textAlign: "left",
+                            border: "none",
+                          }}
+                        >
                           {cfComm?.DES_SEDE}
                         </TableCell>
-                        <TableCell sx={{ width: "45%", textAlign: "left" }}>
+                        <TableCell
+                          sx={{
+                            width: "45%",
+                            textAlign: "left",
+                            border: "none",
+                          }}
+                        >
                           {cfComm?.INDI_SEDE}
                         </TableCell>
                       </TableRow>

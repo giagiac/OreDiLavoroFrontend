@@ -16,6 +16,7 @@ import { OperatoreSelected } from "../opertore-selected";
 import dayjs from "dayjs";
 import "dayjs/locale/it";
 import Typography from "@mui/material/Typography";
+import NightsStayTwoToneIcon from "@mui/icons-material/NightsStayTwoTone";
 dayjs.locale("it");
 
 function FormCreateUser() {
@@ -153,7 +154,7 @@ function FormCreateUser() {
                 </Grid>
               </div>
             </Grid>
-            <Grid size={{ xs: 12 }} mb={5}>
+            <Grid size={{ xs: 12 }}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="fuori_sede_ritorno_in_giornata"
                 onClickAction={() =>
@@ -162,7 +163,7 @@ function FormCreateUser() {
                   )
                 }
                 endIcon={<UTurnLeftTwoToneIcon />}
-                label="Ritorno"
+                label="Ritorno in giornata"
               />
             </Grid>
             <Grid size={{ xs: 12 }} mb={5}>
@@ -173,8 +174,8 @@ function FormCreateUser() {
                     `create/fuori_sede_ritorno_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }
-                endIcon={<UTurnLeftTwoToneIcon />}
-                label="Ritorno"
+                endIcon={<NightsStayTwoToneIcon />}
+                label="Ritorno dopo le 21:00"
               />
             </Grid>
           </Grid>

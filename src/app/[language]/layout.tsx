@@ -25,6 +25,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { dir } from "i18next";
 import type { Metadata } from "next";
 import "../globals.css";
+import Head from "next/head";
 
 type Props = {
   params: Promise<{ language: string }>;
@@ -57,12 +58,14 @@ export default async function RootLayout(props: {
 
   return (
     <html lang={language} dir={dir(language)} suppressHydrationWarning>
-      <head>
+      <Head>
+        {/* This is where your viewport meta tag goes */}
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-      </head>
+        {/* Other meta tags, favicons, etc. */}
+      </Head>
       <body suppressHydrationWarning>
         <Analytics />
         <SpeedInsights />

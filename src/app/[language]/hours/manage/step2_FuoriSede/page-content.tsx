@@ -4,17 +4,17 @@ import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { RoleEnum } from "@/services/api/types/role";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import ArrowBackTwoToneIcon from "@mui/icons-material/ArrowBackTwoTone";
-import CalendarMonthTwoToneIcon from "@mui/icons-material/CalendarMonthTwoTone";
 import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 import HotelTwoToneIcon from "@mui/icons-material/HotelTwoTone";
 import NightsStayTwoToneIcon from "@mui/icons-material/NightsStayTwoTone";
+import WbSunnyTwoToneIcon from "@mui/icons-material/WbSunnyTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
-import { useRouter, useSearchParams } from "next/navigation";
-import { OperatoreSelected } from "../opertore-selected";
+import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import "dayjs/locale/it";
-import Typography from "@mui/material/Typography";
+import { useRouter, useSearchParams } from "next/navigation";
+import { OperatoreSelected } from "../opertore-selected";
 dayjs.locale("it");
 
 function FormCreateUser() {
@@ -60,7 +60,7 @@ function FormCreateUser() {
                   )
                 }
                 label="In giornata"
-                endIcon={<CalendarMonthTwoToneIcon />}
+                endIcon={<WbSunnyTwoToneIcon />}
               />
             </Grid>
             <Grid size={{ xs: 12 }} mb={5}>

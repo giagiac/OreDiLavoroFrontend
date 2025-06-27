@@ -442,19 +442,25 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           <Scanner
             onScan={(result) => {
               setCodiceBreve(result[0].rawValue);
-              setFilters([
-                {
-                  columnName: "CODICE_BREVE",
-                  value: result[0].rawValue,
-                },
-              ]);
-              handleCloseScanner();
+              setEnterPressed(() => {
+                setFilters([
+                  {
+                    columnName: "CODICE_BREVE",
+                    value: result[0].rawValue,
+                  },
+                ]);
+                handleCloseScanner();
+                return true;
+              });
 
               if (result.length === 1) {
                 // TODO :
                 setMultipleScannerDetected(null);
               } else if (result.length > 1) {
                 {
+                  enqueueSnackbar("Att.ne seleziona un codice alla volta", {
+                    variant: "error",
+                  });
                   setMultipleScannerDetected(
                     result.map((item) => item.rawValue).join(", ")
                   );

@@ -1,20 +1,18 @@
+import FormSelectExtendedInput from "@/components/form/select-extended/form-select-extended";
+import { ArtAna } from "@/services/api/types/art-ana";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-import NoCrashTwoToneIcon from "@mui/icons-material/NoCrashTwoTone";
+import { yupResolver } from "@hookform/resolvers/yup/dist/yup";
 import Star from "@mui/icons-material/Star";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Button from "@mui/material/Button";
+import Box from "@mui/material/Box/Box";
 import Grid from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import * as yup from "yup";
 import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/queries-eps-nestjs-targa-mezzi";
 
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
@@ -46,8 +44,8 @@ const AnelloGiallo = () => {
 };
 
 const StelleEuropee = () => {
-  const numStars = 10; // Numero di stelle
-  const radius = 16; // Raggio del cerchio
+  const numStars = 8; // Numero di stelle
+  const radius = 12; // Raggio del cerchio
   const starSize = 8; // Dimensione delle stelle
 
   const stars = [];
@@ -61,8 +59,8 @@ const StelleEuropee = () => {
         key={i}
         style={{
           position: "absolute",
-          left: `calc(50% + ${x}px - ${starSize / 2}px)`,
-          top: `calc(50% + ${y}px - ${starSize / 2}px)`,
+          left: `calc(40% + ${x}px - ${starSize / 2}px)`,
+          top: `calc(40% + ${y}px - ${starSize / 2}px)`,
           width: starSize,
           height: starSize,
           color: "#FFC300", // Colore delle stelle
@@ -72,7 +70,7 @@ const StelleEuropee = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#003DA3", width: 100, height: "100%" }}>
+    <div style={{ backgroundColor: "#003DA3", height: "100%" }}>
       <div
         style={{
           width: 45,
@@ -87,26 +85,134 @@ const StelleEuropee = () => {
   );
 };
 
+interface TargaMezziTableSelectProps {
+  childrenCallBack: (artAna: ArtAna | null) => void;
+  values: TargaMezzi[];
+  artAna: ArtAna | null;
+  storageKey: string;
+}
+
+const TargaMezziTableSelect = ({
+  storageKey,
+  childrenCallBack,
+  values,
+  artAna,
+}: TargaMezziTableSelectProps) => {
+  const schema = yup.object().shape({
+    artAna: yup.object().shape({
+      COD_ART: yup.string(),
+      artAna: yup.object().shape({
+        DES_ART: yup.string(),
+      }),
+    }),
+  });
+
+  const methods = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      artAna: {
+        COD_ART: artAna?.COD_ART,
+        artAna: {
+          DES_ART: artAna?.DES_ART,
+        },
+      },
+    },
+  });
+
+  const [filterKey, setFilterKey] = useState<string>("");
+
+  const [valuesFiltered, setValuesFiltered] = useState<TargaMezzi[]>(values);
+
+  useEffect(() => {
+    if (filterKey) {
+      const filteredValues = values.filter((value) =>
+        value.artAna?.DES_ART.toLowerCase().includes(filterKey.toLowerCase())
+      );
+      setValuesFiltered(filteredValues);
+    } else {
+      setValuesFiltered(values);
+    }
+  }, [filterKey, values]);
+
+  return (
+    <Box sx={{ m: 2 }} key={values.length}>
+      <FormProvider {...methods}>
+        <form>
+          <FormSelectExtendedInput<EditArtAnaFormData, TargaMezzi>
+            name={"artAna"}
+            label={`Seleziona una targa`}
+            options={valuesFiltered}
+            renderSelected={(option) => option?.COD_ART ?? ""}
+            renderOption={(option) =>
+              option?.COD_ART
+                ? `${option.COD_ART} ${option.artAna?.DES_ART ?? ""}`
+                : ""
+            }
+            keyExtractor={(option) => option?.COD_ART ?? ""}
+            isSearchable={true}
+            searchLabel="Search"
+            searchPlaceholder="Search options..."
+            search={filterKey}
+            onSearchChange={(value) => {
+              setFilterKey(value);
+            }}
+            onChangeCallback={(artAna) => {
+              if (artAna) {
+                localStorage.setItem(storageKey, artAna.COD_ART);
+              } else {
+                localStorage.removeItem(storageKey);
+              }
+              childrenCallBack(artAna?.artAna ?? null);
+            }}
+          />
+        </form>
+      </FormProvider>
+    </Box>
+  );
+};
+
+// function App() {
+//   const {
+//     register,
+//     handleSubmit,
+//     watch,
+//     formState: { errors },
+//   } = useForm();
+//   const onSubmit = (data: any) => console.log(data);
+
+//   console.log(watch("example"));
+
+//   return (
+//     <form onSubmit={handleSubmit(onSubmit)}>
+//       <input defaultValue="test" {...register("example")} />
+//       <input {...register("exampleRequired", { required: true })} />
+//       {errors.exampleRequired && <span>This field is required</span>}
+//       <button>Submit</button>
+//     </form>
+//   );
+// }
+
 type EpsNestjsTargaMezziKeys = keyof TargaMezzi;
 
 interface TargaMezziTableProps {
-  childrenCallBack: (COD_ART: string) => React.ReactElement;
+  childrenCallBack: (artAna: ArtAna) => React.ReactElement;
 }
+
+export type EditArtAnaFormData = {
+  id: string;
+  COD_ART: string;
+  artAna: {
+    COD_ART: string;
+    DES_ART: string;
+  };
+};
 
 const TargaMezziTable = ({
   childrenCallBack: children,
 }: TargaMezziTableProps) => {
   const searchParams = useSearchParams();
+
   const pathname = usePathname();
-
-  let STORAGE_KEY = "TARGA_MEZZI_DEFAULT";
-
-  if (pathname.indexOf("step1_km_autista") > -1) {
-    STORAGE_KEY = "TARGA_MEZZI_DEFAULT_KM_AUTISTA";
-  }
-
-  const targaSelected =
-    localStorage.getItem(STORAGE_KEY) || NO_TARGA_MEZZI_SELECTED;
 
   useEffect(() => {
     if (searchParams.size === 0) {
@@ -152,23 +258,37 @@ const TargaMezziTable = ({
     othersFilters,
   });
 
+  const [targaMezziSelected, setTargaMezziSelected] = useState<ArtAna | null>(
+    null
+  );
+
+  let STORAGE_KEY = "TARGA_MEZZI_DEFAULT";
+
+  if (pathname.indexOf("step1_km_autista") > -1) {
+    STORAGE_KEY = "TARGA_MEZZI_DEFAULT_KM_AUTISTA";
+  }
+
   const result = useMemo(() => {
     const result =
       (data?.pages.flatMap((page) => page?.data) as TargaMezzi[]) ??
       ([] as TargaMezzi[]);
 
+    const targaSelected = localStorage.getItem(STORAGE_KEY) || "";
+
+    const selectedItem = result.find((it) => it.COD_ART === targaSelected);
+
+    if (result.length !== 0) {
+      if (selectedItem !== undefined && selectedItem?.artAna !== null) {
+        setTargaMezziSelected(selectedItem.artAna as ArtAna);
+      } else {
+        setTargaMezziSelected({
+          COD_ART: "",
+          DES_ART: "",
+        } as ArtAna);
+      }
+    }
     return removeDuplicatesFromArrayObjects(result, "COD_ART");
   }, [data]);
-
-  const [targaMezziSelected, setTargaMezziSelected] =
-    useState<string>(targaSelected);
-
-  const [isAccordionExpanded, setIsAccordionExpanded] =
-    useState<boolean>(false);
-
-  const selectedItem = result.find((it) => it.COD_ART === targaMezziSelected);
-  //const codArt = selectedItem?.artAna?.COD_ART ?? "";
-  const desArt = selectedItem?.artAna?.DES_ART ?? "";
 
   return (
     <>
@@ -188,67 +308,31 @@ const TargaMezziTable = ({
           <StelleEuropee />
         </Grid>
         <Grid size={{ xs: 10 }}>
-          <Accordion
-            sx={{ minHeight: 120 }}
-            elevation={0}
-            expanded={isAccordionExpanded}
-            onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              style={{ flexFlow: "column", textAlign: "center" }}
-            >
-              <Typography variant="h4">
-                {targaMezziSelected === NO_TARGA_MEZZI_SELECTED
-                  ? "Seleziona una targa"
-                  : desArt !== ""
-                    ? `${desArt}`
-                    : "Targa selezionata non trovata"}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Grid container spacing={2} sx={{ width: "100%" }}>
-                {result.map((targaMezzi) => (
-                  <Grid
-                    size={{ xs: 12, sm: 6 }}
-                    key={targaMezzi.COD_ART}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      borderBottom: "1px solid #eee",
-                      py: 1,
-                    }}
-                  >
-                    <Typography variant="body1" sx={{ flex: 1 }}>
-                      {targaMezzi.artAna?.DES_ART}
-                    </Typography>
-                    <Button
-                      color="info"
-                      variant="outlined"
-                      onClick={() => {
-                        localStorage.setItem(STORAGE_KEY, targaMezzi.COD_ART);
-                        setTargaMezziSelected(targaMezzi.COD_ART);
-                        setIsAccordionExpanded(false); // Chiude l'accordion
-                      }}
-                      sx={{ ml: 1 }}
-                    >
-                      <NoCrashTwoToneIcon />
-                    </Button>
-                  </Grid>
-                ))}
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
+          {targaMezziSelected !== null && (
+            <TargaMezziTableSelect
+              storageKey={STORAGE_KEY}
+              childrenCallBack={(artAna: ArtAna | null) => {
+                //
+                setTargaMezziSelected(
+                  artAna ||
+                    ({
+                      COD_ART: "",
+                      DES_ART: "",
+                    } as ArtAna)
+                );
+              }}
+              values={result}
+              artAna={targaMezziSelected}
+            />
+          )}
         </Grid>
         <Grid size={{ xs: 1 }}>
           <AnelloGiallo />
         </Grid>
       </Grid>
-      {targaMezziSelected !== NO_TARGA_MEZZI_SELECTED &&
-        // codArt !== "" &&
-        desArt !== "" &&
-        children(targaMezziSelected)}
+      {targaMezziSelected && targaMezziSelected?.COD_ART !== "" && (
+        <Box sx={{ m: 2 }}>{children(targaMezziSelected)}</Box>
+      )}
     </>
   );
 };

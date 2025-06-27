@@ -145,9 +145,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
         >
           <Grid container>
             <Grid size={{ xs: 12 }}>
-              <TipoTrasfertaComponent
-                tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
-              >
+              <TipoTrasfertaComponent tipotrasferta={child.TIPO_TRASFERTA}>
                 <Stack direction="column" textAlign="center">
                   <Typography variant="caption">{child?.id}</Typography>
                   <Typography variant="caption">[{child?.idfk}]</Typography>
@@ -158,16 +156,14 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               <Typography variant="body2">
                 {" "}
                 {/* Scaled down from body1 */}
-                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
+                {child?.orpEffCicli?.linkOrpOrd?.map(
                   (it) => it.ordCliRighe?.cf.RAG_SOC_CF
                 )}
               </Typography>
             </Grid>
             <Grid size={{ xs: 12 }} container alignItems="center" spacing={1}>
               <Grid size={{ xs: 10 }}>
-                <Typography variant="caption">
-                  {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
-                </Typography>
+                <Typography variant="caption">{child?.DOC_RIGA_ID}</Typography>
               </Grid>
               <Grid size={{ xs: 2 }} textAlign={"right"}>
                 <IconButton
@@ -191,13 +187,13 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               <>
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="caption">
-                    {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+                    {child?.orpEffCicli?.orpEff.DES_PROD}
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="caption" textAlign="right">
-                    {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                      `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${child?.KM} Km`}
+                    {child?.COD_ART !== null &&
+                      `Targa mezzo : ${child?.artAna?.DES_ART} · ${child?.KM} Km`}
                   </Typography>
                 </Grid>
               </>

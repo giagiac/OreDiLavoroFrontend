@@ -8,6 +8,7 @@ import {
   useDeleteEpsNestjsOrpEffCicliEsecService,
   useGetEpsNestjsOrpEffCicliEsecService,
 } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -56,9 +57,8 @@ import * as yup from "yup";
 import imageLogo from "../../../../../public/emotions.png";
 import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
-import { ChildEpsNestjsOrpEffCicliEsecCard } from "../manage//child-eps-nestjs-orp-eff-cicli-esec-card";
-import { useGetMeQuery } from "../manage/queries/queries";
-import { useScheduleTaskService } from "@/services/api/services/schedule-task";
+import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
+import { useGetMeQuery } from "./queries/queries";
 
 function UserHours() {
   const { user } = useAuth();
@@ -618,7 +618,7 @@ function UserHours() {
               padding: theme.spacing(1),
             })}
           >
-            {[RoleEnum.AUTISTA].includes(
+            {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
               userSelected?.role?.id as RoleEnum
             ) && (
               <Grid>

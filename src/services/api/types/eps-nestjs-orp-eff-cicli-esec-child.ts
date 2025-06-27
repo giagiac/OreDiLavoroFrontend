@@ -1,5 +1,9 @@
 import Decimal from "decimal.js";
 import { TipoTrasferta } from "./eps-nestjs-orp-eff-cicli-esec";
+import { ArtAna } from "./art-ana";
+import { Operatori } from "./operatori";
+import { OrpEffCicli } from "./orp-eff-cicli";
+import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
 
 export type EpsNestjsOrpEffCicliEsecChild = {
   id: string;
@@ -27,4 +31,10 @@ export type EpsNestjsOrpEffCicliEsecChild = {
   APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
 
   TEMPO_OPERATORE_SESSANTESIMI?: String | null;
+
+  orpEffCicliEsec?: OrpEffCicliEsec | null;
+  orpEffCicli?: OrpEffCicli | null;
+  operatori?: Operatori | null;
+
+  artAna?: ArtAna | null;
 };

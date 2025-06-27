@@ -5,6 +5,7 @@ import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { RoleEnum } from "@/services/api/types/role";
 import useAuth from "@/services/auth/use-auth";
 import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
+import FileUploadTwoToneIcon from "@mui/icons-material/FileUploadTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -14,7 +15,6 @@ import Stack from "@mui/material/Stack";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { Fragment } from "react";
-import FileUploadTwoToneIcon from "@mui/icons-material/FileUploadTwoTone";
 interface Props {
   epsNestjsOrpEffCicliEsec: EpsNestjsOrpEffCicliEsec;
   renderOrdCliTrasDialog: (
@@ -165,9 +165,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
           >
             <Grid container>
               <Grid size={{ xs: 12 }}>
-                <TipoTrasfertaComponent
-                  tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
-                >
+                <TipoTrasfertaComponent tipotrasferta={child.TIPO_TRASFERTA}>
                   {child.HYPSERV_REQ2_COD_CHIAVE !== null ||
                   child.APP_REQ3_HYPSERV_COD_CHIAVE !== null ? (
                     <Icon>
@@ -185,31 +183,27 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body1">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
+                  {child?.orpEffCicli?.linkOrpOrd?.map(
                     (it) => it.ordCliRighe?.cf.RAG_SOC_CF
                   )}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
-                {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd &&
-                  renderOrdCliTrasDialog(
-                    epsNestjsOrpEffCicliEsec?.orpEffCicli.linkOrpOrd
-                  )}
+                {child?.orpEffCicli?.linkOrpOrd &&
+                  renderOrdCliTrasDialog(child?.orpEffCicli.linkOrpOrd)}
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <Typography variant="caption">
-                  {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
-                </Typography>
+                <Typography variant="caption">{child?.DOC_RIGA_ID}</Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2">
-                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
+                  {child?.orpEffCicli?.orpEff.DES_PROD}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" textAlign="right">
-                  {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
-                    `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${child?.KM} Km`}
+                  {child?.COD_ART !== null &&
+                    `Targa mezzo : ${child?.artAna?.DES_ART} · ${child?.KM} Km`}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>

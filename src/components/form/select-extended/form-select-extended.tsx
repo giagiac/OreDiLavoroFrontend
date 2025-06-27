@@ -1,18 +1,21 @@
 "use client";
+import ClearIcon from "@mui/icons-material/Clear";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import ListItemText from "@mui/material/ListItemText";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import ClearIcon from "@mui/icons-material/Clear";
 import React, {
   ForwardedRef,
   forwardRef,
-  useState,
-  useRef,
   useEffect,
+  useRef,
+  useState,
 } from "react";
 import {
   Controller,
@@ -21,9 +24,6 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { ItemProps, ListProps, Virtuoso } from "react-virtuoso";
-import ListItemText from "@mui/material/ListItemText";
-import Box from "@mui/material/Box";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 type SelectExtendedInputProps<T extends object> = {
   label: string;

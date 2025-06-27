@@ -64,12 +64,12 @@ function FormCreateUser() {
             </Grid>
             <Grid size={12} pt={3}>
               <TargaMezziTable
-                childrenCallBack={(COD_ART) => (
+                childrenCallBack={(artAna) => (
                   <ButtonTipoTrasferta
                     tipoTrasfertaButton="km_autista_button"
                     onClickAction={async () => {
                       router.push(
-                        `create/step1_km_autista?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
+                        `create/step1_km_autista?COD_ART=${artAna.COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                       );
                     }}
                     icon={<ForwardTwoToneIcon />}

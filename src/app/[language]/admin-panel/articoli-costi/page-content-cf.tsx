@@ -38,6 +38,8 @@ import React, {
 import FormCreateEdit from "./create/page-content-cf";
 import CfCommPage from "./page-content-cf-comm";
 import { useGetCfQuery } from "./queries/queries-cf";
+import purple from "@mui/material/colors/purple";
+import red from "@mui/material/colors/red";
 
 type CfKeys = keyof Cf;
 
@@ -235,6 +237,9 @@ function Cfs() {
 
   const theme = useTheme();
 
+  const cPurple = purple[900];
+  const cRed = red["100"];
+
   return (
     <Container maxWidth={false} sx={{ px: { xs: 1, sm: 2 } }}>
       <Grid container pt={3}>
@@ -306,15 +311,13 @@ function Cfs() {
                   <TableRow sx={{ border: "none" }} key={cf.COD_CF}>
                     <TableCell
                       colSpan={4}
-                      sx={{ border: "none", padding: theme.spacing(0.2) }}
+                      sx={{ border: "none", padding: theme.spacing(0.5) }}
                     >
                       <Paper
-                        elevation={2}
+                        elevation={5}
                         sx={{
                           backgroundColor:
-                            theme.palette.mode === "dark"
-                              ? theme.palette.secondary.dark
-                              : theme.palette.secondary.light,
+                            theme.palette.mode === "dark" ? cPurple : cRed,
                         }}
                       >
                         <Table
@@ -351,7 +354,7 @@ function Cfs() {
                                   variant="body2"
                                   sx={{ color: "text.secondary" }}
                                 >
-                                  {cf?.RAG_SOC_CF}
+                                  {cf?.RAG_SOC_CF} · {cf?.P_IVA_CF}
                                 </Typography>
                               </TableCell>
                             </TableRow>
@@ -379,7 +382,6 @@ function Cfs() {
                             {open[cf.COD_CF] && (
                               <TableRow
                                 sx={{
-                                  padding: 0,
                                   borderBottom: "none",
                                 }}
                               >

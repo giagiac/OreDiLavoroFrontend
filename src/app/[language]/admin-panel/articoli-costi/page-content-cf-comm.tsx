@@ -55,9 +55,9 @@ export default function CfCommPage(cf: Cf) {
               <TableRow key={cfComm.CF_COMM_ID}>
                 <TableCell
                   colSpan={4}
-                  sx={{ border: "none", padding: theme.spacing(0.2) }}
+                  sx={{ border: "none", padding: theme.spacing(0.5) }}
                 >
-                  <Paper elevation={2}>
+                  <Paper elevation={0}>
                     <Table
                       style={{
                         borderCollapse: "separate",
@@ -66,7 +66,7 @@ export default function CfCommPage(cf: Cf) {
                     >
                       <TableBody>
                         <TableRow>
-                          <TableCell sx={{ border: "none" }}>
+                          <TableCell sx={{ border: "none" }} colSpan={5}>
                             <Typography
                               component="span"
                               variant="body2"

@@ -637,7 +637,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               result.map((item) => (
                 <Fragment key={item.DOC_RIGA_ID}>
                   <Grid container pt={0.5}>
-                    <Grid size={{ xs: 12, md: 6 }} p={0.1}>
+                    <Grid size={{ xs: 12, md: 8 }} p={0.1}>
                       <TableContainer
                         component={Paper}
                         elevation={3}
@@ -795,7 +795,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         </Grid>
                       </TableContainer>
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6 }} p={0.1}>
+                    <Grid size={{ xs: 12, md: 4 }} p={0.1}>
                       <NumericKeypad
                         onNumberChange={(value) => {
                           setTempoOreOperatore(value);
@@ -851,10 +851,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               <Button
                 onClick={() => {
                   if (window.location.pathname.indexOf("manage-badge") > -1) {
-                    history.replaceState(null, "", "/hours/manage-badge");
                     router.push("/hours/manage-badge", { scroll: true });
                   } else {
-                    router.push("/hours/manage", { scroll: true });
+                    router.push("/hours/manage?" + window.location.search, {
+                      scroll: true,
+                    });
                   }
                 }}
                 color="secondary"

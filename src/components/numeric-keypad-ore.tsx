@@ -67,15 +67,20 @@ export const NumericKeypad = ({
     >
       <Grid container spacing={1}>
         <Grid container size={{ xs: 12 }} justifyContent="center">
-          <Typography variant="h1" textAlign="center">
+          <Typography
+            variant="h1"
+            textAlign="center"
+            style={{ fontWeight: "bold" }}
+          >
             {tempoOreOperatore.toString().padStart(2, "0")}:
             {tempoMinutiOperatore.toString().padStart(2, "0")}
           </Typography>
         </Grid>
+        <hr style={{ width: "50%" }} />
         <Grid container size={{ xs: 12 }} justifyContent="center">
           <Grid>
-            <Typography variant="h3" textAlign="center">
-              {"ore"}
+            <Typography variant="h4" textAlign="center">
+              {"ORE"}
             </Typography>
           </Grid>
           {[1, 2, 3].map((row) => (
@@ -126,8 +131,8 @@ export const NumericKeypad = ({
           <hr style={{ width: "50%" }} />
           <Grid container size={{ xs: 12 }} mb={3} justifyContent="center">
             <Grid>
-              <Typography variant="h3" textAlign="center">
-                {"minuti"}
+              <Typography variant="h4" textAlign="center">
+                {"MINUTI"}
               </Typography>
             </Grid>
             <Grid container size={{ xs: 12 }} justifyContent="center">

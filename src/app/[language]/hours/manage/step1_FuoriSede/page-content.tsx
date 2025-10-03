@@ -41,7 +41,7 @@ function FormCreateUser() {
             <Grid size={{ xs: 12 }} mb={5}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
-                label="Trasferta"
+                label="Fuori sede"
                 onClickAction={() => router.back()}
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}

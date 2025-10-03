@@ -436,7 +436,7 @@ function UserHours() {
               )
             }
             endIcon={<FlightTakeoffTwoToneIcon />}
-            label="Trasferta"
+            label="Fuori sede"
           />
         </Grid>
         <Grid>

@@ -46,7 +46,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() => router.back()}
-                label="Trasferta"
+                label="Fuori sede"
                 startIcon={<ArrowBackTwoToneIcon />}
                 endIcon={<FlightTakeoffTwoToneIcon />}
               />

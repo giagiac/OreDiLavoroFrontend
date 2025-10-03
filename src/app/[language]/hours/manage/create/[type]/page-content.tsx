@@ -272,7 +272,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const [isDialogOpen, setDialogOpen] = useState<string | null>(null);
 
   const handleDialogClose = () => {
-    debugger
+    debugger;
     setDialogOpen(null);
     setTempoOreOperatore(TEMPO_OPERATORE_DEFAULT);
 

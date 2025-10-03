@@ -16,7 +16,7 @@ import TableRow from "@mui/material/TableRow";
 import { useMemo } from "react";
 import FormCreateEdit from "./create/page-content-cf-comm";
 import { useGetCfCommQuery } from "./queries/queries-cf-comm";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,

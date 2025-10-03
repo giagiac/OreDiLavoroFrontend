@@ -133,27 +133,9 @@ function TableSortFilterCellWrapper(
 
 function Cfs() {
   const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log("nav changed ", window.location.search);
-    if (searchParams.size === 0) {
-      setOthersFilters([]);
-      setFilters([]);
-      setSort({ order: SortEnum.ASC, orderBy: "COD_CF" });
-    }
-  }, [searchParams.size]);
 
   const [othersFilters, setOthersFilters] = useState<Array<OthersFiltersItem>>(
-    () => {
-      const searchParamsOthersFilters = searchParams.get("othersFilters");
-      if (searchParamsOthersFilters) {
-        const of = JSON.parse(searchParamsOthersFilters);
-        return of;
-      }
-      return [];
-    }
+    []
   );
 
   const handleRequestOthersFilters = (
@@ -169,28 +151,14 @@ function Cfs() {
     searchParams.set("othersFilters", JSON.stringify(converted));
 
     setOthersFilters(converted);
-
-    router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
     orderBy: CfKeys;
-  }>(() => {
-    const searchParamsSort = searchParams.get("sort");
-    if (searchParamsSort) {
-      return JSON.parse(searchParamsSort);
-    }
-    return { order: SortEnum.ASC, orderBy: "COD_CF" };
-  });
+  }>({ order: SortEnum.ASC, orderBy: "COD_CF" });
 
-  const [filters, setFilters] = useState<Array<FilterItem<Cf>>>(() => {
-    const searchParamsFilter = searchParams.get("filter");
-    if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter);
-    }
-    return [];
-  });
+  const [filters, setFilters] = useState<Array<FilterItem<Cf>>>([]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -208,7 +176,6 @@ function Cfs() {
       order: newOrder,
       orderBy: newOrderBy,
     });
-    router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
   const handleRequestFilter = (prop: FilterItem<Cf>) => {
@@ -234,7 +201,6 @@ function Cfs() {
     searchParams.set("filter", JSON.stringify(oldFilter));
 
     setFilters(oldFilter);
-    router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
@@ -272,7 +238,7 @@ function Cfs() {
   const theme = useTheme();
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth={false} sx={{ px: { xs: 1, sm: 2 } }}>
       <Grid container pt={3}>
         <Grid container size={12}>
           <Grid flexGrow={1}>
@@ -295,12 +261,10 @@ function Cfs() {
 
         <Grid size={12} mb={2}>
           <TableContainer>
-            <Table size="small" sx={{ borderBottom: "unset" }}>
+            <Table size="small" sx={{ borderBottom: "none" }}>
               <TableHead>
-                <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                  <TableCell style={{ width: "10%" }} />
+                <TableRow sx={{ borderBottom: "none" }}>
                   <TableSortFilterCellWrapper
-                    width={"10%"}
                     orderBy={orderBy}
                     order={order}
                     column="COD_CF"
@@ -311,7 +275,6 @@ function Cfs() {
                     {tArticoliCosti("table.column1")}
                   </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
-                    width={"30%"}
                     orderBy={orderBy}
                     order={order}
                     column="RAG_SOC_CF"
@@ -322,7 +285,6 @@ function Cfs() {
                     {tArticoliCosti("table.column2")}
                   </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
-                    width={"50%"}
                     orderBy={orderBy}
                     order={order}
                     column="P_IVA_CF"
@@ -334,7 +296,7 @@ function Cfs() {
                   </TableSortFilterCellWrapper>
                 </TableRow>
                 {isFetchingNextPage && (
-                  <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                  <TableRow sx={{ borderBottom: "unset" }}>
                     <TableCellLoadingContainer colSpan={4}>
                       <LinearProgress />
                     </TableCellLoadingContainer>
@@ -342,23 +304,19 @@ function Cfs() {
                 )}
               </TableHead>
               <TableBody sx={{ border: "none" }}>
-                {result.map((cf, index) => (
-                  <TableRow sx={{ border: "unset" }} key={cf.COD_CF}>
+                {result.map((cf) => (
+                  <TableRow sx={{ border: "none" }} key={cf.COD_CF}>
                     <TableCell
                       colSpan={4}
-                      sx={{
-                        borderBottom: "none",
-                        padding: theme.spacing(0.1),
-                      }}
+                      sx={{ border: "none", padding: theme.spacing(0.2) }}
                     >
                       <Paper
                         elevation={2}
                         sx={{
                           backgroundColor:
-                            index % 2 === 0
-                              ? theme.palette.action.hover
-                              : theme.palette.background.paper,
-                          padding: theme.spacing(1),
+                            theme.palette.mode === "dark"
+                              ? theme.palette.secondary.dark
+                              : theme.palette.secondary.light,
                         }}
                       >
                         <Table
@@ -368,12 +326,8 @@ function Cfs() {
                           }}
                         >
                           <TableBody>
-                            <TableRow
-                              sx={{ "& > *": { borderBottom: "unset" } }}
-                            >
-                              <TableCell
-                                style={{ width: "10%", border: "none" }}
-                              >
+                            <TableRow>
+                              <TableCell style={{ width: 10, border: "none" }}>
                                 {cf.COD_CF !== "DEFAULT_CF" &&
                                   cf.articoliCostiCf && (
                                     <IconButton
@@ -393,46 +347,42 @@ function Cfs() {
                                     </IconButton>
                                   )}
                               </TableCell>
-                              <TableCell
-                                style={{
-                                  width: "10%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
-                              >
-                                <Typography variant="subtitle2">
+                              <TableCell style={{ border: "none" }} colSpan={4}>
+                                <Typography
+                                  component="span"
+                                  variant="body2"
+                                  sx={{ color: "text.secondary" }}
+                                >
+                                  {cf?.RAG_SOC_CF}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell style={{ border: "none" }}>
+                                <Typography
+                                  component="span"
+                                  variant="body2"
+                                  sx={{
+                                    fontFamily: "Monospace, monospace",
+                                    fontWeight: 700,
+                                  }}
+                                >
                                   {cf?.COD_CF}
                                 </Typography>
                               </TableCell>
                               <TableCell
-                                style={{
-                                  width: "30%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
+                                colSpan={3}
+                                padding="none"
+                                style={{ border: "none" }}
                               >
-                                {cf?.RAG_SOC_CF}
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  width: "50%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
-                              >
-                                {cf?.P_IVA_CF}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell colSpan={4} padding="none">
                                 <FormCreateEdit cf={cf} />
                               </TableCell>
                             </TableRow>
                             {open[cf.COD_CF] && (
                               <TableRow
                                 sx={{
-                                  padding: theme.spacing(0),
-                                  "& > *": { borderBottom: "unset" },
+                                  padding: 0,
+                                  borderBottom: "none",
                                 }}
                               >
                                 <TableCell colSpan={4}>

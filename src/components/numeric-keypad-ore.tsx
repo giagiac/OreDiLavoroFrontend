@@ -74,7 +74,7 @@ export const NumericKeypad = ({
         </Grid>
         <Grid container size={{ xs: 12 }} justifyContent="center">
           <Grid>
-            <Typography variant="caption" textAlign="center">
+            <Typography variant="h3" textAlign="center">
               {"ore"}
             </Typography>
           </Grid>
@@ -126,7 +126,7 @@ export const NumericKeypad = ({
           <hr style={{ width: "50%" }} />
           <Grid container size={{ xs: 12 }} mb={3} justifyContent="center">
             <Grid>
-              <Typography variant="caption" textAlign="center">
+              <Typography variant="h3" textAlign="center">
                 {"minuti"}
               </Typography>
             </Grid>

@@ -15,7 +15,7 @@ function AdminPanel() {
       <Grid container spacing={3} wrap="nowrap" pt={3}>
         <Grid>
           <Typography variant="h3" gutterBottom>
-            CTREATE {t("title")}
+            CREATE {t("title")}
           </Typography>
           <Typography>{t("description")}</Typography>
         </Grid>

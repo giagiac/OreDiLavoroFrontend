@@ -272,6 +272,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const [isDialogOpen, setDialogOpen] = useState<string | null>(null);
 
   const handleDialogClose = () => {
+    debugger
     setDialogOpen(null);
     setTempoOreOperatore(TEMPO_OPERATORE_DEFAULT);
 
@@ -340,7 +341,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         variant: "success",
       });
       if (tipoTrasferta === "step1_km_autista") {
-        // router.push(`step1_km_autista?${searchParams}&id=${data.id}`);
         setId(data.id);
         // Open confirmation dialog
         setDialogOpen(
@@ -504,7 +504,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         </Stack>
         <Grid container spacing={1} justifyContent="center">
           <Grid textAlign="right" size={12}>
-            <OperatoreSelected text="inserisci il codice della commessa" />
+            <OperatoreSelected text="inserisci il codice breve dell’ordine di produzione" />
           </Grid>
           <Grid textAlign="right" size={12}>
             <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
@@ -851,7 +851,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               <Button
                 onClick={() => {
                   if (window.location.pathname.indexOf("manage-badge") > -1) {
-                    //router.push("/hours/manage-badge", { scroll: true });
                     history.replaceState(null, "", "/hours/manage-badge");
                     router.push("/hours/manage-badge", { scroll: true });
                   } else {

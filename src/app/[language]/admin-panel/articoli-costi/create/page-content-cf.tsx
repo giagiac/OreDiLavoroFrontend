@@ -229,17 +229,11 @@ export default function FormCreateEdit(props: { cf: Cf }) {
   return (
     <FormProvider {...methods}>
       <form>
-        <Grid
-          container
-          sx={{
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-          }}
-        >
+        <Grid container>
           {articoliEdit.map((it) => (
             <Grid
               key={`${it.TIPO_TRASFERTA ?? ""}-${cf.COD_CF ?? ""}`}
-              size={{ xs: "auto" }}
+              size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
               padding={0.1}
             >
               <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>

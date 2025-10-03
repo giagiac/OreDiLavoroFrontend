@@ -117,23 +117,29 @@ function SelectExtendedInputRaw<T extends object>(
             data-testid={props.testId}
             helperText={props.error}
             disabled={props.disabled}
-            InputProps={{
-              readOnly: true,
-              endAdornment: props.value ? (
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    props.onChange(null);
-                    props.onChangeCallback(null);
-                  }}
-                  data-testid={`${props.testId}-clear`}
-                >
-                  <ClearIcon />
-                </IconButton>
-              ) : null,
+            InputLabelProps={{
+              shrink: true,
             }}
             slotProps={{
+              // `InputProps` is deprecated in newer MUI versions.
+              // Move props previously passed to InputProps into `slotProps.input`.
+              // Use `formHelperText` as before for helper text testing attributes.
+              input: {
+                readOnly: true,
+                endAdornment: props.value ? (
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      props.onChange(null);
+                      props.onChangeCallback(null);
+                    }}
+                    data-testid={`${props.testId}-clear`}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                ) : null,
+              },
               formHelperText: {
                 ["data-testid" as string]: `${props.testId}-error`,
               },

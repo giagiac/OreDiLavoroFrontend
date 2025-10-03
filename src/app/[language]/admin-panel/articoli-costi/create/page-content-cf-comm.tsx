@@ -210,18 +210,12 @@ export default function FormCreateEdit(props: { cfComm: CfComm }) {
   return (
     <FormProvider {...methods}>
       <form>
-        <Grid
-          container
-          sx={{
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-          }}
-        >
+        <Grid container>
           {articoliEdit.map((it) => (
             <Grid
               key={`${it.TIPO_TRASFERTA + cfComm.CF_COMM_ID}`}
-              size={{ xs: "auto" }}
-              pr={0.1}
+              size={{ xs: 12, sm: 12, md: 6, lg: 4 }}
+              pr={1}
             >
               <FormSelectExtendedInput<EditArtAnaFormData, ArtAna>
                 name={`${it.TIPO_TRASFERTA}`}
@@ -267,7 +261,7 @@ function Label(props: { artAna?: ArtAna | null }) {
   const { artAna } = props;
   if (artAna?.artCosti?.length) {
     return (
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} pb={1}>
         {artAna.artCosti.map((it, index) => (
           <Fragment key={index}>
             <Typography

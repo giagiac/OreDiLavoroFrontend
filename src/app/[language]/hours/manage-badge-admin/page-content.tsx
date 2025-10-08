@@ -12,11 +12,13 @@ import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { Operatori } from "@/services/api/types/operatori";
 import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
+import { SortEnum } from "@/services/api/types/sort-type";
 import { User } from "@/services/api/types/user";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
@@ -48,7 +50,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/it";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -56,14 +58,7 @@ import imageLogo from "../../../../../public/emotions.png";
 import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
-import {
-  useGetEpsNestjsOrpEffCicliEsecQuery,
-  useGetMeQuery,
-} from "./queries/queries";
-import { useRouter } from "next/navigation";
-import { SortEnum } from "@/services/api/types/sort-type";
-import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
-import { NonNullChain } from "typescript";
+import { useGetMeQuery } from "./queries/queries";
 
 function UserHours() {
   const searchParams = useSearchParams();
@@ -103,7 +98,7 @@ function UserHours() {
     // const initialFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [];
 
     const funFetchUser = async (onUserFetched: (user: User) => void) => {
-      if (COD_OP != null) {
+      if (COD_OP !== null) {
         try {
           const { data, status } = await fetchGetMe({
             COD_OP: String(COD_OP),
@@ -132,7 +127,7 @@ function UserHours() {
       }
     };
     const funFetchData = async (user: User) => {
-      if (dateSelected != null) {
+      if (dateSelected !== null) {
         try {
           const filters: FilterItem<EpsNestjsOrpEffCicliEsec>[] = [
             {
@@ -407,9 +402,9 @@ function UserHours() {
 
   const methods = useForm<EditOperatoreFormData>({
     resolver: yupResolver(validationSchema), // yupResolver(validationSchema),
-    // defaultValues: {
-    //   operatori: operatori,
-    // },
+    defaultValues: {
+      operatori: null,
+    },
   });
 
   const handleDateChange = (value: Dayjs | null) => {

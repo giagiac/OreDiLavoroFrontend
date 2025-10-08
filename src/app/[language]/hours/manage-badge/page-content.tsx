@@ -50,7 +50,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/it";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";

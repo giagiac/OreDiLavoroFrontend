@@ -1,0 +1,1 @@
+../manage/opertore-selected.tsx

@@ -14,6 +14,7 @@ import TargaMezziTable from "../targa-mezzi-table";
 import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import "dayjs/locale/it";
+import { ArtAna } from "@/services/api/types/art-ana";
 dayjs.locale("it");
 
 function FormCreateUser() {
@@ -26,6 +27,20 @@ function FormCreateUser() {
   const DATA_INIZIO_FORMATTED = DATA_INIZIO
     ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
     : "";
+
+  const handleNavigate = (artAna: ArtAna) => {
+    if (window.location.pathname.indexOf("manage-badge") > -1) {
+      router.push(
+        `step2_FuoriSede?COD_ART=${artAna.COD_ART}&KM=${0}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`,
+        { scroll: true }
+      );
+    } else {
+      router.push(
+        `step2_FuoriSede?COD_ART=${artAna.COD_ART}&KM=${0}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`,
+        { scroll: true }
+      );
+    }
+  };
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -52,11 +67,7 @@ function FormCreateUser() {
                 childrenCallBack={(artAna) => (
                   <ButtonTipoTrasferta
                     tipoTrasfertaButton="fuori_sede_button"
-                    onClickAction={async () => {
-                      router.push(
-                        `step2_FuoriSede?COD_ART=${artAna.COD_ART}&KM=${0}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
-                      );
-                    }}
+                    onClickAction={() => handleNavigate(artAna)}
                     icon={<ForwardTwoToneIcon />}
                   />
                 )}

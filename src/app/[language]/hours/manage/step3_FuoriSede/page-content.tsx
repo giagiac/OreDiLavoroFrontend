@@ -35,6 +35,14 @@ function FormCreateUser() {
     ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
     : "";
 
+  const handleNavigate = (url: string) => {
+    if (window.location.pathname.indexOf("manage-badge") > -1) {
+      router.push(url, { scroll: true });
+    } else {
+      router.push(url, { scroll: true });
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
@@ -64,7 +72,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="fuori_sede_andata"
                 onClickAction={() =>
-                  router.push(
+                  handleNavigate(
                     `create/fuori_sede_andata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }
@@ -100,7 +108,7 @@ function FormCreateUser() {
                     <ButtonTipoTrasferta
                       tipoTrasfertaButton="ancora_in_trasferta_0"
                       onClickAction={() =>
-                        router.push(
+                        handleNavigate(
                           `create/ancora_in_trasferta_0?COD_ART=${COD_ART}&KM=0&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
@@ -111,7 +119,7 @@ function FormCreateUser() {
                     <ButtonTipoTrasferta
                       tipoTrasfertaButton="ancora_in_trasferta_10"
                       onClickAction={() =>
-                        router.push(
+                        handleNavigate(
                           `create/ancora_in_trasferta_10?COD_ART=${COD_ART}&KM=10&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
@@ -122,7 +130,7 @@ function FormCreateUser() {
                     <ButtonTipoTrasferta
                       tipoTrasfertaButton="ancora_in_trasferta_20"
                       onClickAction={() =>
-                        router.push(
+                        handleNavigate(
                           `create/ancora_in_trasferta_20?COD_ART=${COD_ART}&KM=20&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
@@ -133,7 +141,7 @@ function FormCreateUser() {
                     <ButtonTipoTrasferta
                       tipoTrasfertaButton="ancora_in_trasferta_30"
                       onClickAction={() =>
-                        router.push(
+                        handleNavigate(
                           `create/ancora_in_trasferta_30?COD_ART=${COD_ART}&KM=30&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
@@ -144,7 +152,7 @@ function FormCreateUser() {
                     <ButtonTipoTrasferta
                       tipoTrasfertaButton="ancora_in_trasferta_40"
                       onClickAction={() =>
-                        router.push(
+                        handleNavigate(
                           `create/ancora_in_trasferta_40?COD_ART=${COD_ART}&KM=40&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                         )
                       }
@@ -158,7 +166,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="fuori_sede_ritorno_in_giornata"
                 onClickAction={() =>
-                  router.push(
+                  handleNavigate(
                     `create/fuori_sede_ritorno_in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }
@@ -170,7 +178,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="fuori_sede_ritorno_dopo_21"
                 onClickAction={() =>
-                  router.push(
+                  handleNavigate(
                     `create/fuori_sede_ritorno_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
                   )
                 }

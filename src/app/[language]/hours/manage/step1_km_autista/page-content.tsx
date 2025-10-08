@@ -16,6 +16,8 @@ import TargaMezziTable from "../targa-mezzi-table";
 import dayjs from "dayjs";
 import "dayjs/locale/it";
 import Typography from "@mui/material/Typography";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { ArtAna } from "@/services/api/types/art-ana";
 dayjs.locale("it");
 
 function FormCreateUser() {
@@ -30,6 +32,29 @@ function FormCreateUser() {
   const DATA_INIZIO_FORMATTED = DATA_INIZIO
     ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
     : "";
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleNavigate = (artAna: ArtAna) => {
+    if (km === "0") {
+      enqueueSnackbar(`Non hai indicato i KM`, {
+        variant: "error",
+      });
+      return;
+    }
+
+    if (window.location.pathname.indexOf("manage-badge") > -1) {
+      router.push(
+        `create/step1_km_autista?COD_ART=${artAna.COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`,
+        { scroll: true }
+      );
+    } else {
+      router.push(
+        `create/step1_km_autista?COD_ART=${artAna.COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`,
+        { scroll: true }
+      );
+    }
+  };
 
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
@@ -68,9 +93,7 @@ function FormCreateUser() {
                   <ButtonTipoTrasferta
                     tipoTrasfertaButton="km_autista_button"
                     onClickAction={async () => {
-                      router.push(
-                        `create/step1_km_autista?COD_ART=${artAna.COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
-                      );
+                      handleNavigate(artAna);
                     }}
                     icon={<ForwardTwoToneIcon />}
                   />

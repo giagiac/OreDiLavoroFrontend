@@ -61,7 +61,7 @@ type CreateFormData = {
 
   // SEZIONE DEDICATA a KM AUTISTA
   COD_ART?: string | null; // ATT.NE non è il COD_ART delle Esecuzioni (da inserire nei componenti)
-  KM?: number | null;
+  KM?: number;
 
   // EXTRA
   NOTE?: string | null;
@@ -435,6 +435,30 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
     : "";
 
+  const hadleReturnToMain = () => {
+    debugger;
+    if (window.location.pathname.indexOf("manage-badge-admin") > -1) {
+      // sono amministatore e torno alla main riposizionando l'utente
+      router.push(
+        `/hours/manage-badge-admin?COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`,
+        {
+          scroll: true,
+        }
+      );
+    } else if (window.location.pathname.indexOf("manage-badge") > -1) {
+      // sono operatore badge e torno alla main senza riposizionare l'utente
+      window.history.pushState({}, "", `${window.location.pathname}`);
+      router.replace(`/hours/manage-badge`, {
+        scroll: true,
+      });
+    } else {
+      window.history.pushState({}, "", `${window.location.pathname}`);
+      router.replace(`/hours/manage`, {
+        scroll: true,
+      });
+    }
+  };
+
   return (
     <>
       <Dialog open={isScannerOpen} onClose={handleCloseScanner} fullWidth>
@@ -481,15 +505,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       <Container maxWidth="xl" sx={{ m: 0, p: 1 }}>
         <Stack direction="row" mb={3} spacing={1}>
           {prepareText !== "In sede" && (
-            <Button
-              onClick={() => {
-                if (window.location.pathname.indexOf("manage-badge") > -1) {
-                  router.push("/hours/manage-badge", { scroll: true });
-                } else {
-                  router.push("/hours/manage", { scroll: true });
-                }
-              }}
-            >
+            <Button onClick={hadleReturnToMain}>
               <HomeTwoToneIcon />
             </Button>
           )}
@@ -502,11 +518,24 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
             startIcon={<ArrowBackTwoToneIcon />}
           />
         </Stack>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container>
           <Grid textAlign="right" size={12}>
             <OperatoreSelected text="inserisci il codice breve dell’ordine di produzione" />
           </Grid>
           <Grid textAlign="right" size={12}>
+            <Stack
+              spacing={0.2}
+              direction="row"
+              justifyContent="flex-end"
+              alignItems={"baseline"}
+            >
+              {KM > 0 && (
+                <>
+                  <Typography variant="h6">{KM}</Typography>
+                  <Typography variant="caption">Km</Typography>
+                </>
+              )}
+            </Stack>
             <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -849,15 +878,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           <Grid container spacing={1}>
             <Grid size={{ xs: 6 }}>
               <Button
-                onClick={() => {
-                  if (window.location.pathname.indexOf("manage-badge") > -1) {
-                    router.push("/hours/manage-badge", { scroll: true });
-                  } else {
-                    router.push("/hours/manage?" + window.location.search, {
-                      scroll: true,
-                    });
-                  }
-                }}
+                onClick={hadleReturnToMain}
                 color="secondary"
                 variant="contained"
                 fullWidth

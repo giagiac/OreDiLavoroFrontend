@@ -12,13 +12,11 @@ import { useScheduleTaskService } from "@/services/api/services/schedule-task";
 import { Cf } from "@/services/api/types/cf";
 import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
-import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { Operatori } from "@/services/api/types/operatori";
 import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
-import { SortEnum } from "@/services/api/types/sort-type";
 import { User } from "@/services/api/types/user";
 import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
@@ -50,7 +48,7 @@ import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en";
 import "dayjs/locale/it";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -58,9 +56,18 @@ import imageLogo from "../../../../../public/emotions.png";
 import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operatori/page-content";
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
-import { useGetMeQuery } from "./queries/queries";
+import {
+  useGetEpsNestjsOrpEffCicliEsecQuery,
+  useGetMeQuery,
+} from "./queries/queries";
+import { useRouter } from "next/navigation";
+import { SortEnum } from "@/services/api/types/sort-type";
+import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import { NonNullChain } from "typescript";
 
 function UserHours() {
+  const searchParams = useSearchParams();
+
   const { user } = useAuth();
 
   const router = useRouter();
@@ -69,41 +76,111 @@ function UserHours() {
 
   const language = useLanguage();
 
-  // Initialize dateSelected from the DATA_INIZIO search param (ISO string like 2025-10-03T22:00:00.000Z)
-  // If DATA_INIZIO is not provided or invalid, default to today
-  const initialDate = dayjs();
-  const [dateSelected, setDateSelected] = useState<Dayjs>(initialDate);
+  const [dateSelected, setDateSelected] = useState<Dayjs>(dayjs());
 
-  // Initialize filter from search params (if provided) so the page loads already filtered
-  const initialFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [];
+  const fetchGetMe = useGetMeQuery();
 
-  const [filter, setFilter] =
-    useState<Array<FilterItem<EpsNestjsOrpEffCicliEsec>>>(initialFilter);
+  const fetchData = useGetEpsNestjsOrpEffCicliEsecService();
 
-  const fetch = useGetEpsNestjsOrpEffCicliEsecService();
   const [data, setData] = useState<EpsNestjsOrpEffCicliEsecsResponse | null>(
     null
   );
   const [index, setIndex] = useState(0);
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { status, data: responseData } = await fetch({
-        filters: filter,
-        page: 0,
-        limit: 0,
-        sort: [{ order: SortEnum.DESC, orderBy: "id" }],
-      });
-      if (status === HTTP_CODES_ENUM.OK) {
-        setData(responseData as EpsNestjsOrpEffCicliEsecsResponse);
+    const COD_OP = searchParams.get("COD_OP");
+    const DATA_INIZIO = searchParams.get("DATA_INIZIO");
+
+    // Initialize dateSelected from the DATA_INIZIO search param (ISO string like 2025-10-03T22:00:00.000Z)
+    // If DATA_INIZIO is not provided or invalid, default to today
+    const dateSelected =
+      DATA_INIZIO && dayjs(DATA_INIZIO).isValid()
+        ? dayjs(DATA_INIZIO)
+        : dayjs();
+    setDateSelected(dateSelected);
+
+    // Initialize filter from search params (if provided) so the page loads already filtered
+    // const initialFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [];
+
+    const funFetchUser = async (onUserFetched: (user: User) => void) => {
+      if (COD_OP != null) {
+        try {
+          const { data, status } = await fetchGetMe({
+            COD_OP: String(COD_OP),
+          });
+          if (status === HTTP_CODES_ENUM.OK) {
+            onUserFetched(data as User);
+          } else {
+            enqueueSnackbar(
+              "Errore nel recupero dei dati su codice operatore!",
+              {
+                variant: "error",
+              }
+            );
+            setUserSelected(null);
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            enqueueSnackbar(error.message, {
+              variant: "error",
+            });
+          }
+          setUserSelected(null);
+        }
       } else {
-        setData(null);
-        enqueueSnackbar("Utente non trovato", { variant: "error" });
+        setUserSelected(null);
       }
     };
-    if (filter.length > 0) {
-      fetchData();
-    }
-  }, [filter, index, fetch]);
+    const funFetchData = async (user: User) => {
+      if (dateSelected != null) {
+        try {
+          const filters: FilterItem<EpsNestjsOrpEffCicliEsec>[] = [
+            {
+              columnName: "DATA_INIZIO",
+              value: dateSelected.toISOString(),
+            },
+            {
+              columnName: "COD_OP",
+              value: user?.COD_OP || "",
+            },
+          ];
+
+          const { status, data } = await fetchData({
+            page: 0,
+            limit: 10,
+            filters,
+            sort: [{ order: SortEnum.DESC, orderBy: "id" }],
+            othersFilters: [],
+          });
+
+          if (status === HTTP_CODES_ENUM.OK) {
+            setData(data);
+            setUserSelected(user);
+            methods.setValue("operatori", {
+              ...user.operatori,
+            } as Operatori);
+          } else {
+            enqueueSnackbar("Errore nel recupero dei dati inseriti!", {
+              variant: "error",
+            });
+            setData(null);
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            enqueueSnackbar(error.message, {
+              variant: "error",
+            });
+          }
+          setData(null);
+        }
+      } else {
+        setData(null);
+      }
+    };
+    funFetchUser((user) => {
+      funFetchData(user);
+    });
+  }, [searchParams, index]);
 
   const result = useMemo(() => {
     const result =
@@ -318,36 +395,6 @@ function UserHours() {
   const { enqueueSnackbar } = useSnackbar();
 
   const [userSelected, setUserSelected] = useState<User | null>();
-  const fetchGetMe = useGetMeQuery();
-
-  useEffect(() => {
-    const fetchUser = async (
-      filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>>
-    ) => {
-      const codOpValue = filter?.find(
-        (it) => it.columnName === "COD_OP"
-      )?.value;
-
-      if (codOpValue) {
-        try {
-          const { data, status } = await fetchGetMe({
-            COD_OP: String(codOpValue),
-          });
-          if (status === HTTP_CODES_ENUM.OK) {
-            setUserSelected(data as User);
-          }
-        } catch (error) {
-          console.log(error);
-          setUserSelected(null);
-        }
-      } else {
-        setUserSelected(null);
-      }
-    };
-    fetchUser(filter);
-  }, [filter]);
-
-  const [operatori] = useState();
 
   const validationSchema: yup.ObjectSchema<EditOperatoreFormData> = yup
     .object()
@@ -360,111 +407,28 @@ function UserHours() {
 
   const methods = useForm<EditOperatoreFormData>({
     resolver: yupResolver(validationSchema), // yupResolver(validationSchema),
-    defaultValues: {
-      operatori: operatori,
-    },
+    // defaultValues: {
+    //   operatori: operatori,
+    // },
   });
 
-  // Keyboard listener for COD_OP input (max 8 chars)
-
-  useEffect(() => {
-    let buffer = "";
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const resetBuffer = () => {
-      buffer = "";
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
-      console.info("Baffer reset");
-    };
-
-    const handleKeyDown = async (e: KeyboardEvent) => {
-      // Ignore if focus is on an input, textarea or contenteditable
-      const active = document.activeElement;
-      if (
-        active &&
-        (active.tagName === "INPUT" ||
-          active.tagName === "TEXTAREA" ||
-          (active as HTMLElement).isContentEditable)
-      ) {
-        return;
-      }
-
-      // Only allow alphanumeric chars (adjust if COD_OP allows other chars)
-      if (/^[0-9]$/.test(e.key)) {
-        buffer += e.key;
-        if (buffer.length > 10) {
-          resetBuffer();
-          buffer += e.key; // start new buffer with current key
-        }
-        // Reset buffer if no key pressed for 1.5s
-        if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(resetBuffer, 1000);
-
-        if (buffer.length === 10) {
-          console.log("COD_OP -> ", buffer);
-          // Update filter and route
-          const filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
-            {
-              columnName: "COD_OP",
-              value: buffer,
-            },
-            {
-              columnName: "DATA_INIZIO",
-              value: dateSelected.format("YYYY-MM-DD"),
-            },
-          ];
-          setFilter(filter);
-          playConfirmationBeep();
-          resetBuffer();
-        }
-      } else {
-        resetBuffer();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      resetBuffer();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function playConfirmationBeep() {
-    const AudioCtx = window.AudioContext || window.AudioContext;
-    const ctx = new AudioCtx();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    oscillator.type = "sine";
-    oscillator.frequency.value = 880; // Hz, a pleasant beep
-    gain.gain.value = 1.0; // volume
-
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator.start();
-    oscillator.stop(ctx.currentTime + 0.15); // 150ms beep
-
-    oscillator.onended = () => ctx.close();
-  }
-
-  const handleRequestFilter = (value: Dayjs | null) => {
+  const handleDateChange = (value: Dayjs | null) => {
     if (value !== null) {
-      setDateSelected(value);
-      setFilter([
-        {
-          columnName: "DATA_INIZIO",
-          value: value.format("YYYY-MM-DD"),
-        },
-        {
-          columnName: "COD_OP",
-          value: userSelected?.COD_OP || "",
-        },
-      ]);
+      const COD_OP = searchParams.get("COD_OP");
+      router?.push(
+        `${window.location.pathname}?COD_OP=${COD_OP}&DATA_INIZIO=${value.toISOString() || ""}`
+      );
+    }
+  };
+
+  const handleOperatoreChange = (operatore: Operatori | null) => {
+    const DATA_INIZIO = searchParams.get("DATA_INIZIO");
+    if (operatore) {
+      router?.push(
+        `${window.location.pathname}?COD_OP=${operatore?.COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
+      );
+    } else {
+      router?.push(`${window.location.pathname}?DATA_INIZIO=${DATA_INIZIO}`);
     }
   };
 
@@ -485,22 +449,7 @@ function UserHours() {
           <EditOperatori
             join={true}
             onSubmit={function (operatori: Operatori | null): void {
-              if (operatori?.user) {
-                const filter: Array<FilterItem<EpsNestjsOrpEffCicliEsec>> = [
-                  {
-                    columnName: "COD_OP",
-                    value: operatori.COD_OP,
-                  },
-                  {
-                    columnName: "DATA_INIZIO",
-                    value: dateSelected.format("YYYY-MM-DD"),
-                  },
-                ];
-                setFilter(filter);
-              } else {
-                setFilter([]);
-                setUserSelected(null);
-              }
+              handleOperatoreChange(operatori);
             }}
           />
         </FormProvider>
@@ -519,6 +468,12 @@ function UserHours() {
                 variant="subtitle2"
               >{`${userSelected?.lastName} ${userSelected?.firstName}`}</Typography>
             </Grid>
+            <Grid size={{ xs: 12 }} mb={1}>
+              <Typography
+                textAlign="right"
+                variant="subtitle2"
+              >{`${userSelected?.email}`}</Typography>
+            </Grid>
             <Grid size={{ xs: 12 }}>
               <Stack
                 textAlign="right"
@@ -535,7 +490,7 @@ function UserHours() {
                       format="ddd DD MMM YYYY"
                       value={dateSelected}
                       onChange={(newValue) => {
-                        handleRequestFilter(newValue);
+                        handleDateChange(newValue);
                       }}
                       maxDate={dayjs()}
                     />
@@ -558,9 +513,9 @@ function UserHours() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  setFilter([]);
-                  setUserSelected(null);
-                  router.replace(window.location.pathname);
+                  // setFilter([]);
+                  // setUserSelected(null);
+                  router?.replace(window.location.pathname);
                 }}
                 size="large"
               >
@@ -632,8 +587,9 @@ function UserHours() {
                   tipoTrasfertaButton="km_autista_button"
                   label="Km Autista"
                   onClickAction={() =>
-                    router.push(
-                      `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`
+                    router?.push(
+                      `${window.location.pathname}/step1_km_autista?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`,
+                      { scroll: true }
                     )
                   }
                   endIcon={<AirportShuttleTwoToneIcon />}
@@ -644,8 +600,9 @@ function UserHours() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="fuori_sede_button"
                 onClickAction={() =>
-                  router.push(
-                    `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`
+                  router?.push(
+                    `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`,
+                    { scroll: true }
                   )
                 }
                 endIcon={<FlightTakeoffTwoToneIcon />}
@@ -657,11 +614,9 @@ function UserHours() {
                 tipoTrasfertaButton="in_sede_button"
                 label="In Sede"
                 onClickAction={() => {
-                  router.push(
+                  router?.push(
                     `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${dateSelected?.toISOString() || ""}`,
-                    {
-                      scroll: true,
-                    }
+                    { scroll: true }
                   );
                 }}
                 endIcon={<FactoryTwoToneIcon />}
@@ -675,5 +630,5 @@ function UserHours() {
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.BADGE],
+  roles: [RoleEnum.ADMIN],
 });

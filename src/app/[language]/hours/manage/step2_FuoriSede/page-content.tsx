@@ -31,6 +31,14 @@ function FormCreateUser() {
     ? dayjs(DATA_INIZIO).format("ddd DD MMM YY")
     : "";
 
+  const handleNavigate = (url: string) => {
+    if (window.location.pathname.indexOf("manage-badge") > -1) {
+      router.push(url, { scroll: true });
+    } else {
+      router.push(url, { scroll: true });
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ m: 0, p: 1 }}>
       <Grid container>
@@ -54,11 +62,7 @@ function FormCreateUser() {
             <Grid size={{ xs: 12 }}>
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="in_giornata"
-                onClickAction={() =>
-                  router.push(
-                    `create/in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
-                  )
-                }
+                onClickAction={() => handleNavigate(`create/in_giornata?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`)}
                 label="In giornata"
                 endIcon={<WbSunnyTwoToneIcon />}
               />
@@ -67,9 +71,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="in_giornata_dopo_21"
                 onClickAction={() =>
-                  router.push(
-                    `create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
-                  )
+                  handleNavigate(`create/in_giornata_dopo_21?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`)
                 }
                 label="In giornata dopo le 21:00"
                 endIcon={<NightsStayTwoToneIcon />}
@@ -79,9 +81,7 @@ function FormCreateUser() {
               <ButtonTipoTrasferta
                 tipoTrasfertaButton="not_defined"
                 onClickAction={() =>
-                  router.push(
-                    `step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`
-                  )
+                  handleNavigate(`step3_FuoriSede?COD_ART=${COD_ART}&KM=${km}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}`)
                 }
                 label="Pernotto fuori sede"
                 endIcon={<HotelTwoToneIcon />}

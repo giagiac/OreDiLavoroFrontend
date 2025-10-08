@@ -135,9 +135,7 @@ function ResponsiveAppBar() {
                   </MenuItem>
                 )}
               {!!user?.role &&
-                [RoleEnum.BADGE, RoleEnum.ADMIN].includes(
-                  Number(user?.role?.id)
-                ) && [
+                [RoleEnum.BADGE].includes(Number(user?.role?.id)) && [
                   <MenuItem
                     key="badge"
                     onClick={handleCloseNavMenu}
@@ -145,6 +143,18 @@ function ResponsiveAppBar() {
                     href="/hours/manage-badge"
                   >
                     <Typography textAlign="center">{"Badge"}</Typography>
+                  </MenuItem>,
+                ]}
+
+              {!!user?.role &&
+                [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && [
+                  <MenuItem
+                    key="badge"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/hours/manage-badge-admin"
+                  >
+                    <Typography textAlign="center">{"Badge Admin"}</Typography>
                   </MenuItem>,
                 ]}
 
@@ -264,9 +274,7 @@ function ResponsiveAppBar() {
                 </Button>
               )}
             {!!user?.role &&
-              [RoleEnum.BADGE, RoleEnum.ADMIN].includes(
-                Number(user?.role?.id)
-              ) && (
+              [RoleEnum.BADGE].includes(Number(user?.role?.id)) && (
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "inherit", display: "block" }}
@@ -274,6 +282,17 @@ function ResponsiveAppBar() {
                   href="/hours/manage-badge"
                 >
                   Badge
+                </Button>
+              )}
+            {!!user?.role &&
+              [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "inherit", display: "block" }}
+                  component={Link}
+                  href="/hours/manage-badge-admin"
+                >
+                  Badge Admin
                 </Button>
               )}
             {!!user?.role &&

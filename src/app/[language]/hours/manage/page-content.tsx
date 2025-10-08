@@ -52,9 +52,10 @@ dayjs.locale("it");
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 
 function UserHours() {
-  const { user } = useAuth();
-
   const searchParams = useSearchParams();
+  
+  const { user } = useAuth();
+  
   const router = useRouter();
 
   const [{ order, orderBy }] = useState<{

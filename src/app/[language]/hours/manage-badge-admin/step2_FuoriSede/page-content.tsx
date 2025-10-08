@@ -1,0 +1,1 @@
+../../manage/step2_FuoriSede/page-content.tsx

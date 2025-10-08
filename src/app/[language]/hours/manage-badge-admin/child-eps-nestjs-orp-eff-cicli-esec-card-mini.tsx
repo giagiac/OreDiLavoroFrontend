@@ -1,0 +1,1 @@
+../manage/child-eps-nestjs-orp-eff-cicli-esec-card-mini.tsx

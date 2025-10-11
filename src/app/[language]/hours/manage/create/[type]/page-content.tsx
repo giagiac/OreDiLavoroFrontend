@@ -3,7 +3,7 @@
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
-import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
@@ -106,9 +106,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const COD_ART = searchParams.get("COD_ART");
   const KM: number = parseFloat(searchParams.get("KM") || "0");
   // const id = searchParams.get("id"); //nope this - passaggio a salvataggio locale
-  const [id, setId] = useState<string | null>(() => null);
+  // const [id, setId] = useState<string | null>(() => null);
   const COD_OP = searchParams.get("COD_OP");
   const DATA_INIZIO = searchParams.get("DATA_INIZIO");
+  const ID = searchParams.get("ID"); // solo per sezione KM_AUTISTA che è l'unico che può creare figli (in questo caso si segue una logica diversa basata solo sull'ID)
 
   let prepareText = "In sede";
 
@@ -230,7 +231,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
     { columnName: "CODICE_BREVE", value: codiceBreveValue },
   ]);
-  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
 
   const [data, setData] = useState<OrpEffCicli[] | null>(null);
 
@@ -242,7 +242,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         limit: 10,
         filters,
         sort: undefined,
-        othersFilters,
+        othersFilters: [],
       });
 
       if (status === HTTP_CODES_ENUM.OK) {
@@ -272,7 +272,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const [isDialogOpen, setDialogOpen] = useState<string | null>(null);
 
   const handleDialogClose = () => {
-    debugger;
     setDialogOpen(null);
     setTempoOreOperatore(TEMPO_OPERATORE_DEFAULT);
 
@@ -283,6 +282,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     });
 
     setData(null);
+    setCodiceBreve("");
+    setEnterPressed(false);
 
     const wasTextFieldFocused =
       localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) === "true";
@@ -341,7 +342,12 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         variant: "success",
       });
       if (tipoTrasferta === "step1_km_autista") {
-        setId(data.id);
+        router.replace(
+          `${window.location.pathname}?COD_ART=${COD_ART}&KM=${KM}&COD_OP=${COD_OP}&DATA_INIZIO=${DATA_INIZIO}&ID=${data.id}`,
+          {
+            scroll: true,
+          }
+        );
         // Open confirmation dialog
         setDialogOpen(
           "La creazione è avvenuta con successo. Vuoi aggiungere altre COMMESSE?"
@@ -358,7 +364,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const fetchPostEpsNestjsOrpEffCicliEsecChild =
     usePostEpsNestjsOrpEffCicliEsecChildService();
 
-  const onSubmitChild = async () => {
+  const onSubmitChild = async (id: string) => {
     if (COD_ART === null) {
       enqueueSnackbar(`Non hai selezionato un articolo`, {
         variant: "error",
@@ -428,6 +434,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       setDialogOpen(
         "La creazione è avvenuta con successo. Vuoi aggiungere altre commesse?"
       );
+      setEnterPressed(false);
     }
   };
 
@@ -436,7 +443,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     : "";
 
   const hadleReturnToMain = () => {
-    debugger;
     if (window.location.pathname.indexOf("manage-badge-admin") > -1) {
       // sono amministatore e torno alla main riposizionando l'utente
       router.push(
@@ -656,9 +662,17 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   </Typography>
                 </Grid>
               )}
-            {tipoTrasferta === "step1_km_autista" && id !== null && (
-              <Children key={Number(id) + Math.random()} id={Number(id)} />
-            )}
+            {tipoTrasferta === "step1_km_autista" &&
+              ID !== null &&
+              COD_OP !== null &&
+              DATA_INIZIO !== null && (
+                <Children
+                  key={Number(ID) + Math.random()}
+                  id={Number(ID)}
+                  COD_OP={COD_OP}
+                  DATA_INIZIO={DATA_INIZIO}
+                />
+              )}
             {/* DETTAGLIO COMMESSE - possono essere liste - ma improbabile */}
             {result.length > 0 &&
               result[0].orpEff !== null &&
@@ -850,8 +864,8 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         onClick={async () => {
                           // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
                           if (tipoTrasferta === "step1_km_autista") {
-                            if (id) {
-                              await onSubmitChild();
+                            if (ID) {
+                              await onSubmitChild(ID);
                             } else {
                               await onSubmit();
                             }

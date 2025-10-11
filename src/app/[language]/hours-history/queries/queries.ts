@@ -77,6 +77,8 @@ export const useGetEpsNestjsOrpEffCicliEsecQuery = ({
           targetDateInizio: data.targetDateInizio,
           dateInizio: data.dateInizio,
         };
+      } else {
+        // TODO: manca la gestione degli errori!!! GLOBALE
       }
     },
     getNextPageParam: (lastPage) => {

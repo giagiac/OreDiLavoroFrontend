@@ -20,7 +20,7 @@ interface Props {
   renderOrdCliTrasDialog: (
     linkOrpOrd: Array<LinkOrpOrd>
   ) => React.ReactNode | null;
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
   onSendHG?: (id: string) => void;
 }
 
@@ -61,12 +61,24 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
                 epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !==
                   null ? (
-                  <Icon>
-                    <LockTwoToneIcon />
-                  </Icon>
+                  // l'esecuzione è stata già processata e non si può fare nessuna modifica (in futuro l'operatore potrà cancellare... liberando il lavoro su HG)
+                  <Stack
+                    direction="row"
+                    textAlign="center"
+                    spacing={1}
+                    alignItems="center"
+                  >
+                    <Typography variant="caption">
+                      {epsNestjsOrpEffCicliEsec?.id}
+                    </Typography>
+                    <Icon>
+                      <LockTwoToneIcon />
+                    </Icon>
+                  </Stack>
                 ) : (
                   <Stack direction="row" textAlign="center" spacing={1}>
-                    {user?.role?.id === RoleEnum.ADMIN && (
+                    {user?.role?.id === RoleEnum.ADMIN && onSendHG && (
+                      // solo gli amministratori possono inviare il lavoro ad HG
                       <Button
                         sx={{
                           backgroundColor: theme.palette.augmentColor({
@@ -81,9 +93,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                           },
                         }}
                         onClick={() => {
-                          if (onSendHG) {
-                            onSendHG(epsNestjsOrpEffCicliEsec?.id);
-                          }
+                          onSendHG(epsNestjsOrpEffCicliEsec?.id);
                         }}
                         variant="contained"
                         endIcon={<FileUploadTwoToneIcon />}
@@ -91,27 +101,45 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                         HG
                       </Button>
                     )}
-                    <Button
-                      sx={{
-                        backgroundColor: theme.palette.augmentColor({
-                          color: {
-                            main: color.main,
+                    {onDelete !== undefined ? (
+                      // visualizzazione per operatore e admin in data odierna (l'operatore sulla data odienna può ancora cancellare roba)
+                      <Button
+                        sx={{
+                          backgroundColor: theme.palette.augmentColor({
+                            color: {
+                              main: color.main,
+                            },
+                            mainShade: 900,
+                          }).main,
+                          color: theme.palette.getContrastText(color.main),
+                          "&:hover": {
+                            backgroundColor: color.hover,
                           },
-                          mainShade: 900,
-                        }).main,
-                        color: theme.palette.getContrastText(color.main),
-                        "&:hover": {
-                          backgroundColor: color.hover,
-                        },
-                      }}
-                      onClick={() => {
-                        onDelete(epsNestjsOrpEffCicliEsec?.id);
-                      }}
-                      variant="contained"
-                      endIcon={<DeleteForeverTwoTone />}
-                    >
-                      {epsNestjsOrpEffCicliEsec?.id}
-                    </Button>
+                        }}
+                        onClick={() => {
+                          onDelete(epsNestjsOrpEffCicliEsec?.id);
+                        }}
+                        variant="contained"
+                        endIcon={<DeleteForeverTwoTone />}
+                      >
+                        {epsNestjsOrpEffCicliEsec?.id}
+                      </Button>
+                    ) : (
+                      // visualizzazione specifica per storico operatore (non è ancora stato processato da HG ma lui nel passato non può andarsi a cancellare roba)
+                      <Stack
+                        direction="row"
+                        textAlign="center"
+                        spacing={1}
+                        alignItems="center"
+                      >
+                        <Typography variant="caption">
+                          {epsNestjsOrpEffCicliEsec?.id}
+                        </Typography>
+                        <Icon>
+                          <LockTwoToneIcon />
+                        </Icon>
+                      </Stack>
+                    )}
                   </Stack>
                 )}
               </TipoTrasfertaComponent>
@@ -168,9 +196,19 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 <TipoTrasfertaComponent tipotrasferta={child.TIPO_TRASFERTA}>
                   {child.HYPSERV_REQ2_COD_CHIAVE !== null ||
                   child.APP_REQ3_HYPSERV_COD_CHIAVE !== null ? (
-                    <Icon>
-                      <LockTwoToneIcon />
-                    </Icon>
+                    <>
+                      <Icon>
+                        <LockTwoToneIcon />
+                      </Icon>
+                      <Stack direction="column" textAlign="center">
+                        <Typography variant="caption">
+                          {child?.id ?? ""}
+                        </Typography>
+                        <Typography variant="caption">
+                          [{child?.idfk}]
+                        </Typography>
+                      </Stack>
+                    </>
                   ) : (
                     <Stack direction="column" textAlign="center">
                       <Typography variant="caption">

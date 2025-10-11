@@ -1,43 +1,34 @@
 "use client";
 
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
-import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import { SortEnum } from "@/services/api/types/sort-type";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import Grid from "@mui/material/Grid2";
 import Paper from "@mui/material/Paper";
 import { useTheme } from "@mui/material/styles";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ChildEpsNestjsOrpEffCicliEsecCardMini } from "../../child-eps-nestjs-orp-eff-cicli-esec-card-mini";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "../../queries/queries";
 
-type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
-
 interface Props {
   id: number;
+  COD_OP: string;
+  DATA_INIZIO: string;
 }
 
-function Children({ id }: Props) {
-  const searchParams = useSearchParams();
-  const COD_OP = searchParams.get("COD_OP") || "";
-
-  // FILTERS
-  const [{ order, orderBy }] = useState<{
-    order: SortEnum;
-    orderBy: EpsNestjsOrpEffCicliEsecKeys;
-  }>({ order: SortEnum.ASC, orderBy: "id" });
-
-  const [filters] = useState<Array<FilterItem<EpsNestjsOrpEffCicliEsec>>>([
-    { columnName: "id", value: id },
-    { columnName: "COD_OP", value: COD_OP },
-  ]);
-  const [othersFilters] = useState<Array<OthersFiltersItem>>([]);
+function Children({ id, COD_OP, DATA_INIZIO }: Props) {
+  // const searchParams = useSearchParams();
+  // const COD_OP = searchParams.get("COD_OP") || "";
+  // const ID = searchParams.get("ID") || "";
 
   const { data } = useGetEpsNestjsOrpEffCicliEsecQuery({
-    sort: { order, orderBy },
-    filters,
-    othersFilters,
+    sort: { order: SortEnum.ASC, orderBy: "id" },
+    filters: [
+      { columnName: "id", value: id },
+      { columnName: "COD_OP", value: COD_OP },
+      { columnName: "DATA_INIZIO", value: DATA_INIZIO },
+    ],
+    othersFilters: [],
   });
 
   const result = useMemo(() => {
@@ -50,10 +41,6 @@ function Children({ id }: Props) {
   }, [data]);
 
   const theme = useTheme();
-
-  if (!data) {
-    return null;
-  }
 
   return (
     <Grid

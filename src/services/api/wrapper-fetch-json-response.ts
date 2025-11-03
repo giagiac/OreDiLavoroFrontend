@@ -4,18 +4,21 @@ import HTTP_CODES_ENUM from "./types/http-codes";
 async function wrapperFetchJsonResponse<T>(
   response: Response
 ): Promise<FetchJsonResponse<T>> {
-  const status = response.status as FetchJsonResponse<T>["status"];
+  if (response?.status != null) {
+    const status = response.status as FetchJsonResponse<T>["status"];
+
+    if (status === HTTP_CODES_ENUM.OK || status === HTTP_CODES_ENUM.CREATED) {
+      const data = await response.json();
+      return { status, data } as FetchJsonResponse<T>;
+    }
+
+    return { status, data: undefined } as FetchJsonResponse<T>;
+  }
+
   return {
-    status,
-    data: [
-      HTTP_CODES_ENUM.NO_CONTENT,
-      HTTP_CODES_ENUM.SERVICE_UNAVAILABLE,
-      HTTP_CODES_ENUM.INTERNAL_SERVER_ERROR,
-      HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY,
-    ].includes(status)
-      ? undefined
-      : await response.json(),
-  };
+    status: HTTP_CODES_ENUM.NO_CONTENT,
+    data: undefined,
+  } as FetchJsonResponse<T>;
 }
 
 export default wrapperFetchJsonResponse;

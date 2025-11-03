@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { API_URL } from "../config";
 import { EpsNestjsOrpEffCicliEsec } from "../types/eps-nestjs-orp-eff-cicli-esec";
+import { EpsNestjsOrpEffCicliEsecChild } from "../types/eps-nestjs-orp-eff-cicli-esec-child";
 import { FilterItem, OthersFiltersItem } from "../types/filter";
 import { InfinityPaginationType } from "../types/infinity-pagination";
 import { SortEnum } from "../types/sort-type";
@@ -142,6 +143,19 @@ export type EpsNestjsOrpEffCicliEsecPostRequest = {
   NOTE?: string | null;
 };
 
+export type EpsNestjsOrpEffCicliEsecPatchRequest = {
+  id: EpsNestjsOrpEffCicliEsec["id"];
+  idfk?: EpsNestjsOrpEffCicliEsecChild["idfk"];
+  COD_OP: string;
+  TEMPO_OPERATORE?: string;
+  DATA_INIZIO?: string;
+  DATA_FINE?: string;
+
+  HYPSERV_REQ2_COD_CHIAVE_DELETED?: number | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: number | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: number | null;
+};
+
 export type EpsNestjsOrpEffCicliEsecPostResponse = EpsNestjsOrpEffCicliEsec;
 
 export function usePostEpsNestjsOrpEffCicliEsecService() {
@@ -157,6 +171,45 @@ export function usePostEpsNestjsOrpEffCicliEsecService() {
         body: JSON.stringify(data),
         ...requestConfig,
       }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecPostResponse>);
+    },
+    [fetch]
+  );
+}
+
+export function usePatchEpsNestjsOrpEffCicliEsecService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecPatchRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(`${API_URL}/v1/eps-nestjs-orp-eff-cicli-esecs/${data.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        ...requestConfig,
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecPostResponse>);
+    },
+    [fetch]
+  );
+}
+
+export function usePatchEpsNestjsOrpEffCicliEsecChildService() {
+  const fetch = useFetch();
+
+  return useCallback(
+    (
+      data: EpsNestjsOrpEffCicliEsecPatchRequest,
+      requestConfig?: RequestConfigType
+    ) => {
+      return fetch(
+        `${API_URL}/v1/eps-nestjs-orp-eff-cicli-esec-children/${data.id}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(data),
+          ...requestConfig,
+        }
+      ).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecPostResponse>);
     },
     [fetch]
   );
@@ -193,7 +246,12 @@ export function useGetEpsNestjsOrpEffCicliEsecOperatoreService() {
       return fetch(requestUrl, {
         method: "GET",
         ...requestConfig,
-      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
+      })
+        .then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>)
+        .catch((error) => {
+          debugger;
+          throw error;
+        });
     },
     [fetch]
   );

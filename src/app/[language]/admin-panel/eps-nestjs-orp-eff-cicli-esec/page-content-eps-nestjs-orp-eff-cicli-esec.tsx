@@ -167,7 +167,7 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                             >
                               {epsNestjsOrpEffCicliEsec?.HYPSERV_REQ2_COD_CHIAVE !==
                                 null ||
-                              epsNestjsOrpEffCicliEsec?.APP_REQ3_HYPSERV_COD_CHIAVE !==
+                              epsNestjsOrpEffCicliEsec?.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !==
                                 null ? (
                                 <Icon>
                                   <LockTwoToneIcon />

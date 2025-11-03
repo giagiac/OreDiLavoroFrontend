@@ -251,7 +251,7 @@ function Users() {
     if (searchParamsSort) {
       return JSON.parse(searchParamsSort);
     }
-    return { order: SortEnum.DESC, orderBy: "id" };
+    return { order: SortEnum.ASC, orderBy: "lastName" };
   });
 
   const handleRequestSort = (
@@ -330,7 +330,7 @@ function Users() {
             <TableHead>
               <TableRow>
                 <TableCell style={{ width: 50 }}></TableCell>
-                <TableSortCellWrapper
+                {/* <TableSortCellWrapper
                   width={100}
                   orderBy={orderBy}
                   order={order}
@@ -338,10 +338,25 @@ function Users() {
                   handleRequestSort={handleRequestSort}
                 >
                   {tUsers("admin-panel-users:table.column1")}
+                </TableSortCellWrapper> */}
+                <TableSortCellWrapper
+                  width={50}
+                  orderBy={orderBy}
+                  order={order}
+                  column="lastName"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {"Cognome"}
                 </TableSortCellWrapper>
-                <TableCell style={{ width: 200 }}>
-                  {tUsers("admin-panel-users:table.column2")}
-                </TableCell>
+                <TableSortCellWrapper
+                  width={50}
+                  orderBy={orderBy}
+                  order={order}
+                  column="firstName"
+                  handleRequestSort={handleRequestSort}
+                >
+                  {"Nome"}
+                </TableSortCellWrapper>
                 <TableSortCellWrapper
                   orderBy={orderBy}
                   order={order}
@@ -378,9 +393,12 @@ function Users() {
                         src={user?.photo?.path}
                       />
                     </TableCell>
-                    <TableCell style={{ width: 100 }}>{user?.id}</TableCell>
+                    {/* <TableCell style={{ width: 100 }}>{user?.id}</TableCell> */}
                     <TableCell style={{ width: 200 }}>
-                      {user?.firstName} {user?.lastName}
+                      {user?.lastName}
+                    </TableCell>
+                    <TableCell style={{ width: 200 }}>
+                      {user?.firstName}
                     </TableCell>
                     <TableCell>{user?.email}</TableCell>
                     <TableCell style={{ width: 80 }}>
@@ -400,13 +418,15 @@ function Users() {
               })}
             </TableBody>
           </Table>
-          <Grid mt={2} textAlign={"center"}>
-            <Grid>
-              <Button variant="contained" onClick={() => handleScroll()}>
-                NEXT
-              </Button>
+          {hasNextPage && result.length > 0 && (
+            <Grid mt={2} textAlign={"center"}>
+              <Grid>
+                <Button variant="contained" onClick={() => handleScroll()}>
+                  NEXT
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </Grid>
     </Container>

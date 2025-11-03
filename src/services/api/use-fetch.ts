@@ -5,9 +5,12 @@ import { getTokensInfo, setTokensInfo } from "../auth/auth-tokens-info";
 import useLanguage from "../i18n/use-language";
 import { AUTH_REFRESH_URL } from "./config";
 import { FetchInitType, FetchInputType } from "./types/fetch-params";
+import { useSnackbar } from "../../hooks/use-snackbar";
 
 function useFetch() {
   const language = useLanguage();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   return useCallback(
     async (input: FetchInputType, init?: FetchInitType) => {
@@ -60,7 +63,37 @@ function useFetch() {
           ...headers,
           ...init?.headers,
         },
-      });
+      })
+        .catch((response) => {
+          return Promise.resolve({
+            success: false,
+            error: {
+              status: response.status,
+              message: `Errore HTTP: ${response.statusText || "Errore sconosciuto"}`,
+            },
+          } as any);
+        })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data: any) => {
+              if (data?.errors) {
+                (Object.keys(data.errors) as Array<keyof any>).forEach(
+                  (key) => {
+                    enqueueSnackbar(`${key.toString()} - ${data.errors[key]}`, {
+                      variant: "error",
+                    });
+                  }
+                );
+              } else {
+                const message = `Errore: ${response.status} Message: ${data.message || "Errore sconosciuto"}`;
+                enqueueSnackbar(message, {
+                  variant: "error",
+                });
+              }
+            });
+          }
+          return response;
+        });
     },
     [language]
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import ArticoliCosti from "./page-content-cf";
+import GestioneOreOperatori from "./page-content-eps-nestjs-orp-eff-cicli-esec-failed";
 
 // type Props = {
 //   params: Promise<{ language: string }>;
@@ -13,10 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
   // );
 
   return {
-    title: "Costi Operatori",
+    title: "Gestione Ore Operatori Fallite",
   };
 }
 
 export default function Page() {
-  return <ArticoliCosti />;
+  return <GestioneOreOperatori />;
 }

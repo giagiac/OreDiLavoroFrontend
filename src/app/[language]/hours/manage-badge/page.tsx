@@ -14,7 +14,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   );
 
   return {
-    title: t("title"),
+    title: "Badge Admin",
   };
 }
 

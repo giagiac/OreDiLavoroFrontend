@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // );
 
   return {
-    title: "Articoli Costi",
+    title: "Gestione Ore Operatori",
   };
 }
 

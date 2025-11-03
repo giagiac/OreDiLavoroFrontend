@@ -17,4 +17,7 @@ export type OrpEffCicli = {
   linkOrpOrd?: Array<LinkOrpOrd> | null;
   orpEffCicliEsec?: OrpEffCicliEsec | null;
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsec | null;
+
+  orpEffCicliPadre?: OrpEffCicli;
+  gerarchiaDocumenti?: [{ DOC_ID: string }];
 };

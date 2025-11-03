@@ -17,7 +17,7 @@ import { useGetTargaMezziQuery } from "../../admin-panel/targa-mezzi/queries/que
 
 export const NO_TARGA_MEZZI_SELECTED = "NO_TARGA_MEZZI_SELECTED";
 
-const AnelloGiallo = () => {
+export const AnelloGiallo = () => {
   const theme = useTheme();
   return (
     <div
@@ -43,7 +43,7 @@ const AnelloGiallo = () => {
   );
 };
 
-const StelleEuropee = () => {
+export const StelleEuropee = () => {
   const numStars = 8; // Numero di stelle
   const radius = 12; // Raggio del cerchio
   const starSize = 8; // Dimensione delle stelle

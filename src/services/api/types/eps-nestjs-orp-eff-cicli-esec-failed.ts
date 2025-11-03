@@ -1,13 +1,12 @@
 import Decimal from "decimal.js";
-import { TipoTrasferta } from "./eps-nestjs-orp-eff-cicli-esec";
-import { ArtAna } from "./art-ana";
 import { Operatori } from "./operatori";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
+import { ArtAna } from "./art-ana";
+import { TipoTrasferta } from "./eps-nestjs-orp-eff-cicli-esec";
 
-export type EpsNestjsOrpEffCicliEsecChild = {
+export type EpsNestjsOrpEffCicliEsecFailed = {
   id: string;
-  idfk: string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -26,10 +25,11 @@ export type EpsNestjsOrpEffCicliEsecChild = {
   NUM_RIGA?: number | null;
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
-  TIPO_TRASFERTA: TipoTrasferta;
   HYPSERV_REQ2_COD_CHIAVE: string | null;
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM?: string | null;
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA?: string | null;
+
+  TIPO_TRASFERTA: TipoTrasferta
 
   HYPSERV_REQ2_COD_CHIAVE_DELETED?: number | null;
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: number | null;

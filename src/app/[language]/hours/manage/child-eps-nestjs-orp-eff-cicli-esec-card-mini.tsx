@@ -1,3 +1,4 @@
+import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import TipoTrasfertaComponent from "@/components/tipo-trasferta";
 import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -5,6 +6,7 @@ import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-ef
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Dialog, DialogTitle, DialogContent, Button, useMediaQuery } from "@mui/material";
 
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
@@ -13,14 +15,16 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props {
   epsNestjsOrpEffCicliEsec: EpsNestjsOrpEffCicliEsec;
+  onUpdate: (id: string, TEMPO_OPERATORE: string | null) => Promise<boolean>;
 }
 
 export function ChildEpsNestjsOrpEffCicliEsecCardMini({
   epsNestjsOrpEffCicliEsec,
+  onUpdate,
 }: Props) {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [childContentVisible, setChildContentVisible] = useState<{
@@ -39,6 +43,14 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
   };
 
   const theme = useTheme();
+
+  const [editOpen, setEditOpen] = useState<string | null>(null);
+
+  const [tempoOreOperatore, setTempoOreOperatore] = useState<string | null>(
+    null
+  );
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const color =
     theme.palette.mode === "dark"
@@ -63,7 +75,8 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
             >
               {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
-              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE !== null ? (
+              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !==
+                null ? (
                 <Icon sx={{ fontSize: "1rem" }}>
                   {" "}
                   {/* Scaled down icon size */}
@@ -79,13 +92,42 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
             </TipoTrasfertaComponent>
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <Typography variant="body2">
-              {" "}
-              {/* Scaled down from body1 */}
-              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.map(
-                (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-              )}
-            </Typography>
+            {(epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.length ?? 0) >
+            0 ? (
+              <Fragment>
+                <Typography>
+                  {
+                    epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.[0]
+                      ?.ordCliRighe?.cf.RAG_SOC_CF
+                  }
+                </Typography>
+                <Typography>
+                  {
+                    epsNestjsOrpEffCicliEsec?.orpEffCicli?.linkOrpOrd?.[0]
+                      ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                  }
+                </Typography>
+              </Fragment>
+            ) : (
+              // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
+              (epsNestjsOrpEffCicliEsec?.orpEffCicliPadre?.linkOrpOrd?.length ??
+                0) > 0 && (
+                <Fragment>
+                  <Typography>
+                    {
+                      epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
+                        ?.linkOrpOrd?.[0]?.ordCliRighe?.cf.RAG_SOC_CF
+                    }
+                  </Typography>
+                  <Typography>
+                    {
+                      epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
+                        ?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                    }
+                  </Typography>
+                </Fragment>
+              )
+            )}
           </Grid>
           <Grid size={{ xs: 12 }} container alignItems="center" spacing={1}>
             <Grid size={{ xs: 10 }}>
@@ -153,13 +195,40 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               </TipoTrasfertaComponent>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Typography variant="body2">
-                {" "}
-                {/* Scaled down from body1 */}
-                {child?.orpEffCicli?.linkOrpOrd?.map(
-                  (it) => it.ordCliRighe?.cf.RAG_SOC_CF
-                )}
-              </Typography>
+              {(child?.orpEffCicli?.linkOrpOrd?.length ?? 0) > 0 ? (
+                <Fragment>
+                  <Typography>
+                    {
+                      child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                        .RAG_SOC_CF
+                    }
+                  </Typography>
+                  <Typography>
+                    {
+                      child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
+                        .cfComm?.DES_SEDE
+                    }
+                  </Typography>
+                </Fragment>
+              ) : (
+                // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
+                (child?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) > 0 && (
+                  <Fragment>
+                    <Typography>
+                      {
+                        child?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe
+                          ?.cf.RAG_SOC_CF
+                      }
+                    </Typography>
+                    <Typography>
+                      {
+                        child?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe
+                          ?.ordCli.cfComm?.DES_SEDE
+                      }
+                    </Typography>
+                  </Fragment>
+                )
+              )}
             </Grid>
             <Grid size={{ xs: 12 }} container alignItems="center" spacing={1}>
               <Grid size={{ xs: 10 }}>

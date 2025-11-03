@@ -198,6 +198,16 @@ function ResponsiveAppBar() {
                       {"Gestione Ore Operatori"}
                     </Typography>
                   </MenuItem>,
+                  <MenuItem
+                    key="EpsNestjsOrpEffCicliFailed"
+                    onClick={handleCloseNavMenu}
+                    component={Link}
+                    href="/admin-panel/eps-nestjs-orp-eff-cicli-esec-failed"
+                  >
+                    <Typography textAlign="center">
+                      {"Gestione Esecuzioni Fallite"}
+                    </Typography>
+                  </MenuItem>,
                 ]}
               {!!user?.role &&
                 [
@@ -330,6 +340,14 @@ function ResponsiveAppBar() {
                     href="/admin-panel/eps-nestjs-orp-eff-cicli-esec"
                   >
                     {"Gestione Ore Operatori"}
+                  </Button>
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "inherit", display: "block" }}
+                    component={Link}
+                    href="/admin-panel/eps-nestjs-orp-eff-cicli-esec-failed"
+                  >
+                    {"Gestione Esecuzioni Fallite"}
                   </Button>
                 </>
               )}

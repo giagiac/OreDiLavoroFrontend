@@ -6,6 +6,7 @@ import useAuth from "@/services/auth/use-auth";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useTranslation } from "@/services/i18n/client";
 import DriveFileRenameOutlineTwoToneIcon from "@mui/icons-material/DriveFileRenameOutlineTwoTone";
+import HistoryTwoToneIcon from "@mui/icons-material/HistoryTwoTone";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
@@ -59,7 +60,7 @@ function AdminPanel() {
                 <ButtonTipoBase
                   tipoButton="storico"
                   onClickAction={() => router.push(`/hours-history`)}
-                  endIcon={<DriveFileRenameOutlineTwoToneIcon />}
+                  endIcon={<HistoryTwoToneIcon />}
                   label={t("history")}
                 />
               </Grid>

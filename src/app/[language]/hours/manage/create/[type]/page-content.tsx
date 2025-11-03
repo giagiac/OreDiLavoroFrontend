@@ -40,6 +40,17 @@ import {
 } from "react";
 import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
 import Children from "./children";
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
+import { useGetTargaMezziService } from "@/services/api/services/targa-mezzi";
+import { ArtAna } from "@/services/api/types/art-ana";
+import { TipoTrasferta } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
+import { SortEnum } from "@/services/api/types/sort-type";
+import { TargaMezzi } from "@/services/api/types/targa-mezzi";
+import dayjs from "dayjs";
+import { OperatoreSelected } from "../../opertore-selected";
+import { AnelloGiallo, StelleEuropee } from "../../targa-mezzi-table";
+dayjs.locale("it");
 
 const TEMPO_OPERATORE_DEFAULT = "00:00";
 const CODICE_BREVE_DEFAULT = ""; // 2414014-1
@@ -89,12 +100,6 @@ type CreateFormDataChild = {
   NOTE?: string | null;
 };
 
-import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
-import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
-import { TipoTrasferta } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
-import dayjs from "dayjs";
-import { OperatoreSelected } from "../../opertore-selected";
-
 function FormCreateEpsNestjsOrpEffCicliEsec() {
   const params = useParams<{
     type: TipoTrasferta;
@@ -109,11 +114,37 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   // const [id, setId] = useState<string | null>(() => null);
   const COD_OP = searchParams.get("COD_OP");
   const DATA_INIZIO = searchParams.get("DATA_INIZIO");
-  const ID = searchParams.get("ID"); // solo per sezione KM_AUTISTA che è l'unico che può creare figli (in questo caso si segue una logica diversa basata solo sull'ID)
+  const id = searchParams.get("ID"); // solo per sezione KM_AUTISTA che è l'unico che può creare figli (in questo caso si segue una logica diversa basata solo sull'ID)
 
   let prepareText = "In sede";
 
   let icon = <FactoryTwoToneIcon />;
+
+  const filtersArtAna: Array<FilterItem<TargaMezzi>> = [
+    { columnName: "COD_ART", value: COD_ART || "" },
+  ];
+
+  const [dataArtAna, setDataArtAna] = useState<ArtAna | null>(null);
+
+  const fetchTarga = useGetTargaMezziService();
+
+  useMemo(async () => {
+    if (filtersArtAna[0].value != "") {
+      const { status, data } = await fetchTarga({
+        page: 0,
+        limit: 500,
+        filters: filtersArtAna,
+        othersFilters: [],
+        sort: [{ order: SortEnum.DESC, orderBy: "COD_ART" }],
+      });
+
+      if (status === HTTP_CODES_ENUM.OK) {
+        if (data.data.length > 0 && data.data[0].artAna !== undefined) {
+          setDataArtAna(data.data[0].artAna);
+        }
+      }
+    }
+  }, []);
 
   switch (tipoTrasferta) {
     case "in_sede":
@@ -171,7 +202,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   }
 
   const [codiceBreveValue, setCodiceBreve] = useState(CODICE_BREVE_DEFAULT);
-  const [enterPressed, setEnterPressed] = useState(false);
+  const [enterPressed, setEnterPressed] = useState<number>(0);
   const [multipleScannerDetected, setMultipleScannerDetected] =
     useState<String | null>(null);
 
@@ -192,11 +223,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           value,
         },
       ]);
-      setEnterPressed(true);
+      setEnterPressed((prev) => prev + 1);
       return;
     }
 
-    setEnterPressed(false);
+    setEnterPressed(0);
     setCodiceBreve(target.value);
   };
 
@@ -223,11 +254,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     localStorage.setItem(LAST_SCAN_BARCODE_WITH_ONFOCUS, "true");
   };
 
-  // FILTERS
-  // const [{ order, orderBy }] = useState<{
-  //   order: SortEnum;
-  //   orderBy: OrpEffCicliKeys;
-  // }>({ order: SortEnum.ASC, orderBy: "DOC_RIGA_ID" });
   const [filters, setFilters] = useState<Array<FilterItem<OrpEffCicli>>>([
     { columnName: "CODICE_BREVE", value: codiceBreveValue },
   ]);
@@ -235,21 +261,23 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const [data, setData] = useState<OrpEffCicli[] | null>(null);
 
   const fetch = useGetOrpEffCicliService();
-  useEffect(() => {
-    async function handleScannerDetected() {
-      const { status, data } = await fetch({
-        page: 1,
-        limit: 10,
-        filters,
-        sort: undefined,
-        othersFilters: [],
-      });
+  async function handleScannerDetected() {
+    setData(null);
+    const { status, data } = await fetch({
+      page: 1,
+      limit: 10,
+      filters,
+      sort: undefined,
+      othersFilters: [],
+    });
 
-      if (status === HTTP_CODES_ENUM.OK) {
-        setData(data.data);
-      }
+    if (status === HTTP_CODES_ENUM.OK) {
+      setData(data.data);
+      setEnterPressed(0);
     }
-    if (enterPressed) {
+  }
+  useEffect(() => {
+    if (enterPressed > 0) {
       handleScannerDetected();
     }
   }, [enterPressed]);
@@ -283,7 +311,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
     setData(null);
     setCodiceBreve("");
-    setEnterPressed(false);
+    setEnterPressed(0);
 
     const wasTextFieldFocused =
       localStorage.getItem(LAST_SCAN_BARCODE_WITH_ONFOCUS) === "true";
@@ -326,17 +354,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
     };
 
     const { data, status } = await fetchPostEpsNestjsOrpEffCicliEsec(formData);
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof CreateFormData>).forEach(
-        (key) => {
-          // TODO: GESTIONE ERRORI
-          enqueueSnackbar(`${key} - ${data.errors[key]}`, {
-            variant: "error",
-          });
-        }
-      );
-      return;
-    }
+
     if (status === HTTP_CODES_ENUM.CREATED) {
       enqueueSnackbar("Ore commessa aggiunte", {
         variant: "success",
@@ -409,22 +427,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       KM,
       // EXTRA
       NOTE: "",
-      idfk: Number(id),
+      idfk: Number(id), // idfk sarà l'id del padre...
     };
 
     const { data, status } =
       await fetchPostEpsNestjsOrpEffCicliEsecChild(formData);
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof CreateFormData>).forEach(
-        (key) => {
-          // TODO: GESTIONE ERRORI
-          enqueueSnackbar(`${key} - ${data.errors[key]}`, {
-            variant: "error",
-          });
-        }
-      );
-      return;
-    }
     if (status === HTTP_CODES_ENUM.CREATED) {
       enqueueSnackbar("Ore commessa aggiunte", {
         variant: "success",
@@ -434,7 +441,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       setDialogOpen(
         "La creazione è avvenuta con successo. Vuoi aggiungere altre commesse?"
       );
-      setEnterPressed(false);
+      setEnterPressed(prev => prev + 1);
     }
   };
 
@@ -472,7 +479,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
           <Scanner
             onScan={(result) => {
               setCodiceBreve(result[0].rawValue);
-              setEnterPressed(() => {
+              setEnterPressed((prev) => {
                 setFilters([
                   {
                     columnName: "CODICE_BREVE",
@@ -480,7 +487,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   },
                 ]);
                 handleCloseScanner();
-                return true;
+                return prev + 1;
               });
 
               if (result.length === 1) {
@@ -524,27 +531,63 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
             startIcon={<ArrowBackTwoToneIcon />}
           />
         </Stack>
-        <Grid container>
-          <Grid textAlign="right" size={12}>
+        <Grid container direction="row" sx={{ justifyContent: "flex-end" }}>
+          <Grid size={12} textAlign="right">
             <OperatoreSelected text="inserisci il codice breve dell’ordine di produzione" />
           </Grid>
-          <Grid textAlign="right" size={12}>
-            <Stack
-              spacing={0.2}
-              direction="row"
-              justifyContent="flex-end"
-              alignItems={"baseline"}
-            >
-              {KM > 0 && (
-                <>
-                  <Typography variant="h6">{KM}</Typography>
-                  <Typography variant="caption">Km</Typography>
-                </>
-              )}
-            </Stack>
-            <Typography variant="h6">{DATA_INIZIO_FORMATTED}</Typography>
+          <Grid size={12} mb={1}>
+            <Typography textAlign="right" variant="h6">
+              {DATA_INIZIO_FORMATTED}
+            </Typography>
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          {dataArtAna !== null && (
+            <>
+              <Grid size={{ xs: 10, sm: 8, md: 6 }} direction="row">
+                <Grid
+                  container
+                  direction="row"
+                  sx={{
+                    mb: 3,
+                  }}
+                  style={{
+                    borderRadius: 6,
+                    borderWidth: 4,
+                    borderStyle: "solid",
+                    borderColor: "black",
+                    boxShadow: `4px 4px 4px gray`,
+                  }}
+                >
+                  <Grid size={{ xs: 1 }}>
+                    <StelleEuropee />
+                  </Grid>
+                  <Grid size={{ xs: 10 }} textAlign="center">
+                    <Typography>{dataArtAna.COD_ART}</Typography>
+                    <Typography>{dataArtAna.DES_ART}</Typography>
+                  </Grid>
+                  <Grid size={{ xs: 1 }}>
+                    <AnelloGiallo />
+                  </Grid>
+                </Grid>
+              </Grid>
+              {KM > 0 && (
+                <Grid size={{ xs: "auto" }}>
+                  <Stack direction="row" alignItems="baseline" ml={2}>
+                    <>
+                      <Typography variant="h6">{KM}</Typography>
+                      <Typography variant="caption">Km</Typography>
+                    </>
+                  </Stack>
+                </Grid>
+              )}
+            </>
+          )}
+          <Grid
+            size={{ xs: 12 }}
+            sx={{
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
                 autoFocus={
@@ -590,7 +633,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                   endAdornment: (
                     <>
                       {codiceBreveValue.length > 0 &&
-                        enterPressed &&
+                        enterPressed > 0 &&
                         result.length === 0 && (
                           <InputAdornment position="end">
                             <IconButton disabled>
@@ -645,7 +688,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
               />
             </Stack>
             {codiceBreveValue.length > 0 &&
-              enterPressed &&
               data?.length === 0 && (
                 <Grid size={{ xs: 12 }} textAlign="center">
                   <Typography variant="h5" color="error">
@@ -663,12 +705,12 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                 </Grid>
               )}
             {tipoTrasferta === "step1_km_autista" &&
-              ID !== null &&
+              id !== null &&
               COD_OP !== null &&
               DATA_INIZIO !== null && (
                 <Children
-                  key={Number(ID) + Math.random()}
-                  id={Number(ID)}
+                  key={enterPressed}
+                  id={Number(id)}
                   COD_OP={COD_OP}
                   DATA_INIZIO={DATA_INIZIO}
                 />
@@ -700,9 +742,41 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 11 }}
                             textAlign={{ xs: "center", sm: "left" }}
                           >
-                            <Typography variant="body1" gutterBottom>
-                              {item?.DOC_ID}
-                            </Typography>
+                            {(item.linkOrpOrd?.length ?? 0) > 0 ? (
+                              <Typography variant="body1" gutterBottom>
+                                {item?.DOC_ID}
+                              </Typography>
+                            ) : (
+                              (item?.orpEffCicliPadre?.gerarchiaDocumenti
+                                ?.length ?? 0) > 0 && (
+                                <Fragment>
+                                  <Stack direction="row">
+                                    {item?.orpEffCicliPadre?.gerarchiaDocumenti?.map(
+                                      (it, index) => (
+                                        <Fragment key={it.DOC_ID}>
+                                          {index != 0 && (
+                                            <Typography
+                                              variant="body1"
+                                              gutterBottom
+                                              mr={1}
+                                            >
+                                              {"←"}
+                                            </Typography>
+                                          )}
+                                          <Typography
+                                            variant="body1"
+                                            gutterBottom
+                                            mr={1}
+                                          >
+                                            {it.DOC_ID}
+                                          </Typography>
+                                        </Fragment>
+                                      )
+                                    )}
+                                  </Stack>
+                                </Fragment>
+                              )
+                            )}
                           </Grid>
                           {/* Commessa */}
                           <Grid
@@ -715,9 +789,21 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                             size={{ xs: 12, sm: 11 }}
                             textAlign={{ xs: "center", sm: "left" }}
                           >
-                            <Typography variant="body1" gutterBottom>
-                              {item?.linkOrpOrd?.[0]?.ordCliRighe?.DOC_ID}
-                            </Typography>
+                            {(item.linkOrpOrd?.length ?? 0) > 0 ? (
+                              <Typography variant="body1" gutterBottom>
+                                {item?.linkOrpOrd?.[0]?.ordCliRighe?.DOC_ID}
+                              </Typography>
+                            ) : (
+                              (item.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) >
+                                0 && (
+                                <Typography variant="body1" gutterBottom>
+                                  {
+                                    item.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                      ?.ordCliRighe?.DOC_ID
+                                  }
+                                </Typography>
+                              )
+                            )}
                           </Grid>
 
                           {/* Articolo */}
@@ -763,9 +849,29 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 </Typography>
                               </Fragment>
                             ) : (
-                              <Typography variant="caption">
-                                Nessun ordine associato
-                              </Typography>
+                              <>
+                                {(item?.orpEffCicliPadre?.linkOrpOrd?.length ??
+                                  0) > 0 ? (
+                                  <Fragment>
+                                    <Typography variant="h4" gutterBottom>
+                                      {
+                                        item?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                          ?.ordCliRighe?.cf.RAG_SOC_CF
+                                      }
+                                    </Typography>
+                                    <Typography variant="h4" gutterBottom>
+                                      {
+                                        item?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                          ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                                      }
+                                    </Typography>
+                                  </Fragment>
+                                ) : (
+                                  <Typography variant="caption">
+                                    Nessun ordine associato
+                                  </Typography>
+                                )}
+                              </>
                             )}
                           </Grid>
 
@@ -863,9 +969,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         variant="contained"
                         onClick={async () => {
                           // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
+                          debugger
                           if (tipoTrasferta === "step1_km_autista") {
-                            if (ID) {
-                              await onSubmitChild(ID);
+                            if (id) {
+                              await onSubmitChild(id);
                             } else {
                               await onSubmit();
                             }

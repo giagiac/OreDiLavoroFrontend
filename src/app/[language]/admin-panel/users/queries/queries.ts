@@ -37,7 +37,7 @@ export const useGetUsersQuery = ({
       const { status, data } = await fetch(
         {
           page: pageParam,
-          limit: 10,
+          limit: 500,
           filters: filter,
           sort: sort ? [sort] : undefined,
         },

@@ -41,7 +41,12 @@ export type EpsNestjsOrpEffCicliEsec = {
   AZIENDA_ID?: number | null;
   TIPO_TRASFERTA: TipoTrasferta;
   HYPSERV_REQ2_COD_CHIAVE: string | null;
-  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM?: string | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA?: string | null;
+
+  HYPSERV_REQ2_COD_CHIAVE_DELETED?: number | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: number | null;
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: number | null;
 
   TEMPO_OPERATORE_SESSANTESIMI?: String | null;
 
@@ -52,4 +57,6 @@ export type EpsNestjsOrpEffCicliEsec = {
   artAna?: ArtAna | null;
 
   epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChild> | null;
+
+  orpEffCicliPadre?: OrpEffCicli | null;
 };

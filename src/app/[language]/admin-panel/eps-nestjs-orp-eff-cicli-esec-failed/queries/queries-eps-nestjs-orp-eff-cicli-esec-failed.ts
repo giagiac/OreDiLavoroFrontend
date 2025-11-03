@@ -1,17 +1,17 @@
-import { useGetTargaMezziService } from "@/services/api/services/targa-mezzi";
-import { TargaMezzi } from "@/services/api/types/targa-mezzi";
+import { useGetEpsNestjsOrpEffCicliEsecFailedService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec-failed";
 import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { EpsNestjsOrpEffCicliEsecFailed } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-failed";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  EpsNestjsTargaMezziFilterType,
-  EpsNestjsTargaMezziSortType,
+  EpsNestjsOrpEffCicliEsecFailedFilterType,
+  EpsNestjsOrpEffCicliEsecFailedSortType,
   OthersFiltersType,
-} from "../eps-nestjs-targa-mezzi-filter-types";
+} from "../eps-nestjs-orp-eff-cicli-esec-failed-filter-types";
 
-export const epsNestjsTargaMezziQueryKeys = createQueryKeys(
-  ["EpsNestjsTargaMezzi"],
+export const operatoriQueryKeys = createQueryKeys(
+  ["EpsNestjsOrpEffCicliEsecFailed"],
   {
     list: () => ({
       key: [],
@@ -21,8 +21,8 @@ export const epsNestjsTargaMezziQueryKeys = createQueryKeys(
           filter,
           othersFilters,
         }: {
-          filter: EpsNestjsTargaMezziFilterType | undefined;
-          sort?: EpsNestjsTargaMezziSortType | undefined;
+          filter: EpsNestjsOrpEffCicliEsecFailedFilterType | undefined;
+          sort?: EpsNestjsOrpEffCicliEsecFailedSortType | undefined;
           othersFilters?: OthersFiltersType | undefined;
         }) => ({
           key: [sort, filter, othersFilters],
@@ -32,19 +32,19 @@ export const epsNestjsTargaMezziQueryKeys = createQueryKeys(
   }
 );
 
-export const useGetTargaMezziQuery = ({
+export const useGetEpsNestjsOrpEffCicliEsecFailedQuery = ({
   sort,
   filters,
   othersFilters,
 }: {
-  sort?: EpsNestjsTargaMezziSortType | undefined;
-  filters?: Array<FilterItem<TargaMezzi>> | undefined;
+  sort?: EpsNestjsOrpEffCicliEsecFailedSortType | undefined;
+  filters?: Array<FilterItem<EpsNestjsOrpEffCicliEsecFailed>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
 } = {}) => {
-  const fetch = useGetTargaMezziService();
+  const fetch = useGetEpsNestjsOrpEffCicliEsecFailedService();
 
   const query = useInfiniteQuery({
-    queryKey: epsNestjsTargaMezziQueryKeys.list().sub.by({
+    queryKey: operatoriQueryKeys.list().sub.by({
       sort,
       filter: { filters },
       othersFilters: { filters: othersFilters },
@@ -54,7 +54,7 @@ export const useGetTargaMezziQuery = ({
       const { status, data } = await fetch(
         {
           page: pageParam,
-          limit: 500,
+          limit: 10,
           filters,
           sort: sort ? [sort] : undefined,
           othersFilters,
@@ -79,25 +79,3 @@ export const useGetTargaMezziQuery = ({
 
   return query;
 };
-
-// export const useGetTargaMezziSingleQuery = async ({
-//   filters,
-// }: {
-//   filters?: Array<FilterItem<TargaMezzi>>
-// }) => {
-//   const fetch = useGetTargaMezziService();
-
-//   const { status, data } = await fetch(
-//     {
-//       filters,
-//       othersFilters: [],
-//     }
-//   );
-
-//   if (status === HTTP_CODES_ENUM.OK) {
-//     return {
-//       data: data.data,
-//       nextPage: data.hasNextPage ? pageParam + 1 : undefined,
-//     };
-//   }
-// };

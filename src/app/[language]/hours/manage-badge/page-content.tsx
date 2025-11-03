@@ -4,19 +4,17 @@ import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import {
+  EpsNestjsOrpEffCicliEsecPatchRequest,
   EpsNestjsOrpEffCicliEsecsResponse,
   useDeleteEpsNestjsOrpEffCicliEsecService,
   useGetEpsNestjsOrpEffCicliEsecService,
+  usePatchEpsNestjsOrpEffCicliEsecService,
 } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { useScheduleTaskService } from "@/services/api/services/schedule-task";
-import { Cf } from "@/services/api/types/cf";
-import { CfComm } from "@/services/api/types/cfComm";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
-import { LinkOrpOrd } from "@/services/api/types/link-orp-ord";
 import { Operatori } from "@/services/api/types/operatori";
-import { OrdCli } from "@/services/api/types/ord-cli";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { User } from "@/services/api/types/user";
@@ -32,16 +30,8 @@ import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid2";
 import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -97,7 +87,7 @@ function UserHours() {
         setData(responseData as EpsNestjsOrpEffCicliEsecsResponse);
       } else {
         setData(null);
-        enqueueSnackbar("Utente non trovato", { variant: "error" });
+        // enqueueSnackbar("Utente non trovato", { variant: "error" });
       }
     };
     if (filter.length > 0) {
@@ -165,154 +155,6 @@ function UserHours() {
 
       setIndex((index) => index + 1);
     }
-  };
-
-  const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
-  const handleOpen = (ordCli: OrdCli) => {
-    setSelectedOrdCli(ordCli);
-  };
-  const handleClose = () => {
-    setSelectedOrdCli(null);
-  };
-
-  const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
-  const handleOpenCf = (cf: Cf) => {
-    setSelectedCf(cf);
-  };
-  const handleCloseCf = () => {
-    setSelectedCf(null);
-  };
-
-  const renderOrdCliTrasDialog = (linkOrpOrd: Array<LinkOrpOrd>) => {
-    if (!linkOrpOrd || linkOrpOrd.length === 0)
-      return (
-        <Typography variant="body2">
-          Nessuna commessa/ordine collegata/o
-        </Typography>
-      );
-
-    return (
-      <>
-        {linkOrpOrd.map((it) => {
-          const ordCli = it.ordCliRighe?.ordCli || ({} as OrdCli);
-
-          const cfComm = ordCli.cfComm;
-
-          if (ordCli.NUM_SEDE === null || cfComm === null) {
-            const cf = it.ordCliRighe?.cf;
-
-            return (
-              <Fragment key={ordCli.DOC_ID}>
-                <Button
-                  variant="outlined"
-                  onClick={() => cf && handleOpenCf(cf)}
-                  fullWidth
-                  disabled={!cf} // Optionally disable the button if cf is undefined
-                >
-                  {cf?.INDI_CF || "No Title"}
-                </Button>
-                <Dialog
-                  open={selectedCf !== null}
-                  onClose={handleCloseCf}
-                  fullWidth
-                  maxWidth="sm"
-                >
-                  <DialogTitle>{`${selectedCf?.INDI_CF || "No Title"}`}</DialogTitle>
-                  <DialogContent>
-                    <Table size="small">
-                      <TableBody>
-                        {(Object.keys(selectedCf || {}) as (keyof Cf)[]).map(
-                          (key) => {
-                            const value = selectedCf?.[key];
-                            if (value === null || value === undefined)
-                              return null;
-                            return (
-                              <TableRow key={key}>
-                                <TableCell align="left">
-                                  <Typography variant="caption">
-                                    {key}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="left" style={{ width: 300 }}>
-                                  <Typography variant="subtitle2">
-                                    {String(value)}
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          }
-                        )}
-                      </TableBody>
-                    </Table>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleCloseCf} color="primary">
-                      Chiudi
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </Fragment>
-            );
-          }
-
-          // si c'è sede commerciale
-
-          return (
-            <Fragment key={ordCli.DOC_ID}>
-              <Button
-                variant="outlined"
-                onClick={() => handleOpen(ordCli)}
-                fullWidth
-                disabled={!ordCli.NUM_SEDE} // Optionally disable the button if NUM_DEST is undefined
-              >
-                {`${cfComm?.NUM_SEDE} · ${cfComm?.DES_SEDE}` || "No Title"}
-              </Button>
-              <Dialog
-                open={selectedOrdCli !== null}
-                onClose={handleClose}
-                fullWidth
-                maxWidth="sm"
-              >
-                <DialogTitle>
-                  {`${selectedOrdCli?.cfComm?.NUM_SEDE} · ${selectedOrdCli?.cfComm?.DES_SEDE || "No Title"}`}
-                </DialogTitle>
-                <DialogContent>
-                  <Table size="small">
-                    <TableBody>
-                      {(
-                        Object.keys(
-                          selectedOrdCli?.cfComm || {}
-                        ) as (keyof CfComm)[]
-                      ).map((key) => {
-                        const value = selectedOrdCli?.cfComm?.[key];
-                        if (value === null || value === undefined) return null;
-                        return (
-                          <TableRow key={key}>
-                            <TableCell align="left">
-                              <Typography variant="caption">{key}</Typography>
-                            </TableCell>
-                            <TableCell align="left" style={{ width: 300 }}>
-                              <Typography variant="subtitle2">
-                                {String(value)}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose} color="primary">
-                    Chiudi
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </Fragment>
-          );
-        })}
-      </>
-    );
   };
 
   const { enqueueSnackbar } = useSnackbar();
@@ -468,18 +310,50 @@ function UserHours() {
     }
   };
 
+  const fetchPatchEpsNestjsOrpEffCicliEsec =
+    usePatchEpsNestjsOrpEffCicliEsecService();
+
+  const onUpdate = async (
+    id: string,
+    tempoOreOperatore: string | null,
+    idfk?: string
+  ): Promise<boolean> => {
+    if (tempoOreOperatore === null) {
+      enqueueSnackbar(`Non hai impostato il tempo operatore`, {
+        variant: "error",
+      });
+      return Promise.resolve(false);
+    }
+
+    const formData: EpsNestjsOrpEffCicliEsecPatchRequest = {
+      id,
+      idfk,
+      COD_OP: userSelected?.COD_OP || "",
+      TEMPO_OPERATORE: tempoOreOperatore,
+      DATA_INIZIO: dateSelected?.format("YYYY-MM-DD") || "",
+      DATA_FINE: dateSelected?.format("YYYY-MM-DD") || "",
+    };
+
+    const { status } = await fetchPatchEpsNestjsOrpEffCicliEsec(formData);
+
+    setIndex((index) => index + 1);
+
+    if (status === HTTP_CODES_ENUM.OK) {
+      enqueueSnackbar("Ore aggiornate correttamente", {
+        variant: "success",
+      });
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(false);
+  };
+
   const DATA_INIZIO_FORMATTED = data?.dateInizio
     ? dayjs(data?.dateInizio).format("ddd DD MMM YY")
     : "";
 
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        p: 0,
-        m: 0,
-      }}
-    >
+    <Container maxWidth="xl">
       {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
         <FormProvider {...methods}>
           <EditOperatori
@@ -577,9 +451,9 @@ function UserHours() {
                 <ChildEpsNestjsOrpEffCicliEsecCard
                   key={epsNestjsOrpEffCicliEsec.id}
                   epsNestjsOrpEffCicliEsec={epsNestjsOrpEffCicliEsec}
+                  onUpdate={onUpdate}
                   onDelete={onDelete}
                   onSendHG={onScheduleTask}
-                  renderOrdCliTrasDialog={renderOrdCliTrasDialog}
                 />
               ))}
             </Grid>

@@ -41,7 +41,6 @@ async function wrapperFetchJsonResponse<T>(
     .json()
     .catch(() => {
       // Fallback se il corpo non è JSON (es. 404/500 con corpo vuoto)
-      debugger;
       return Promise.resolve({
         success: false,
         error: {
@@ -57,8 +56,6 @@ async function wrapperFetchJsonResponse<T>(
           data: body as T,
         } as FetchJsonResponse<T>;
       }
-
-      debugger;
 
       return {
         success: false,

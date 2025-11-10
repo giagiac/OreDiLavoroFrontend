@@ -36,12 +36,12 @@ interface Props {
   onUpdate?: (
     id: string,
     TEMPO_OPERATORE: string | null,
-    idfk?: string,
+    idfk?: string
   ) => Promise<boolean>;
   onDisable?: (
     id: string,
     prev_HYPSERV_REQ2_COD_CHIAVE_DELETED: number | null | undefined,
-    idfk?: string,
+    idfk?: string
   ) => Promise<boolean>;
   onDelete?: (id: string) => void;
   onSendHG?: (id: string) => void;
@@ -73,6 +73,12 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
   );
 
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const isSentHG =
+    epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
+    epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !== null ||
+    epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
+      null;
 
   return (
     <Fragment>
@@ -118,7 +124,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                     const result = await onUpdate(
                       editOpenChild?.id,
                       tempoOreOperatore,
-                      editOpenChild.idfk,
+                      editOpenChild.idfk
                     );
                     if (result) {
                       setEditOpen(null);
@@ -178,11 +184,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 tipotrasferta={epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA}
               >
                 <>
-                  {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
-                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !==
-                    null ||
-                  epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
-                    null ? (
+                  {isSentHG ? (
                     // l'esecuzione è stata già processata e non si può fare nessuna modifica (in futuro l'operatore potrà cancellare... liberando il lavoro su HG)
                     <Stack
                       direction="row"
@@ -330,17 +332,23 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
               </>
             )}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="caption">
+              <Typography variant="body1" mt={1}>
                 {epsNestjsOrpEffCicliEsec?.DOC_RIGA_ID}
               </Typography>
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Typography variant="body2">
+              <Typography variant="body2" mt={1}>
                 {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD}
               </Typography>
+              {epsNestjsOrpEffCicliEsec?.orpEffCicli?.orpEff.DES_PROD !==
+                epsNestjsOrpEffCicliEsec?.orpEffCicli?.DES_CICLO && (
+                <Typography variant="body1" mt={1}>
+                  {epsNestjsOrpEffCicliEsec?.orpEffCicli?.DES_CICLO}
+                </Typography>
+              )}
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <Typography variant="body2" textAlign="right">
+              <Typography variant="body2" textAlign="right" mt={1}>
                 {epsNestjsOrpEffCicliEsec?.COD_ART !== null &&
                   `Targa mezzo : ${epsNestjsOrpEffCicliEsec?.artAna?.DES_ART} · ${epsNestjsOrpEffCicliEsec?.KM} Km`}
               </Typography>
@@ -353,19 +361,17 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 spacing={1}
               >
                 {onUpdate !== undefined &&
-                  (() => {
-                    return (
-                      <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => setEditOpen(epsNestjsOrpEffCicliEsec)}
-                        sx={{ float: "left", mr: 1, minWidth: 36, p: 0.5 }}
-                        aria-label="Modifica"
-                      >
-                        <EditTwoToneIcon />
-                      </Button>
-                    );
-                  })()}
+                  (!isSentHG || user?.role?.id === RoleEnum.ADMIN) && (
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => setEditOpen(epsNestjsOrpEffCicliEsec)}
+                      sx={{ float: "left", mr: 1, minWidth: 36, p: 0.5 }}
+                      aria-label="Modifica"
+                    >
+                      <EditTwoToneIcon />
+                    </Button>
+                  )}
                 {onDisable != undefined && (
                   <FormControlLabel
                     labelPlacement="bottom"
@@ -394,182 +400,192 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
           </Grid>
         </Card>
       </Grid>
-      {epsNestjsOrpEffCicliEsec?.epsNestjsOrpEffCicliEsecChild?.map((child) => (
-        <Grid key={child.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <Card
-            sx={(theme) => ({
-              height: "100%",
-              padding: theme.spacing(1),
-              border: `1px solid`,
-              borderColor: color.main,
-              position: "relative",
-              "&::after": child.HYPSERV_REQ2_COD_CHIAVE_DELETED
-                ? {
-                    content: '""',
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: 0,
-                    background: `linear-gradient(-45deg, transparent calc(48% - 1px), red calc(50% - 1px), red calc(48% + 1px), transparent calc(50% + 1px))`,
-                    pointerEvents: "none",
-                  }
-                : {},
-            })}
-          >
-            <Grid container>
-              <Grid size={{ xs: 12 }}>
-                <TipoTrasfertaComponent tipotrasferta={child.TIPO_TRASFERTA}>
-                  {child.HYPSERV_REQ2_COD_CHIAVE !== null ||
-                  child.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !== null ||
-                  child.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
-                    null ? (
-                    <>
-                      <Stack
-                        direction="row"
-                        textAlign="center"
-                        spacing={1}
-                        alignItems="center"
-                      >
-                        <Stack direction="column" textAlign="center">
-                          <Typography variant="caption">
-                            {child?.id ?? ""}
-                          </Typography>
-                          <Typography variant="caption">
-                            [{child?.idfk}]
-                          </Typography>
-                        </Stack>
-                        <Icon>
-                          <LockTwoToneIcon />
-                        </Icon>
-                      </Stack>
-                    </>
-                  ) : (
-                    <Stack direction="column" textAlign="center">
-                      <Typography variant="caption">
-                        {child?.id ?? ""}
-                      </Typography>
-                      <Typography variant="caption">[{child?.idfk}]</Typography>
-                    </Stack>
-                  )}
-                </TipoTrasfertaComponent>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
+      {epsNestjsOrpEffCicliEsec?.epsNestjsOrpEffCicliEsecChild?.map((child) => {
+        const isChildSentHG =
+          child.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !== null ||
+          child.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
+            null ||
+          child.HYPSERV_REQ2_COD_CHIAVE !== null;
+        return (
+          <Grid key={child.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <Card
+              sx={(theme) => ({
+                height: "100%",
+                padding: theme.spacing(1),
+                border: `1px solid`,
+                borderColor: color.main,
+                position: "relative",
+                "&::after": child.HYPSERV_REQ2_COD_CHIAVE_DELETED
+                  ? {
+                      content: '""',
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: 0,
+                      background: `linear-gradient(-45deg, transparent calc(48% - 1px), red calc(50% - 1px), red calc(48% + 1px), transparent calc(50% + 1px))`,
+                      pointerEvents: "none",
+                    }
+                  : {},
+              })}
+            >
+              <Grid container>
                 <Grid size={{ xs: 12 }}>
-                  {/* se ODP collegato a OC direttamente allora mostro le informazioni del cliente e la DES_SEDE */}
-                  {(child?.orpEffCicli?.linkOrpOrd?.length ?? 0) > 0 ? (
-                    <Fragment>
-                      <Typography>
-                        {
-                          child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf
-                            .RAG_SOC_CF
-                        }
-                      </Typography>
-                      <Typography>
-                        {
-                          child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe
-                            ?.ordCli.cfComm?.DES_SEDE
-                        }
-                      </Typography>
-                      <CfContainer
-                        ordCliRighe={
-                          child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe
-                        }
-                      />
-                    </Fragment>
-                  ) : (
-                    // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
-                    (child?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) > 0 && (
+                  <TipoTrasfertaComponent tipotrasferta={child.TIPO_TRASFERTA}>
+                    {isChildSentHG ? (
+                      <>
+                        <Stack
+                          direction="row"
+                          textAlign="center"
+                          spacing={1}
+                          alignItems="center"
+                        >
+                          <Stack direction="column" textAlign="center">
+                            <Typography variant="caption">
+                              {child?.id ?? ""}
+                            </Typography>
+                            <Typography variant="caption">
+                              [{child?.idfk}]
+                            </Typography>
+                          </Stack>
+                          <Icon>
+                            <LockTwoToneIcon />
+                          </Icon>
+                        </Stack>
+                      </>
+                    ) : (
+                      <Stack direction="column" textAlign="center">
+                        <Typography variant="caption">
+                          {child?.id ?? ""}
+                        </Typography>
+                        <Typography variant="caption">
+                          [{child?.idfk}]
+                        </Typography>
+                      </Stack>
+                    )}
+                  </TipoTrasfertaComponent>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Grid size={{ xs: 12 }}>
+                    {/* se ODP collegato a OC direttamente allora mostro le informazioni del cliente e la DES_SEDE */}
+                    {(child?.orpEffCicli?.linkOrpOrd?.length ?? 0) > 0 ? (
                       <Fragment>
                         <Typography>
                           {
-                            child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                              ?.ordCliRighe?.cf.RAG_SOC_CF
+                            child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                              .RAG_SOC_CF
                           }
                         </Typography>
                         <Typography>
                           {
-                            child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                              ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                            child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe
+                              ?.ordCli.cfComm?.DES_SEDE
                           }
                         </Typography>
                         <CfContainer
                           ordCliRighe={
-                            child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                              ?.ordCliRighe
+                            child?.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe
                           }
                         />
                       </Fragment>
-                    )
-                  )}
+                    ) : (
+                      // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
+                      (child?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) >
+                        0 && (
+                        <Fragment>
+                          <Typography>
+                            {
+                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                ?.ordCliRighe?.cf.RAG_SOC_CF
+                            }
+                          </Typography>
+                          <Typography>
+                            {
+                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                            }
+                          </Typography>
+                          <CfContainer
+                            ordCliRighe={
+                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                ?.ordCliRighe
+                            }
+                          />
+                        </Fragment>
+                      )
+                    )}
+                  </Grid>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="caption">
+                    {child?.DOC_RIGA_ID}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body2">
+                    {child?.orpEffCicli?.orpEff.DES_PROD}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Typography variant="body2" textAlign="right">
+                    {child?.COD_ART !== null &&
+                      `Targa mezzo : ${child?.artAna?.DES_ART} · ${child?.KM} Km`}
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    {onUpdate !== undefined &&
+                      (!isChildSentHG || user?.role?.id === RoleEnum.ADMIN) &&
+                      (() => {
+                        return (
+                          <Button
+                            size="small"
+                            variant="contained"
+                            onClick={() => {
+                              setEditOpenChild(child);
+                            }}
+                            sx={{ float: "left", mr: 1, minWidth: 36, p: 0.5 }}
+                            aria-label="Modifica"
+                          >
+                            <EditTwoToneIcon />
+                          </Button>
+                        );
+                      })()}
+                    {onDisable != undefined && (
+                      <FormControlLabel
+                        labelPlacement="bottom"
+                        control={
+                          <Switch
+                            checked={
+                              child.HYPSERV_REQ2_COD_CHIAVE_DELETED == null
+                            }
+                            onChange={() => {
+                              onDisable(
+                                child.id,
+                                child.HYPSERV_REQ2_COD_CHIAVE_DELETED,
+                                child.idfk
+                              );
+                            }}
+                          />
+                        }
+                        label=""
+                      />
+                    )}
+                    <Typography variant="h4" textAlign="right">
+                      {child?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
+                    </Typography>
+                  </Stack>
                 </Grid>
               </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="caption">{child?.DOC_RIGA_ID}</Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2">
-                  {child?.orpEffCicli?.orpEff.DES_PROD}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" textAlign="right">
-                  {child?.COD_ART !== null &&
-                    `Targa mezzo : ${child?.artAna?.DES_ART} · ${child?.KM} Km`}
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Stack
-                  direction="row"
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  spacing={1}
-                >
-                  {onUpdate !== undefined &&
-                    (() => {
-                      return (
-                        <Button
-                          size="small"
-                          variant="contained"
-                          onClick={() => {
-                            setEditOpenChild(child);
-                          }}
-                          sx={{ float: "left", mr: 1, minWidth: 36, p: 0.5 }}
-                          aria-label="Modifica"
-                        >
-                          <EditTwoToneIcon />
-                        </Button>
-                      );
-                    })()}
-                  {onDisable != undefined && (
-                    <FormControlLabel
-                      labelPlacement="bottom"
-                      control={
-                        <Switch
-                          checked={
-                            child.HYPSERV_REQ2_COD_CHIAVE_DELETED == null
-                          }
-                          onChange={() => {
-                            onDisable(
-                              child.id,
-                              child.HYPSERV_REQ2_COD_CHIAVE_DELETED,
-                              child.idfk,
-                            );
-                          }}
-                        />
-                      }
-                      label=""
-                    />
-                  )}
-                  <Typography variant="h4" textAlign="right">
-                    {child?.TEMPO_OPERATORE_SESSANTESIMI?.toString()}
-                  </Typography>
-                </Stack>
-              </Grid>
-            </Grid>
-          </Card>
-        </Grid>
-      ))}
+            </Card>
+          </Grid>
+        );
+      })}
     </Fragment>
   );
 }

@@ -158,19 +158,6 @@ function FormEditUser() {
         email: isEmailDirty ? formData.email : undefined,
       },
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof EditUserFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `admin-panel-users-edit:inputs.${key}.validation.server.${data.errors[key]}`
-            ),
-          });
-        }
-      );
-      return;
-    }
     if (status === HTTP_CODES_ENUM.OK) {
       reset(formData);
       enqueueSnackbar(t("admin-panel-users-edit:alerts.user.success"), {
@@ -306,19 +293,6 @@ function FormChangePasswordUser() {
       id: userId,
       data: formData,
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (
-        Object.keys(data.errors) as Array<keyof ChangeUserPasswordFormData>
-      ).forEach((key) => {
-        setError(key, {
-          type: "manual",
-          message: t(
-            `admin-panel-users-edit:inputs.${key}.validation.server.${data.errors[key]}`
-          ),
-        });
-      });
-      return;
-    }
     if (status === HTTP_CODES_ENUM.OK) {
       reset();
       enqueueSnackbar(t("admin-panel-users-edit:alerts.password.success"), {

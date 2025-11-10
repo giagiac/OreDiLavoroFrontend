@@ -97,8 +97,9 @@ export default async function RootLayout(props: {
                           {children}
                         </Box>
                         <ToastContainer
-                          position="bottom-left"
-                          hideProgressBar
+                          position="top-center"
+                          autoClose={2000}
+
                         />
                       </LeavePageProvider>
                     </FacebookAuthProvider>

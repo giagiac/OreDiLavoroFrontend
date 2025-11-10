@@ -6,7 +6,6 @@ import { useSnackbar } from "@/hooks/use-snackbar";
 import {
   EpsNestjsOrpEffCicliEsecPatchRequest,
   useDeleteEpsNestjsOrpEffCicliEsecService,
-  usePatchEpsNestjsOrpEffCicliEsecChildService,
   usePatchEpsNestjsOrpEffCicliEsecService,
 } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { useScheduleTaskService } from "@/services/api/services/schedule-task";
@@ -34,12 +33,12 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
+import CardAttenzione from "./card-attenzione";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
   useGetMeQuery,
 } from "./queries/queries";
-import CardAttenzione from "./card-attenzione";
 dayjs.locale("it");
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
@@ -113,7 +112,7 @@ function UserHours() {
   const onUpdate = async (
     id: string,
     tempoOreOperatore: string | null,
-    idfk?: string,
+    idfk?: string
   ): Promise<boolean> => {
     if (tempoOreOperatore === null) {
       enqueueSnackbar(`Non hai impostato il tempo operatore`, {
@@ -130,8 +129,8 @@ function UserHours() {
       idfk,
       COD_OP: userSelected?.COD_OP || "",
       TEMPO_OPERATORE: tempoOreOperatore,
-      DATA_INIZIO,
-      DATA_FINE,
+      DATA_INIZIO: new Date(DATA_INIZIO),
+      DATA_FINE: new Date(DATA_FINE),
     };
 
     const { status } = await fetchPatchEpsNestjsOrpEffCicliEsec(formData);
@@ -139,7 +138,7 @@ function UserHours() {
     refetch();
 
     if (status === HTTP_CODES_ENUM.OK) {
-      enqueueSnackbar("Ore aggiornate correttamente", {
+      enqueueSnackbar("Tempo operatore aggiornato correttamente", {
         variant: "success",
       });
       return Promise.resolve(true);
@@ -161,11 +160,7 @@ function UserHours() {
       const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-        enqueueSnackbar("Impossibile eliminare!", {
-          variant: "error",
-        });
-      } else {
+      if (status === HTTP_CODES_ENUM.OK) {
         enqueueSnackbar("Ore commessa eliminate!", {
           variant: "success",
         });

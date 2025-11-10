@@ -442,6 +442,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
         "La creazione è avvenuta con successo. Vuoi aggiungere altre commesse?"
       );
       setEnterPressed(prev => prev + 1);
+
+      if ("vibrate" in navigator) {
+        navigator.vibrate(50); // Vibrate for 50ms
+      }
+
     }
   };
 
@@ -892,50 +897,41 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                           </Grid>
 
                           {/* Riga ordine (solo se necessario) */}
-                          {item?.DES_CICLO &&
-                            (item.linkOrpOrd?.length ?? 0) > 0 &&
-                            item.DES_CICLO !==
-                              item.linkOrpOrd?.[0]?.ordCliRighe?.DES_RIGA && (
+                          {item?.DES_CICLO !== item.orpEff?.DES_PROD && (
                               <>
                                 <Grid
                                   size={{ xs: 12, sm: 1 }}
                                   textAlign={{ xs: "right", sm: "right" }}
                                 >
                                   <Typography variant="caption">
-                                    Riga ordine
+                                    Desc. ciclo
                                   </Typography>
                                 </Grid>
                                 <Grid
                                   size={{ xs: 12, sm: 11 }}
                                   textAlign={{ xs: "center", sm: "left" }}
                                 >
-                                  <Typography variant="body1" gutterBottom>
+                                  <Typography variant="h4" gutterBottom>
                                     {(() => {
                                       const desCiclo = item?.DES_CICLO ?? "";
-                                      const desRiga =
-                                        item?.linkOrpOrd &&
-                                        item.linkOrpOrd[0]?.ordCliRighe
-                                          ?.DES_RIGA
-                                          ? item.linkOrpOrd[0].ordCliRighe
-                                              .DES_RIGA
-                                          : "";
-                                      if (desCiclo && desRiga) {
-                                        if (desCiclo.includes(desRiga)) {
-                                          // Show the part of desCiclo that is not in desRiga
-                                          return desCiclo
-                                            .replace(desRiga, "")
-                                            .trim();
-                                        } else if (desRiga.includes(desCiclo)) {
-                                          // Show the part of desRiga that is not in desCiclo
-                                          return desRiga
-                                            .replace(desCiclo, "")
-                                            .trim();
-                                        } else {
-                                          // Show both if no containment
-                                          return `${desCiclo} / ${desRiga}`;
-                                        }
-                                      }
-                                      return desCiclo || desRiga;
+                                      // const desRiga = item?.linkOrpOrd && item.linkOrpOrd[0]?.ordCliRighe?.DES_RIGA ? item.linkOrpOrd[0].ordCliRighe.DES_RIGA : "";
+                                      // if (desCiclo && desRiga) {
+                                      //   if (desCiclo.includes(desRiga)) {
+                                      //     // Show the part of desCiclo that is not in desRiga
+                                      //     return desCiclo
+                                      //       .replace(desRiga, "")
+                                      //       .trim();
+                                      //   } else if (desRiga.includes(desCiclo)) {
+                                      //     // Show the part of desRiga that is not in desCiclo
+                                      //     return desRiga
+                                      //       .replace(desCiclo, "")
+                                      //       .trim();
+                                      //   } else {
+                                      //     // Show both if no containment
+                                      //     return `${desCiclo} / ${desRiga}`;
+                                      //   }
+                                      // }
+                                      return desCiclo;
                                     })()}
                                   </Typography>
                                 </Grid>
@@ -969,7 +965,6 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                         variant="contained"
                         onClick={async () => {
                           // doppio controllo (anche se mi aspetto sia sempre solo KmAutista - per ora...)
-                          debugger
                           if (tipoTrasferta === "step1_km_autista") {
                             if (id) {
                               await onSubmitChild(id);

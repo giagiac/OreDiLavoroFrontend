@@ -1,7 +1,19 @@
 "use client";
 
-import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
+import { GruppoDiLavoro } from "@/components/gruppo-di-lavoro";
+import { LogElaborazione } from "@/components/log-elaborazione";
+import TipoTrasfertaComponent from "@/components/tipo-trasferta";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import {
+  EpsNestjsOrpEffCicliEsecDeleteRequest,
+  EpsNestjsOrpEffCicliEsecPatchRequest,
+  useDeleteEpsNestjsOrpEffCicliEsecFailedService,
+  usePatchEpsNestjsOrpEffCicliEsecFailedService,
+} from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec-failed";
 import { EpsNestjsOrpEffCicliEsecFailed } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-failed";
+import { FilterItem, OthersFiltersItem } from "@/services/api/types/filter";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
@@ -10,7 +22,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
@@ -26,6 +38,8 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { formatDate } from "date-fns";
+import { it } from "date-fns/locale";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, {
   PropsWithChildren,
@@ -35,7 +49,7 @@ import React, {
   useState,
 } from "react";
 import { useGetEpsNestjsOrpEffCicliEsecFailedQuery } from "./queries/queries-eps-nestjs-orp-eff-cicli-esec-failed";
-import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+
 type EpsNestjsOrpEffCicliEsecFailedKeys = keyof EpsNestjsOrpEffCicliEsecFailed;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
@@ -153,23 +167,6 @@ function EpsNestjsOrpEffCicliEsecComponent() {
     }
   );
 
-  // const handleRequestOthersFilters = (
-  //   event: React.MouseEvent<HTMLElement>,
-  //   newOthersFilters: string[]
-  // ) => {
-  //   const searchParams = new URLSearchParams(window.location.search);
-
-  //   const converted = newOthersFilters.map((it) => {
-  //     return { key: it, value: "true" };
-  //   });
-
-  //   searchParams.set("othersFilters", JSON.stringify(converted));
-
-  //   setOthersFilters(converted);
-
-  //   router.push(window.location.pathname + "?" + searchParams.toString());
-  // };
-
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
     orderBy: EpsNestjsOrpEffCicliEsecFailedKeys;
@@ -275,24 +272,96 @@ function EpsNestjsOrpEffCicliEsecComponent() {
     );
   };
 
+  const fetchDeleteEpsNestjsOrpEffCicliEsec =
+    useDeleteEpsNestjsOrpEffCicliEsecFailedService();
+
+  const { confirmDialog } = useConfirmDialog();
+  const { enqueueSnackbar } = useSnackbar();
+  const onDelete = async (
+    formData: EpsNestjsOrpEffCicliEsecDeleteRequest
+  ): Promise<boolean | void> => {
+    const isConfirmed = await confirmDialog({
+      title: "Cancella esecuzione",
+      message: "Vuoi confermare la cancellazione?",
+    });
+
+    if (isConfirmed) {
+      const { status } = await fetchDeleteEpsNestjsOrpEffCicliEsec(formData);
+
+      refetch();
+
+      if (status === HTTP_CODES_ENUM.OK) {
+        enqueueSnackbar("Disabilitato correttamente", {
+          variant: "success",
+        });
+        return Promise.resolve(true);
+      }
+
+      return Promise.resolve(false);
+    }
+  };
+
+  const fetchPatchEpsNestjsOrpEffCicliEsecFailed =
+    usePatchEpsNestjsOrpEffCicliEsecFailedService();
+
+  const onUpdateResetErrori = async (
+    id: string,
+    COD_OP?: string | null
+  ): Promise<boolean | void> => {
+    if (COD_OP) {
+      const formData: EpsNestjsOrpEffCicliEsecPatchRequest = {
+        id,
+      };
+
+      const { status } =
+        await fetchPatchEpsNestjsOrpEffCicliEsecFailed(formData);
+
+      refetch();
+
+      if (status === HTTP_CODES_ENUM.OK) {
+        enqueueSnackbar("Reset completato correttamente", {
+          variant: "success",
+        });
+        return Promise.resolve(true);
+      }
+
+      return Promise.resolve(false);
+    }
+  };
+
+  const handleEsecuzioneOperatore = (codiceChiave: string) => {
+    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
+      HYPSERV_REQ2_COD_CHIAVE: codiceChiave,
+    };
+    onDelete(formData);
+  };
+
+  const handleCostoOperatore = (codiceChiave: string) => {
+    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
+      APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA: codiceChiave,
+    };
+    onDelete(formData);
+  };
+
+  const handleCostoKm = (codiceChiave: string) => {
+    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
+      APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM: codiceChiave,
+    };
+    onDelete(formData);
+  };
+
   const theme = useTheme();
 
   return (
     <Container maxWidth="xl">
       <Grid container pt={3}>
-        <Grid container spacing={3} size={{ xs: 12 }}>
+        <Grid container spacing={0} size={{ xs: 12 }}>
           <Grid size="grow">
-            <Typography variant="h3">{"Gestione ore operatori"}</Typography>
+            <Typography variant="h3">{"Gestione esecuzioni fallite"}</Typography>
           </Grid>
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <Grid
-            container
-            size="auto"
-            wrap="nowrap"
-            justifyContent="flex-end"
-            mb={1}
-          >
+          <Grid container size="auto" wrap="nowrap" justifyContent="flex-end">
             <Grid>
               <Button
                 variant="contained"
@@ -308,10 +377,32 @@ function EpsNestjsOrpEffCicliEsecComponent() {
         </Grid>
         <Grid size={{ xs: 12 }} mb={2}>
           <TableContainer component={Paper} elevation={3}>
-            <Table size="small">
-              <TableHead>
+            <Table size="small" sx={{ m: 0, p: 0, borderCollapse: "separate" }}>
+              {/* <TableHead>
                 <TableRow>
                   <TableCell style={{ width: "10%" }} />
+                  <TableSortFilterCellWrapper
+                    width={"20%"}
+                    orderBy={orderBy}
+                    order={order}
+                    column="id"
+                    filters={filters}
+                    handleRequestSort={handleRequestSort}
+                    handleRequestFilter={handleRequestFilter}
+                  >
+                    id
+                  </TableSortFilterCellWrapper>
+                  <TableSortFilterCellWrapper
+                    width={"20%"}
+                    orderBy={orderBy}
+                    order={order}
+                    column="DOC_RIGA_ID"
+                    filters={filters}
+                    handleRequestSort={handleRequestSort}
+                    handleRequestFilter={handleRequestFilter}
+                  >
+                    Ordine di Produzione
+                  </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
                     width={"20%"}
                     orderBy={orderBy}
@@ -335,118 +426,34 @@ function EpsNestjsOrpEffCicliEsecComponent() {
                     Tipo trasferta
                   </TableSortFilterCellWrapper>
                   <TableSortFilterCellWrapper
-                    width={"50%"}
+                    width={"30%"}
                     orderBy={orderBy}
                     order={order}
-                    column="id"
+                    column="DATA_INIZIO"
                     filters={filters}
                     handleRequestSort={handleRequestSort}
                     handleRequestFilter={handleRequestFilter}
                   >
-                    Codice Badge
+                    Data
                   </TableSortFilterCellWrapper>
                 </TableRow>
                 {isFetchingNextPage && (
                   <TableRow>
-                    <TableCellLoadingContainer colSpan={4}>
+                    <TableCellLoadingContainer colSpan={6}>
                       <LinearProgress />
                     </TableCellLoadingContainer>
                   </TableRow>
                 )}
-              </TableHead>
+              </TableHead> */}
               <TableBody>
                 {result.map((item, index) => {
                   return (
-                    <TableRow
+                    <ItemDetail
                       key={item.id}
-                      style={{
-                        backgroundColor:
-                          index % 2 === 0
-                            ? theme.palette.divider
-                            : theme.palette.background.paper,
-                      }}
-                    >
-                      <TableCell colSpan={4}>
-                        <Table
-                          style={{
-                            borderCollapse: "separate",
-                            borderBottom: "none",
-                          }}
-                        >
-                          <TableBody>
-                            <TableRow
-                              sx={{ "& > *": { borderBottom: "unset" } }}
-                            >
-                              <TableCell
-                                style={{ width: "10%", border: "none" }}
-                              >
-                                <IconButton
-                                  aria-label="expand row"
-                                  size="small"
-                                  onClick={() => handleOpen(item.id)}
-                                >
-                                  {open[item.id] ? (
-                                    <KeyboardArrowUpIcon />
-                                  ) : (
-                                    <KeyboardArrowDownIcon />
-                                  )}
-                                </IconButton>
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  width: "10%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
-                              >
-                                <Typography variant="subtitle1">
-                                  {item?.COD_OP}
-                                </Typography>
-                                <Typography variant="subtitle2">
-                                  {item?.operatori?.NOME_OP}
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  width: "30%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
-                              >
-                                <ButtonTipoTrasferta
-                                  tipoTrasfertaButton={item?.TIPO_TRASFERTA}
-                                  label={item?.TIPO_TRASFERTA}
-                                />
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  width: "50%",
-                                  textAlign: "right",
-                                  border: "none",
-                                }}
-                              >
-                                {item?.id}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell colSpan={4} padding="none"></TableCell>
-                            </TableRow>
-                            {open[item.id] && (
-                              <TableRow
-                                sx={(theme) => ({
-                                  "& > *": { borderBottom: "unset" },
-                                  padding: theme.spacing(0),
-                                })}
-                              >
-                                <TableCell colSpan={4}>
-                                  // TODO: dettaglio????
-                                </TableCell>
-                              </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </TableCell>
-                    </TableRow>
+                      item={item}
+                      index={index}
+                      onUpdateResetErrori={onUpdateResetErrori} // Pass the function as a prop
+                    />
                   );
                 })}
               </TableBody>
@@ -470,3 +477,359 @@ function EpsNestjsOrpEffCicliEsecComponent() {
 export default withPageRequiredAuth(EpsNestjsOrpEffCicliEsecComponent, {
   roles: [RoleEnum.ADMIN],
 });
+
+interface ItemDetailProps {
+  item: EpsNestjsOrpEffCicliEsecFailed;
+  index: number;
+  onUpdateResetErrori: (
+    id: string,
+    COD_OP?: string | null
+  ) => Promise<boolean | void>;
+}
+
+const ItemDetail: React.FC<ItemDetailProps> = ({
+  item,
+  index,
+  onUpdateResetErrori,
+}) => {
+  const theme = useTheme();
+
+  interface ItemDetail {
+    [key: string]: string;
+  }
+
+  const [open, setOpen] = useState<ItemDetail>({});
+
+  const handleOpen = (id: string) => {
+    setOpen(
+      (prevOpen) =>
+        ({
+          ...prevOpen,
+          [id]: !prevOpen[id],
+        }) as ItemDetail
+    );
+  };
+
+  return (
+    <TableRow
+      key={item.id}
+      sx={{ pl: 3, "& > *": { borderBottom: "unset" }, py: 0 }}
+      style={{
+        backgroundColor:
+          index % 2 === 0
+            ? theme.palette.divider
+            : theme.palette.background.paper,
+      }}
+    >
+      <TableCell colSpan={6} padding="none" sx={{ py: 0 }}>
+        <Table size="small" sx={{ m: 0, p: 0, borderCollapse: "separate" }}>
+          <TableBody>
+            <TableRow sx={{ "& > *": { borderBottom: "unset", py: 0.5 } }}>
+              <TableCell sx={{ width: "10%", border: "none", py: 0.5 }}>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => handleOpen(item.id)}
+                  sx={{ p: 0.5 }}
+                >
+                  {open[item.id] ? (
+                    <KeyboardArrowUpIcon fontSize="small" />
+                  ) : (
+                    <KeyboardArrowDownIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "10%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                {item.id}
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "20%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                <Typography variant="body2" noWrap>
+                  {item?.DOC_ID}
+                </Typography>
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "20%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                <Typography variant="body2" noWrap>
+                  {item?.operatori?.NOME_OP}
+                </Typography>
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "20%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                <TipoTrasfertaComponent tipotrasferta={item?.TIPO_TRASFERTA} />
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "30%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                <Typography variant="body2">
+                  {item?.DATA_INIZIO &&
+                    formatDate(item?.DATA_INIZIO, "EEE dd MMM yy", {
+                      locale: it,
+                    })}
+                </Typography>
+              </TableCell>
+            </TableRow>
+
+            {open[item.id] && (
+              <TableRow
+                sx={{ "& > *": { borderBottom: "unset", py: 0 }, padding: 0 }}
+              >
+                <TableCell colSpan={6} sx={{ py: 0.5 }}>
+                  {item.ERROR_SYNC_ESECUZIONE_OPERATORE && (
+                    <>
+                      <Typography variant="caption">
+                        Esecuzione operatore:
+                      </Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_ESECUZIONE_OPERATORE}
+                      </Typography>
+                    </>
+                  )}
+                  {item.hypServReq2 && (
+                    <LogElaborazione
+                      item={item.hypServReq2}
+                      btnLabel="Esecuzione operatore"
+                    />
+                  )}
+                  {item.ERROR_SYNC_COSTO_KM && (
+                    <>
+                      <Typography variant="caption">Costo km:</Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_COSTO_KM}
+                      </Typography>
+                    </>
+                  )}
+                  {item.appReq3HypServCostoKm && (
+                    <>
+                      <LogElaborazione
+                        item={item.appReq3HypServCostoKm}
+                        btnLabel="Costo trasferta"
+                      />
+                      <GruppoDiLavoro item={item} />
+                    </>
+                  )}
+                  {item.ERROR_SYNC_COSTO_OPERATORE_TRASFERTA && (
+                    <>
+                      <Typography variant="caption">
+                        Costo operatore:
+                      </Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_COSTO_OPERATORE_TRASFERTA}
+                      </Typography>
+                    </>
+                  )}
+                  {item.appReq3HypServCostoOperatoreTrasferta && (
+                    <LogElaborazione
+                      item={item.appReq3HypServCostoOperatoreTrasferta}
+                      btnLabel="Costo operatore"
+                    />
+                  )}
+
+                  <Table sx={{ borderCollapse: "separate", mt: 0.5 }}>
+                    <TableBody>
+                      {item.epsNestjsOrpEffCicliEsecChild?.map(
+                        (child, childIndex) => (
+                          <ItemDetailNoReset
+                            key={child.id}
+                            item={child}
+                            index={childIndex}
+                          />
+                        )
+                      )}
+                    </TableBody>
+                  </Table>
+
+                  <Button
+                    sx={{ mt: 0.5 }}
+                    variant="outlined"
+                    size="small"
+                    color="primary"
+                    onClick={() => onUpdateResetErrori(item.id, item.COD_OP)}
+                    startIcon={<RefreshTwoToneIcon />}
+                  >
+                    Reset errori
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+// Copy of ItemDetail without the "Reset errori" button.
+// This component is intended for cases where we need the row to occupy
+// the full width and not show the reset action.
+const ItemDetailNoReset: React.FC<{
+  item: EpsNestjsOrpEffCicliEsecFailed;
+  index: number;
+}> = ({ item, index }) => {
+  const theme = useTheme();
+
+  const [open, setOpen] = useState<{ [key: string]: string }>({});
+
+  interface ItemDetail {
+    [key: string]: string;
+  }
+
+  const handleOpen = (id: string) => {
+    setOpen(
+      (prevOpen) =>
+        ({
+          ...prevOpen,
+          [id]: !prevOpen[id],
+        }) as ItemDetail
+    );
+  };
+
+  return (
+    <TableRow
+      key={item.id}
+      sx={{ pl: 3, "& > *": { borderBottom: "unset" }, py: 0 }}
+      style={{
+        backgroundColor:
+          index % 2 === 0
+            ? theme.palette.divider
+            : theme.palette.background.paper,
+      }}
+    >
+      <TableCell colSpan={3} padding="none" sx={{ py: 0 }}>
+        <Table size="small" sx={{ m: 0, p: 0, borderCollapse: "separate" }}>
+          <TableBody>
+            <TableRow sx={{ "& > *": { borderBottom: "unset", py: 0.5 } }}>
+              <TableCell sx={{ width: "10%", border: "none", py: 0.5 }}>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => handleOpen(item.id)}
+                  sx={{ p: 0.5 }}
+                >
+                  {open[item.id] ? (
+                    <KeyboardArrowUpIcon fontSize="small" />
+                  ) : (
+                    <KeyboardArrowDownIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "20%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                {item.id}
+              </TableCell>
+              <TableCell
+                sx={{
+                  width: "80%",
+                  textAlign: "right",
+                  border: "none",
+                  py: 0.5,
+                }}
+              >
+                <Typography variant="body2">
+                  {item?.DATA_INIZIO &&
+                    formatDate(item?.DATA_INIZIO, "EEE dd MMM yy", {
+                      locale: it,
+                    })}
+                </Typography>
+              </TableCell>
+            </TableRow>
+
+            {open[item.id] && (
+              <TableRow
+                sx={{ "& > *": { borderBottom: "unset", py: 0 }, padding: 0 }}
+              >
+                <TableCell colSpan={6} sx={{ py: 0.5 }}>
+                  {item.ERROR_SYNC_ESECUZIONE_OPERATORE && (
+                    <>
+                      <Typography variant="caption">
+                        Esecuzione operatore:
+                      </Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_ESECUZIONE_OPERATORE}
+                      </Typography>
+                    </>
+                  )}
+                  {item.hypServReq2 && (
+                    <LogElaborazione
+                      item={item.hypServReq2}
+                      btnLabel="Esecuzione operatore"
+                    />
+                  )}
+                  {item.ERROR_SYNC_COSTO_KM && (
+                    <>
+                      <Typography variant="caption">Costo km:</Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_COSTO_KM}
+                      </Typography>
+                    </>
+                  )}
+                  {item.appReq3HypServCostoKm && (
+                    <>
+                      <LogElaborazione
+                        item={item.appReq3HypServCostoKm}
+                        btnLabel="Costo trasferta"
+                      />
+                      <GruppoDiLavoro item={item} />
+                    </>
+                  )}
+                  {item.ERROR_SYNC_COSTO_OPERATORE_TRASFERTA && (
+                    <>
+                      <Typography variant="caption">
+                        Costo operatore:
+                      </Typography>
+                      <Typography variant="body2">
+                        {item.ERROR_SYNC_COSTO_OPERATORE_TRASFERTA}
+                      </Typography>
+                    </>
+                  )}
+                  {item.appReq3HypServCostoOperatoreTrasferta && (
+                    <LogElaborazione
+                      item={item.appReq3HypServCostoOperatoreTrasferta}
+                      btnLabel="Costo operatore"
+                    />
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableCell>
+    </TableRow>
+  );
+};

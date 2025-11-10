@@ -1,4 +1,3 @@
-import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import TipoTrasfertaComponent from "@/components/tipo-trasferta";
 import { TipoTrasfertaColors } from "@/constants/theme-colors";
 import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
@@ -6,7 +5,9 @@ import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-ef
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { Dialog, DialogTitle, DialogContent, Button, useMediaQuery } from "@mui/material";
+import {
+  useMediaQuery
+} from "@mui/material";
 
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
@@ -76,6 +77,8 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
             >
               {epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE !== null ||
               epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !==
+                null ||
+              epsNestjsOrpEffCicliEsec.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
                 null ? (
                 <Icon sx={{ fontSize: "1rem" }}>
                   {" "}

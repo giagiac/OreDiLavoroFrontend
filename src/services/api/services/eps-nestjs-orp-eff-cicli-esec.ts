@@ -146,14 +146,18 @@ export type EpsNestjsOrpEffCicliEsecPostRequest = {
 export type EpsNestjsOrpEffCicliEsecPatchRequest = {
   id: EpsNestjsOrpEffCicliEsec["id"];
   idfk?: EpsNestjsOrpEffCicliEsecChild["idfk"];
-  COD_OP: string;
+  COD_OP?: EpsNestjsOrpEffCicliEsec["COD_OP"];
   TEMPO_OPERATORE?: string;
-  DATA_INIZIO?: string;
-  DATA_FINE?: string;
+  DATA_INIZIO?: EpsNestjsOrpEffCicliEsec["DATA_INIZIO"];
+  DATA_FINE?: EpsNestjsOrpEffCicliEsec["DATA_FINE"];
 
-  HYPSERV_REQ2_COD_CHIAVE_DELETED?: number | null;
-  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: number | null;
-  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: number | null;
+  HYPSERV_REQ2_COD_CHIAVE_DELETED?: EpsNestjsOrpEffCicliEsec["HYPSERV_REQ2_COD_CHIAVE_DELETED"];
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED"];
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED"]
+
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM ?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM"]
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA ?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA"]
+  HYPSERV_REQ2_COD_CHIAVE? : EpsNestjsOrpEffCicliEsec["HYPSERV_REQ2_COD_CHIAVE"]
 };
 
 export type EpsNestjsOrpEffCicliEsecPostResponse = EpsNestjsOrpEffCicliEsec;
@@ -248,10 +252,6 @@ export function useGetEpsNestjsOrpEffCicliEsecOperatoreService() {
         ...requestConfig,
       })
         .then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>)
-        .catch((error) => {
-          debugger;
-          throw error;
-        });
     },
     [fetch]
   );

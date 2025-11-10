@@ -165,16 +165,18 @@ export default function EpsNestjsOrpEffCicliEsecPage({ operatore }: Props) {
                                 epsNestjsOrpEffCicliEsec.TIPO_TRASFERTA
                               }
                             >
+                              {/* indica che non è mai stato passato prima d'ora a servizio */}
                               {epsNestjsOrpEffCicliEsec?.HYPSERV_REQ2_COD_CHIAVE !==
                                 null ||
                               epsNestjsOrpEffCicliEsec?.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM !==
+                                null ||
+                              epsNestjsOrpEffCicliEsec?.APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA !==
                                 null ? (
                                 <Icon>
                                   <LockTwoToneIcon />
                                 </Icon>
                               ) : (
                                 <Button
-                                  disabled={false}
                                   onClick={() => {
                                     onScheduleTask(epsNestjsOrpEffCicliEsec.id);
                                   }}

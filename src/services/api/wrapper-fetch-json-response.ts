@@ -8,8 +8,12 @@ async function wrapperFetchJsonResponse<T>(
     const status = response.status as FetchJsonResponse<T>["status"];
 
     if (status === HTTP_CODES_ENUM.OK || status === HTTP_CODES_ENUM.CREATED) {
-      const data = await response.json();
-      return { status, data } as FetchJsonResponse<T>;
+      try {
+        const data = await response.json();
+        return { status, data } as FetchJsonResponse<T>;
+      } catch (error) {
+        return { status, data: undefined } as FetchJsonResponse<T>;
+      }
     }
 
     return { status, data: undefined } as FetchJsonResponse<T>;

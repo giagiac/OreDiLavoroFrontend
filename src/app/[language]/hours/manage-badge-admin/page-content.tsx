@@ -50,6 +50,7 @@ import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operat
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import { useGetMeQuery } from "./queries/queries";
+import Decimal from "decimal.js";
 
 function UserHours() {
   const searchParams = useSearchParams();
@@ -190,16 +191,12 @@ function UserHours() {
       const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-        enqueueSnackbar("Impossibile eliminare!", {
-          variant: "error",
-        });
-      } else {
+      if (status === HTTP_CODES_ENUM.OK) {
         enqueueSnackbar("Ore commessa eliminate!", {
           variant: "success",
         });
       }
-
+      
       setIndex((index) => index + 1);
     }
   };
@@ -276,7 +273,7 @@ function UserHours() {
   const onUpdate = async (
     id: string,
     tempoOreOperatore: string | null,
-    idfk?: string,
+    idfk?: string
   ): Promise<boolean> => {
     if (tempoOreOperatore === null) {
       enqueueSnackbar(`Non hai impostato il tempo operatore`, {
@@ -289,8 +286,8 @@ function UserHours() {
       id,
       idfk,
       COD_OP: data?.data[0].COD_OP || "",
-      DATA_INIZIO: dateSelected?.format("YYYY-MM-DD") || "",
-      DATA_FINE: dateSelected?.format("YYYY-MM-DD") || "",
+      DATA_INIZIO: new Date(dateSelected.toISOString()),
+      DATA_FINE: new Date(dateSelected.toISOString()),
       TEMPO_OPERATORE: tempoOreOperatore,
     };
 
@@ -311,14 +308,14 @@ function UserHours() {
   const onDisable = async (
     id: string,
     prev: number | null | undefined,
-    idfk?: string,
+    idfk?: string
   ): Promise<boolean> => {
     const formData: EpsNestjsOrpEffCicliEsecPatchRequest = {
       id,
       idfk,
       COD_OP: data?.data[0].COD_OP || "",
-      DATA_INIZIO: dateSelected?.format("YYYY-MM-DD") || "",
-      DATA_FINE: dateSelected?.format("YYYY-MM-DD") || "",
+      DATA_INIZIO: new Date(dateSelected.toISOString()),
+      DATA_FINE: new Date(dateSelected.toISOString()),
       HYPSERV_REQ2_COD_CHIAVE_DELETED: prev != 1 ? 1 : null,
     };
 
@@ -327,7 +324,7 @@ function UserHours() {
     setIndex((index) => index + 1);
 
     if (status === HTTP_CODES_ENUM.OK) {
-      enqueueSnackbar("Ore aggiornate correttamente", {
+      enqueueSnackbar("Disattivazione effettuata correttamente", {
         variant: "success",
       });
       return Promise.resolve(true);

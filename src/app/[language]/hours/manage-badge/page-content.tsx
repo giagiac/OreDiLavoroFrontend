@@ -117,11 +117,7 @@ function UserHours() {
       const { status } = await fetchEpsNestjsOrpEffCicliEsecDelete({
         id,
       });
-      if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-        enqueueSnackbar("Impossibile eliminare!", {
-          variant: "error",
-        });
-      } else {
+      if (status === HTTP_CODES_ENUM.OK) {
         enqueueSnackbar("Ore commessa eliminate!", {
           variant: "success",
         });
@@ -330,8 +326,8 @@ function UserHours() {
       idfk,
       COD_OP: userSelected?.COD_OP || "",
       TEMPO_OPERATORE: tempoOreOperatore,
-      DATA_INIZIO: dateSelected?.format("YYYY-MM-DD") || "",
-      DATA_FINE: dateSelected?.format("YYYY-MM-DD") || "",
+      DATA_INIZIO: new Date(dateSelected.toISOString()),
+      DATA_FINE:new Date(dateSelected.toISOString()),
     };
 
     const { status } = await fetchPatchEpsNestjsOrpEffCicliEsec(formData);

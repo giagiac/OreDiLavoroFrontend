@@ -172,7 +172,7 @@ function UserHours() {
           const { data, status } = await fetchGetMe({
             COD_OP: String(codOpValue),
           });
-          if (data != undefined && status === HTTP_CODES_ENUM.OK) {
+          if (data !== undefined && status === HTTP_CODES_ENUM.OK) {
             setUserSelected(data as User);
           } else {
             setUserSelected(null);

@@ -110,16 +110,16 @@ function Form() {
       await fetchAuthSignUp(formData);
 
     if (statusSignUp === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(dataSignUp.errors) as Array<keyof SignUpFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `sign-up:inputs.${key}.validation.server.${dataSignUp.errors[key]}`
-            ),
-          });
-        }
-      );
+      (
+        Object.keys(dataSignUp?.errors || {}) as Array<keyof SignUpFormData>
+      ).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: t(
+            `sign-up:inputs.${key}.validation.server.${dataSignUp?.errors[key]}`
+          ),
+        });
+      });
 
       return;
     }

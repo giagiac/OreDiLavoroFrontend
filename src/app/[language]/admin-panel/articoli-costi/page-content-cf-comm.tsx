@@ -27,6 +27,7 @@ export default function CfCommPage(cf: Cf) {
   const { data, isFetchingNextPage } = useGetCfCommQuery({
     sort: { order: SortEnum.ASC, orderBy: "NUM_SEDE" },
     filters: [{ columnName: "COD_CF", value: cf.COD_CF }],
+    COD_CF: cf.COD_CF,
   });
 
   const result = useMemo(() => {

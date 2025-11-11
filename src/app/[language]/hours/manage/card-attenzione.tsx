@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Box, Stack } from "@mui/material";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import { ButtonTipoTrasferta } from "../../../../components/button-tipo-trasferta";
-import { useRouter } from "next/navigation";
-import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
-import {
-  useGetEpsNestjsOrpEffCicliEsecQuery,
-  useGetMeQuery,
-} from "./queries/queries";
-import HTTP_CODES_ENUM from "../../../../services/api/types/http-codes";
-import { User } from "../../../../services/api/types/user";
-import useAuth from "../../../../services/auth/use-auth";
 import FactoryTwoToneIcon from "@mui/icons-material/FactoryTwoTone";
+import FlightTakeoffTwoToneIcon from "@mui/icons-material/FlightTakeoffTwoTone";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import React from "react";
+import { ButtonTipoTrasferta } from "../../../../components/button-tipo-trasferta";
 
 type CardAttenzioneProps = {
   onFuoriSedeClick?: () => void;

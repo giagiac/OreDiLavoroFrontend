@@ -99,7 +99,6 @@ export default async function RootLayout(props: {
                         <ToastContainer
                           position="top-center"
                           autoClose={2000}
-
                         />
                       </LeavePageProvider>
                     </FacebookAuthProvider>

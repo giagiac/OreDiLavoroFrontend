@@ -1,11 +1,12 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback } from "react";
+import { useSnackbar } from "../../hooks/use-snackbar";
 import { getTokensInfo, setTokensInfo } from "../auth/auth-tokens-info";
 import useLanguage from "../i18n/use-language";
 import { AUTH_REFRESH_URL } from "./config";
 import { FetchInitType, FetchInputType } from "./types/fetch-params";
-import { useSnackbar } from "../../hooks/use-snackbar";
 
 function useFetch() {
   const language = useLanguage();
@@ -57,25 +58,44 @@ function useFetch() {
         }
       }
 
-      return fetch(input, {
-        ...init,
-        headers: {
-          ...headers,
-          ...init?.headers,
-        },
-      })
-        .catch((response) => {
-          return Promise.resolve({
-            success: false,
-            error: {
-              status: response.status,
-              message: `Errore HTTP: ${response.statusText || "Errore sconosciuto"}`,
-            },
-          } as any);
+      return (
+        fetch(input, {
+          ...init,
+          headers: {
+            ...headers,
+            ...init?.headers,
+          },
         })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data: any) => {
+          // .catch(async (response) => {
+          //   return Promise.resolve({
+          //     success: false,
+          //     error: {
+          //       status: response.status,
+          //       message: `Errore HTTP: ${response.statusText || "Errore sconosciuto"}`,
+          //     },
+          //   });
+          //   if("ok" in response && !response.ok)
+          //   {
+          //     const data = await response.json();
+          //     if (data?.errors) {
+          //       (Object.keys(data.errors) as Array<keyof any>).forEach(
+          //         (key) => {
+          //           enqueueSnackbar(`${key.toString()} - ${data.errors[key]}`, {
+          //             variant: "error",
+          //           });
+          //         }
+          //       );
+          //     } else {
+          //       const message = `Errore: ${response.status} Message: ${data.message || "Errore sconosciuto"}`;
+          //       enqueueSnackbar(message, {
+          //         variant: "error",
+          //       });
+          //     }
+          //   }
+          // })
+          .then(async (response) => {
+            if ("ok" in response && !response.ok) {
+              const data = await response.json();
               if (data?.errors) {
                 (Object.keys(data.errors) as Array<keyof any>).forEach(
                   (key) => {
@@ -90,12 +110,18 @@ function useFetch() {
                   variant: "error",
                 });
               }
-            });
-          }
-          return response;
-        });
+            }
+            return Promise.resolve(response);
+          })
+      );
+      // .catch((error) => {
+      //   enqueueSnackbar(error.message, {
+      //     variant: "error",
+      //   });
+      //   return Promise.reject(error);
+      // });
     },
-    [language]
+    [language, enqueueSnackbar]
   );
 }
 

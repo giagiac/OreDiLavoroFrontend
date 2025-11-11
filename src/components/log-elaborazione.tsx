@@ -1,7 +1,7 @@
 import { AppReq3HypServ } from "@/services/api/types/app-req3-hypserv";
 import { HypServReq2 } from "@/services/api/types/hyp-serv-req2";
-import { RefreshTwoTone } from "@mui/icons-material";
-import { Button, Grid2 as Grid, Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -21,10 +21,7 @@ interface LogElaborazioneProps {
  * @param {(codiceChiave: string) => void} props.onAcknowledge - Callback eseguita al click del pulsante di conferma.
  * @returns {JSX.Element} Il componente LogElaborazione.
  */
-export function LogElaborazione({
-  item,
-  btnLabel,
-}: LogElaborazioneProps) {
+export function LogElaborazione({ item, btnLabel }: LogElaborazioneProps) {
   const dataFineElab = item.DATAORA_FINE_ELAB
     ? format(new Date(item.DATAORA_FINE_ELAB), "EEE dd MMM yy (HH:mm)", {
         locale: it,

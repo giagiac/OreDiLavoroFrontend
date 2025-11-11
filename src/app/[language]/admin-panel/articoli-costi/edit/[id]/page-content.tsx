@@ -158,7 +158,7 @@ function FormEditUser() {
         email: isEmailDirty ? formData.email : undefined,
       },
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY && data !== undefined) {
       (Object.keys(data.errors) as Array<keyof EditUserFormData>).forEach(
         (key) => {
           setError(key, {
@@ -300,7 +300,7 @@ function FormChangePasswordUser() {
       id: userId,
       data: formData,
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY && data !== undefined) {
       (
         Object.keys(data.errors) as Array<keyof ChangeUserPasswordFormData>
       ).forEach((key) => {

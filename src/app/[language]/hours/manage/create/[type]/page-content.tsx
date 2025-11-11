@@ -1,11 +1,18 @@
 "use client";
 
+import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
 import { NumericKeypad } from "@/components/numeric-keypad-ore";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { usePostEpsNestjsOrpEffCicliEsecService } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
+import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
+import { useGetTargaMezziService } from "@/services/api/services/targa-mezzi";
+import { ArtAna } from "@/services/api/types/art-ana";
+import { TipoTrasferta } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
 import { FilterItem } from "@/services/api/types/filter";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { OrpEffCicli } from "@/services/api/types/orp-eff-cicli";
+import { SortEnum } from "@/services/api/types/sort-type";
+import { TargaMezzi } from "@/services/api/types/targa-mezzi";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import AirportShuttleTwoToneIcon from "@mui/icons-material/AirportShuttleTwoTone";
@@ -29,6 +36,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import dayjs from "dayjs";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   ChangeEvent,
@@ -38,18 +46,10 @@ import {
   useMemo,
   useState,
 } from "react";
-import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
-import Children from "./children";
-import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
-import { useGetOrpEffCicliService } from "@/services/api/services/orp-eff-cicli";
-import { useGetTargaMezziService } from "@/services/api/services/targa-mezzi";
-import { ArtAna } from "@/services/api/types/art-ana";
-import { TipoTrasferta } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec";
-import { SortEnum } from "@/services/api/types/sort-type";
-import { TargaMezzi } from "@/services/api/types/targa-mezzi";
-import dayjs from "dayjs";
 import { OperatoreSelected } from "../../opertore-selected";
+import { usePostEpsNestjsOrpEffCicliEsecChildService } from "../../queries/queries";
 import { AnelloGiallo, StelleEuropee } from "../../targa-mezzi-table";
+import Children from "./children";
 dayjs.locale("it");
 
 const TEMPO_OPERATORE_DEFAULT = "00:00";
@@ -129,7 +129,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
   const fetchTarga = useGetTargaMezziService();
 
   useMemo(async () => {
-    if (filtersArtAna[0].value != "") {
+    if (filtersArtAna[0].value !== "") {
       const { status, data } = await fetchTarga({
         page: 0,
         limit: 500,
@@ -430,8 +430,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       idfk: Number(id), // idfk sarà l'id del padre...
     };
 
-    const { data, status } =
-      await fetchPostEpsNestjsOrpEffCicliEsecChild(formData);
+    const { status } = await fetchPostEpsNestjsOrpEffCicliEsecChild(formData);
     if (status === HTTP_CODES_ENUM.CREATED) {
       enqueueSnackbar("Ore commessa aggiunte", {
         variant: "success",
@@ -441,12 +440,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
       setDialogOpen(
         "La creazione è avvenuta con successo. Vuoi aggiungere altre commesse?"
       );
-      setEnterPressed(prev => prev + 1);
+      setEnterPressed((prev) => prev + 1);
 
       if ("vibrate" in navigator) {
         navigator.vibrate(50); // Vibrate for 50ms
       }
-
     }
   };
 
@@ -692,14 +690,13 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                 }}
               />
             </Stack>
-            {codiceBreveValue.length > 0 &&
-              data?.length === 0 && (
-                <Grid size={{ xs: 12 }} textAlign="center">
-                  <Typography variant="h5" color="error">
-                    Nessuna commessa trovata
-                  </Typography>
-                </Grid>
-              )}
+            {codiceBreveValue.length > 0 && data?.length === 0 && (
+              <Grid size={{ xs: 12 }} textAlign="center">
+                <Typography variant="h5" color="error">
+                  Nessuna commessa trovata
+                </Typography>
+              </Grid>
+            )}
             {result.length > 0 &&
               result[0].orpEff !== null &&
               result[0].orpEff.STATUS === 2 && (
@@ -759,7 +756,7 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                     {item?.orpEffCicliPadre?.gerarchiaDocumenti?.map(
                                       (it, index) => (
                                         <Fragment key={it.DOC_ID}>
-                                          {index != 0 && (
+                                          {index !== 0 && (
                                             <Typography
                                               variant="body1"
                                               gutterBottom
@@ -898,45 +895,45 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
 
                           {/* Riga ordine (solo se necessario) */}
                           {item?.DES_CICLO !== item.orpEff?.DES_PROD && (
-                              <>
-                                <Grid
-                                  size={{ xs: 12, sm: 1 }}
-                                  textAlign={{ xs: "right", sm: "right" }}
-                                >
-                                  <Typography variant="caption">
-                                    Desc. ciclo
-                                  </Typography>
-                                </Grid>
-                                <Grid
-                                  size={{ xs: 12, sm: 11 }}
-                                  textAlign={{ xs: "center", sm: "left" }}
-                                >
-                                  <Typography variant="h4" gutterBottom>
-                                    {(() => {
-                                      const desCiclo = item?.DES_CICLO ?? "";
-                                      // const desRiga = item?.linkOrpOrd && item.linkOrpOrd[0]?.ordCliRighe?.DES_RIGA ? item.linkOrpOrd[0].ordCliRighe.DES_RIGA : "";
-                                      // if (desCiclo && desRiga) {
-                                      //   if (desCiclo.includes(desRiga)) {
-                                      //     // Show the part of desCiclo that is not in desRiga
-                                      //     return desCiclo
-                                      //       .replace(desRiga, "")
-                                      //       .trim();
-                                      //   } else if (desRiga.includes(desCiclo)) {
-                                      //     // Show the part of desRiga that is not in desCiclo
-                                      //     return desRiga
-                                      //       .replace(desCiclo, "")
-                                      //       .trim();
-                                      //   } else {
-                                      //     // Show both if no containment
-                                      //     return `${desCiclo} / ${desRiga}`;
-                                      //   }
-                                      // }
-                                      return desCiclo;
-                                    })()}
-                                  </Typography>
-                                </Grid>
-                              </>
-                            )}
+                            <>
+                              <Grid
+                                size={{ xs: 12, sm: 1 }}
+                                textAlign={{ xs: "right", sm: "right" }}
+                              >
+                                <Typography variant="caption">
+                                  Desc. ciclo
+                                </Typography>
+                              </Grid>
+                              <Grid
+                                size={{ xs: 12, sm: 11 }}
+                                textAlign={{ xs: "center", sm: "left" }}
+                              >
+                                <Typography variant="h4" gutterBottom>
+                                  {(() => {
+                                    const desCiclo = item?.DES_CICLO ?? "";
+                                    // const desRiga = item?.linkOrpOrd && item.linkOrpOrd[0]?.ordCliRighe?.DES_RIGA ? item.linkOrpOrd[0].ordCliRighe.DES_RIGA : "";
+                                    // if (desCiclo && desRiga) {
+                                    //   if (desCiclo.includes(desRiga)) {
+                                    //     // Show the part of desCiclo that is not in desRiga
+                                    //     return desCiclo
+                                    //       .replace(desRiga, "")
+                                    //       .trim();
+                                    //   } else if (desRiga.includes(desCiclo)) {
+                                    //     // Show the part of desRiga that is not in desCiclo
+                                    //     return desRiga
+                                    //       .replace(desCiclo, "")
+                                    //       .trim();
+                                    //   } else {
+                                    //     // Show both if no containment
+                                    //     return `${desCiclo} / ${desRiga}`;
+                                    //   }
+                                    // }
+                                    return desCiclo;
+                                  })()}
+                                </Typography>
+                              </Grid>
+                            </>
+                          )}
                         </Grid>
                       </TableContainer>
                     </Grid>

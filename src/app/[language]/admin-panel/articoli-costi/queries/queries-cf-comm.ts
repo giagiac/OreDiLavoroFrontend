@@ -30,10 +30,12 @@ export const useGetCfCommQuery = ({
   sort,
   filters,
   othersFilters,
+  COD_CF,
 }: {
   sort?: CfCommSortType | undefined;
   filters?: Array<FilterItem<CfComm>> | undefined;
   othersFilters?: Array<OthersFiltersItem> | undefined;
+  COD_CF?: String | undefined;
 } = {}) => {
   const fetch = useGetCfCommService();
 
@@ -51,7 +53,7 @@ export const useGetCfCommQuery = ({
           limit: 50,
           sort: sort ? [sort] : undefined,
           filters,
-          othersFilters,
+          COD_CF: COD_CF as String,
         },
         {
           signal,

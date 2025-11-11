@@ -175,12 +175,15 @@ function FormBasicInfo() {
 
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
       (
-        Object.keys(data.errors) as Array<keyof EditProfileBasicInfoFormData>
+        Object.keys(data?.errors || {}) as Array<
+          keyof EditProfileBasicInfoFormData
+        >
       ).forEach((key) => {
+        // data.errors is guaranteed to be defined here due to the `|| {}` in Object.keys
         setError(key, {
           type: "manual",
           message: t(
-            `profile:inputs.${key}.validation.server.${data.errors[key]}`
+            `profile:inputs.${key}.validation.server.${data?.errors[key]}`
           ),
         });
       });
@@ -281,12 +284,14 @@ function FormChangeEmail() {
 
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
       (
-        Object.keys(data.errors) as Array<keyof EditProfileChangeEmailFormData>
+        Object.keys(data?.errors || {}) as Array<
+          keyof EditProfileChangeEmailFormData
+        >
       ).forEach((key) => {
         setError(key, {
           type: "manual",
           message: t(
-            `profile:inputs.${key}.validation.server.${data.errors[key]}`
+            `profile:inputs.${key}.validation.server.${data?.errors[key]}`
           ),
         });
       });
@@ -379,14 +384,14 @@ function FormChangePassword() {
 
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
       (
-        Object.keys(data.errors) as Array<
+        Object.keys(data?.errors || {}) as Array<
           keyof EditProfileChangePasswordFormData
         >
       ).forEach((key) => {
         setError(key, {
           type: "manual",
           message: t(
-            `profile:inputs.${key}.validation.server.${data.errors[key]}`
+            `profile:inputs.${key}.validation.server.${data?.errors?.[key]}`
           ),
         });
       });

@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "src/middleware.ts",
     "./.next/types/**/*.ts",
-    ".vscode/cfComm.ts"
+    "src/services/api/services/cfComm.ts"
   ],
   "exclude": ["node_modules"]
 }

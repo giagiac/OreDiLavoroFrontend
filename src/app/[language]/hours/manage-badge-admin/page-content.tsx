@@ -8,7 +8,6 @@ import {
   EpsNestjsOrpEffCicliEsecsResponse,
   useDeleteEpsNestjsOrpEffCicliEsecService,
   useGetEpsNestjsOrpEffCicliEsecService,
-  usePatchEpsNestjsOrpEffCicliEsecChildService,
   usePatchEpsNestjsOrpEffCicliEsecService,
 } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
 import { useScheduleTaskService } from "@/services/api/services/schedule-task";
@@ -50,7 +49,6 @@ import { EditOperatoreFormData } from "../../admin-panel/operatori/create-operat
 import EditOperatori from "../../admin-panel/operatori/edit-operatori";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import { useGetMeQuery } from "./queries/queries";
-import Decimal from "decimal.js";
 
 function UserHours() {
   const searchParams = useSearchParams();
@@ -196,7 +194,7 @@ function UserHours() {
           variant: "success",
         });
       }
-      
+
       setIndex((index) => index + 1);
     }
   };
@@ -316,7 +314,7 @@ function UserHours() {
       COD_OP: data?.data[0].COD_OP || "",
       DATA_INIZIO: new Date(dateSelected.toISOString()),
       DATA_FINE: new Date(dateSelected.toISOString()),
-      HYPSERV_REQ2_COD_CHIAVE_DELETED: prev != 1 ? 1 : null,
+      HYPSERV_REQ2_COD_CHIAVE_DELETED: prev !== 1 ? 1 : null,
     };
 
     const { status } = await fetchPatchEpsNestjsOrpEffCicliEsec(formData);

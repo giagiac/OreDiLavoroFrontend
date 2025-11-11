@@ -10,13 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import TextField from "@mui/material/TextField";
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ForwardedRef, forwardRef, useRef, useState } from "react";
 import {
   Controller,
   ControllerProps,
@@ -86,11 +80,11 @@ function SelectExtendedInputRaw<T extends object>(
   const [isOpen, setIsOpen] = useState(false);
   const boxRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      boxRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     boxRef.current?.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, [isOpen]);
 
   // const value = JSON.stringify(
   //   props.value ? props.renderOption(props.value) : ""

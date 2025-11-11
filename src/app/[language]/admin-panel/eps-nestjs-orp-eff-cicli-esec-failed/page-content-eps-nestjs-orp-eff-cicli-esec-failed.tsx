@@ -1,14 +1,11 @@
 "use client";
 
-import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { GruppoDiLavoro } from "@/components/gruppo-di-lavoro";
 import { LogElaborazione } from "@/components/log-elaborazione";
 import TipoTrasfertaComponent from "@/components/tipo-trasferta";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import {
-  EpsNestjsOrpEffCicliEsecDeleteRequest,
   EpsNestjsOrpEffCicliEsecPatchRequest,
-  useDeleteEpsNestjsOrpEffCicliEsecFailedService,
   usePatchEpsNestjsOrpEffCicliEsecFailedService,
 } from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec-failed";
 import { EpsNestjsOrpEffCicliEsecFailed } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-failed";
@@ -18,134 +15,32 @@ import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import ClearIcon from "@mui/icons-material/Clear";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import RefreshTwoToneIcon from "@mui/icons-material/RefreshTwoTone";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import IconButton from "@mui/material/IconButton";
-import LinearProgress from "@mui/material/LinearProgress";
 import Paper from "@mui/material/Paper";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { formatDate } from "date-fns";
 import { it } from "date-fns/locale";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useGetEpsNestjsOrpEffCicliEsecFailedQuery } from "./queries/queries-eps-nestjs-orp-eff-cicli-esec-failed";
 
 type EpsNestjsOrpEffCicliEsecFailedKeys = keyof EpsNestjsOrpEffCicliEsecFailed;
 
-const TableCellLoadingContainer = styled(TableCell)(() => ({
-  padding: 0,
-}));
-
-function TableSortFilterCellWrapper(
-  props: PropsWithChildren<{
-    width?: number | string;
-    orderBy: EpsNestjsOrpEffCicliEsecFailedKeys;
-    order: SortEnum;
-    column: EpsNestjsOrpEffCicliEsecFailedKeys;
-    handleRequestSort: (
-      event: React.MouseEvent<unknown>,
-      property: EpsNestjsOrpEffCicliEsecFailedKeys
-    ) => void;
-    filters: Array<FilterItem<EpsNestjsOrpEffCicliEsecFailed>>;
-    handleRequestFilter: (
-      prop: FilterItem<EpsNestjsOrpEffCicliEsecFailed>
-    ) => void;
-  }>
-) {
-  const value =
-    props.filters?.find((it) => it.columnName === props.column)?.value || "";
-  const [text, setText] = useState<string | number>(value);
-
-  const handleCancellaTesto = () => {
-    setText("");
-    const currentProp = {
-      value: "",
-      columnName: props.column,
-    } as FilterItem<EpsNestjsOrpEffCicliEsecFailed>;
-    props.handleRequestFilter(currentProp);
-  };
-
-  return (
-    <TableCell
-      style={{ width: props.width }}
-      sortDirection={props.orderBy === props.column ? props.order : false}
-    >
-      <TableSortLabel
-        active={props.orderBy === props.column}
-        direction={props.orderBy === props.column ? props.order : SortEnum.ASC}
-        onClick={(event) => props.handleRequestSort(event, props.column)}
-      >
-        {props.children}
-      </TableSortLabel>
-      <br />
-      <TextField
-        slotProps={{
-          input: {
-            endAdornment: (
-              <IconButton
-                onClick={handleCancellaTesto}
-                edge="end"
-                aria-label="cancella testo"
-              >
-                <ClearIcon />
-              </IconButton>
-            ),
-          },
-        }}
-        autoComplete="off"
-        size="small"
-        fullWidth
-        variant="standard"
-        onChange={(event) => {
-          setText(event.target.value);
-        }}
-        onKeyUp={(event) => {
-          if (event.key === "Enter" || event.keyCode === 13) {
-            const currentProp = {
-              value: text,
-              columnName: props.column,
-            } as FilterItem<EpsNestjsOrpEffCicliEsecFailed>;
-            props.handleRequestFilter(currentProp);
-          }
-          return false;
-        }}
-        onBlur={() => {
-          const currentProp = {
-            value: text,
-            columnName: props.column,
-          } as FilterItem<EpsNestjsOrpEffCicliEsecFailed>;
-          props.handleRequestFilter(currentProp);
-        }}
-        value={text}
-      />
-    </TableCell>
-  );
-}
-
 function EpsNestjsOrpEffCicliEsecComponent() {
   // const { t: tArticoliCosti } = useTranslation("admin-panel-articoli-costi");
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   useEffect(() => {
     console.log("nav changed ", window.location.search);
@@ -188,52 +83,6 @@ function EpsNestjsOrpEffCicliEsecComponent() {
     return [];
   });
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: EpsNestjsOrpEffCicliEsecFailedKeys
-  ) => {
-    const isAsc = orderBy === property && order === SortEnum.ASC;
-    const searchParams = new URLSearchParams(window.location.search);
-    const newOrder = isAsc ? SortEnum.DESC : SortEnum.ASC;
-    const newOrderBy = property;
-    searchParams.set(
-      "sort",
-      JSON.stringify({ order: newOrder, orderBy: newOrderBy })
-    );
-    setSort({
-      order: newOrder,
-      orderBy: newOrderBy,
-    });
-    router.push(window.location.pathname + "?" + searchParams.toString());
-  };
-
-  const handleRequestFilter = (
-    prop: FilterItem<EpsNestjsOrpEffCicliEsecFailed>
-  ) => {
-    const { value, columnName } = prop;
-    const searchParams = new URLSearchParams(window.location.search);
-
-    let oldFilter: Array<FilterItem<EpsNestjsOrpEffCicliEsecFailed>> =
-      JSON.parse(searchParams.get("filter") || "[]");
-
-    const prev = oldFilter.find((it) => it.columnName === columnName);
-    if (prev) {
-      // Update
-      prev.value = value;
-    } else if (String(value).length > 0) {
-      // New one
-      oldFilter = [...oldFilter, { columnName, value }];
-    }
-
-    // se value è vuoto rimuovo tutto l'oggetto
-    oldFilter = oldFilter.filter((it) => String(it.value).length > 0);
-
-    searchParams.set("filter", JSON.stringify(oldFilter));
-
-    setFilters(oldFilter);
-    router.push(window.location.pathname + "?" + searchParams.toString());
-  };
-
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } =
     useGetEpsNestjsOrpEffCicliEsecFailedQuery({
       sort: { order, orderBy },
@@ -260,46 +109,7 @@ function EpsNestjsOrpEffCicliEsecComponent() {
     [key: string]: string;
   }
 
-  const [open, setOpen] = useState<ItemDetail>({});
-
-  const handleOpen = (id: string) => {
-    setOpen(
-      (prevOpen) =>
-        ({
-          ...prevOpen,
-          [id]: !prevOpen[id],
-        }) as ItemDetail
-    );
-  };
-
-  const fetchDeleteEpsNestjsOrpEffCicliEsec =
-    useDeleteEpsNestjsOrpEffCicliEsecFailedService();
-
-  const { confirmDialog } = useConfirmDialog();
   const { enqueueSnackbar } = useSnackbar();
-  const onDelete = async (
-    formData: EpsNestjsOrpEffCicliEsecDeleteRequest
-  ): Promise<boolean | void> => {
-    const isConfirmed = await confirmDialog({
-      title: "Cancella esecuzione",
-      message: "Vuoi confermare la cancellazione?",
-    });
-
-    if (isConfirmed) {
-      const { status } = await fetchDeleteEpsNestjsOrpEffCicliEsec(formData);
-
-      refetch();
-
-      if (status === HTTP_CODES_ENUM.OK) {
-        enqueueSnackbar("Disabilitato correttamente", {
-          variant: "success",
-        });
-        return Promise.resolve(true);
-      }
-
-      return Promise.resolve(false);
-    }
-  };
 
   const fetchPatchEpsNestjsOrpEffCicliEsecFailed =
     usePatchEpsNestjsOrpEffCicliEsecFailedService();
@@ -329,35 +139,14 @@ function EpsNestjsOrpEffCicliEsecComponent() {
     }
   };
 
-  const handleEsecuzioneOperatore = (codiceChiave: string) => {
-    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
-      HYPSERV_REQ2_COD_CHIAVE: codiceChiave,
-    };
-    onDelete(formData);
-  };
-
-  const handleCostoOperatore = (codiceChiave: string) => {
-    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
-      APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA: codiceChiave,
-    };
-    onDelete(formData);
-  };
-
-  const handleCostoKm = (codiceChiave: string) => {
-    const formData: EpsNestjsOrpEffCicliEsecDeleteRequest = {
-      APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM: codiceChiave,
-    };
-    onDelete(formData);
-  };
-
-  const theme = useTheme();
-
   return (
     <Container maxWidth="xl">
       <Grid container pt={3}>
         <Grid container spacing={0} size={{ xs: 12 }}>
           <Grid size="grow">
-            <Typography variant="h3">{"Gestione esecuzioni fallite"}</Typography>
+            <Typography variant="h3">
+              {"Gestione esecuzioni fallite"}
+            </Typography>
           </Grid>
         </Grid>
         <Grid size={{ xs: 12 }}>

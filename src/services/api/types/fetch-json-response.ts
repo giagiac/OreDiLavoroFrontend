@@ -15,6 +15,8 @@ export type FetchJsonResponse<T> =
         | HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY
         | HTTP_CODES_ENUM.GATEWAY_TIMEOUT;
       data: undefined;
-      error: any;
+      error: {
+        message: string;
+      };
     }
   | ValidationErrors;

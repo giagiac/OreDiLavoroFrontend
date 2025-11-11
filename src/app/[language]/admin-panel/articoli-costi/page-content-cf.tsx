@@ -38,8 +38,7 @@ import React, {
 import FormCreateEdit from "./create/page-content-cf";
 import CfCommPage from "./page-content-cf-comm";
 import { useGetCfQuery } from "./queries/queries-cf";
-import purple from "@mui/material/colors/purple";
-import red from "@mui/material/colors/red";
+import orange from "@mui/material/colors/orange";
 
 type CfKeys = keyof Cf;
 
@@ -237,8 +236,8 @@ function Cfs() {
 
   const theme = useTheme();
 
-  const cPurple = purple[900];
-  const cRed = red["100"];
+  let cDark;
+  let cLight;
 
   return (
     <Container maxWidth={false} sx={{ px: { xs: 1, sm: 2 } }}>
@@ -307,95 +306,109 @@ function Cfs() {
                 )}
               </TableHead>
               <TableBody sx={{ border: "none" }}>
-                {result.map((cf) => (
-                  <TableRow sx={{ border: "none" }} key={cf.COD_CF}>
-                    <TableCell
-                      colSpan={4}
-                      sx={{ border: "none", padding: theme.spacing(0.5) }}
-                    >
-                      <Paper
-                        elevation={5}
-                        sx={{
-                          backgroundColor:
-                            theme.palette.mode === "dark" ? cPurple : cRed,
-                        }}
+                {result.map((cf) => {
+                  if (cf.COD_CF === "DEFAULT_CF") {
+                    cDark = orange[900];
+                    cLight = orange[400];
+                  } else {
+                    cDark = theme.palette.primary.dark;
+                    cLight = theme.palette.primary.light;
+                  }
+                  return (
+                    <TableRow sx={{ border: "none" }} key={cf.COD_CF}>
+                      <TableCell
+                        colSpan={4}
+                        sx={{ border: "none", padding: theme.spacing(0.5) }}
                       >
-                        <Table
-                          style={{
-                            borderCollapse: "separate",
-                            borderBottom: "none",
+                        <Paper
+                          elevation={5}
+                          sx={{
+                            backgroundColor:
+                              theme.palette.mode === "dark" ? cDark : cLight,
                           }}
                         >
-                          <TableBody>
-                            <TableRow>
-                              <TableCell style={{ width: 10, border: "none" }}>
-                                {cf.COD_CF !== "DEFAULT_CF" &&
-                                  cf.articoliCostiCf && (
-                                    <IconButton
-                                      aria-label={
-                                        open[cf.COD_CF]
-                                          ? "Chiudi dettagli"
-                                          : "Espandi dettagli"
-                                      }
-                                      size="small"
-                                      onClick={() => handleOpen(cf.COD_CF)}
-                                    >
-                                      {open[cf.COD_CF] ? (
-                                        <KeyboardArrowUpIcon />
-                                      ) : (
-                                        <KeyboardArrowDownIcon />
-                                      )}
-                                    </IconButton>
-                                  )}
-                              </TableCell>
-                              <TableCell style={{ border: "none" }} colSpan={4}>
-                                <Typography
-                                  component="span"
-                                  variant="body2"
-                                  sx={{ color: "text.secondary" }}
+                          <Table
+                            style={{
+                              borderCollapse: "separate",
+                              borderBottom: "none",
+                            }}
+                          >
+                            <TableBody>
+                              <TableRow>
+                                <TableCell
+                                  style={{ width: 10, border: "none" }}
                                 >
-                                  {cf?.RAG_SOC_CF} · {cf?.P_IVA_CF}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell style={{ border: "none" }}>
-                                <Typography
-                                  component="span"
-                                  variant="body2"
-                                  sx={{
-                                    fontFamily: "Monospace, monospace",
-                                    fontWeight: 700,
-                                  }}
+                                  {cf.COD_CF !== "DEFAULT_CF" &&
+                                    cf.articoliCostiCf && (
+                                      <IconButton
+                                        aria-label={
+                                          open[cf.COD_CF]
+                                            ? "Chiudi dettagli"
+                                            : "Espandi dettagli"
+                                        }
+                                        size="small"
+                                        onClick={() => handleOpen(cf.COD_CF)}
+                                      >
+                                        {open[cf.COD_CF] ? (
+                                          <KeyboardArrowUpIcon />
+                                        ) : (
+                                          <KeyboardArrowDownIcon />
+                                        )}
+                                      </IconButton>
+                                    )}
+                                </TableCell>
+                                <TableCell
+                                  style={{ border: "none" }}
+                                  colSpan={4}
                                 >
-                                  {cf?.COD_CF}
-                                </Typography>
-                              </TableCell>
-                              <TableCell
-                                colSpan={3}
-                                padding="none"
-                                style={{ border: "none" }}
-                              >
-                                <FormCreateEdit cf={cf} />
-                              </TableCell>
-                            </TableRow>
-                            {open[cf.COD_CF] && (
-                              <TableRow
-                                sx={{
-                                  borderBottom: "none",
-                                }}
-                              >
-                                <TableCell colSpan={4}>
-                                  <CfCommPage {...cf} />
+                                  <Typography
+                                    component="span"
+                                    variant="body2"
+                                    sx={{ color: "text.secondary" }}
+                                  >
+                                    {cf?.RAG_SOC_CF} · {cf?.P_IVA_CF}
+                                  </Typography>
                                 </TableCell>
                               </TableRow>
-                            )}
-                          </TableBody>
-                        </Table>
-                      </Paper>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                              <TableRow>
+                                <TableCell style={{ border: "none" }}>
+                                  <Typography
+                                    component="span"
+                                    variant="body2"
+                                    sx={{
+                                      fontFamily: "Monospace, monospace",
+                                      fontWeight: 700,
+                                    }}
+                                  >
+                                    {cf?.COD_CF}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell
+                                  colSpan={3}
+                                  padding="none"
+                                  style={{ border: "none" }}
+                                >
+                                  <FormCreateEdit cf={cf} />
+                                </TableCell>
+                              </TableRow>
+                              {open[cf.COD_CF] && (
+                                <TableRow
+                                  sx={{
+                                    borderBottom: "none",
+                                  }}
+                                >
+                                  <TableCell colSpan={4}>
+                                    <CfCommPage {...cf} />
+                                  </TableCell>
+                                </TableRow>
+                              )}
+                            </TableBody>
+                          </Table>
+                        </Paper>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

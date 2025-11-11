@@ -27,12 +27,6 @@ import { useMemo, useState } from "react";
 import imageLogo from "../../../../public/emotions.png";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "../hours/manage/child-eps-nestjs-orp-eff-cicli-esec-card";
 import { useGetEpsNestjsOrpEffCicliEsecQuery } from "./queries/queries";
-import {
-  EpsNestjsOrpEffCicliEsecPatchRequest,
-  usePatchEpsNestjsOrpEffCicliEsecService,
-} from "@/services/api/services/eps-nestjs-orp-eff-cicli-esec";
-import { useSnackbar } from "@/hooks/use-snackbar";
-import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;
 

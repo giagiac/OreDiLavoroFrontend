@@ -13,22 +13,24 @@ import DeleteForeverTwoTone from "@mui/icons-material/DeleteForeverTwoTone";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import FileUploadTwoToneIcon from "@mui/icons-material/FileUploadTwoTone";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
-import { FormControlLabel, Switch, useMediaQuery } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid2";
 import Icon from "@mui/material/Icon";
 import Stack from "@mui/material/Stack";
 import { useTheme } from "@mui/material/styles";
+import Switch from "@mui/material/Switch";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { Fragment, useState } from "react";
 
 interface Props {
@@ -275,7 +277,7 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                 </>
               </TipoTrasfertaComponent>
             </Grid>
-            {epsNestjsOrpEffCicliEsec?.orpEffCicli != null && (
+            {epsNestjsOrpEffCicliEsec?.orpEffCicli !== null && (
               <>
                 <Grid size={{ xs: 12 }}>
                   {/* se ODP collegato a OC direttamente allora mostro le informazioni del cliente e la DES_SEDE */}
@@ -372,13 +374,13 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                       <EditTwoToneIcon />
                     </Button>
                   )}
-                {onDisable != undefined && (
+                {onDisable !== undefined && (
                   <FormControlLabel
                     labelPlacement="bottom"
                     control={
                       <Switch
                         checked={
-                          epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE_DELETED ==
+                          epsNestjsOrpEffCicliEsec.HYPSERV_REQ2_COD_CHIAVE_DELETED ===
                           null
                         }
                         onChange={() => {
@@ -556,13 +558,13 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                           </Button>
                         );
                       })()}
-                    {onDisable != undefined && (
+                    {onDisable !== undefined && (
                       <FormControlLabel
                         labelPlacement="bottom"
                         control={
                           <Switch
                             checked={
-                              child.HYPSERV_REQ2_COD_CHIAVE_DELETED == null
+                              child.HYPSERV_REQ2_COD_CHIAVE_DELETED === null
                             }
                             onChange={() => {
                               onDisable(
@@ -595,6 +597,9 @@ interface PropsCfContainer {
 }
 
 const CfContainer = ({ ordCliRighe }: PropsCfContainer) => {
+  const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
+  const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
+
   if (!ordCliRighe) {
     return (
       <Typography color="error" variant="h6">
@@ -607,7 +612,6 @@ const CfContainer = ({ ordCliRighe }: PropsCfContainer) => {
 
   const cfComm = ordCli.cfComm;
 
-  const [selectedOrdCli, setSelectedOrdCli] = useState<OrdCli | null>(null);
   const handleOpen = (ordCli: OrdCli) => {
     setSelectedOrdCli(ordCli);
   };
@@ -615,7 +619,6 @@ const CfContainer = ({ ordCliRighe }: PropsCfContainer) => {
     setSelectedOrdCli(null);
   };
 
-  const [selectedCf, setSelectedCf] = useState<Cf | null>(null);
   const handleOpenCf = (cf: Cf) => {
     setSelectedCf(cf);
   };

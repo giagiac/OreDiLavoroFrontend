@@ -327,7 +327,7 @@ function UserHours() {
       COD_OP: userSelected?.COD_OP || "",
       TEMPO_OPERATORE: tempoOreOperatore,
       DATA_INIZIO: new Date(dateSelected.toISOString()),
-      DATA_FINE:new Date(dateSelected.toISOString()),
+      DATA_FINE: new Date(dateSelected.toISOString()),
     };
 
     const { status } = await fetchPatchEpsNestjsOrpEffCicliEsec(formData);

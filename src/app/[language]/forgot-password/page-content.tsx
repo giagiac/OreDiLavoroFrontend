@@ -64,16 +64,16 @@ function Form() {
     const { data, status } = await fetchAuthForgotPassword(formData);
 
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof ForgotPasswordFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `forgot-password:inputs.${key}.validation.server.${data.errors[key]}`
-            ),
-          });
-        }
-      );
+      (
+        Object.keys(data?.errors || {}) as Array<keyof ForgotPasswordFormData>
+      ).forEach((key) => {
+        setError(key, {
+          type: "manual",
+          message: t(
+            `forgot-password:inputs.${key}.validation.server.${data!.errors![key]}`
+          ),
+        });
+      });
 
       return;
     }

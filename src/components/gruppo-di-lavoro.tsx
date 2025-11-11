@@ -1,5 +1,6 @@
 import { EpsNestjsOrpEffCicliEsecFailed } from "@/services/api/types/eps-nestjs-orp-eff-cicli-esec-failed";
-import { Grid2 as Grid, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import Typography from "@mui/material/Typography";
 
 interface GruppoDiLavoroProps {
   item: EpsNestjsOrpEffCicliEsecFailed;

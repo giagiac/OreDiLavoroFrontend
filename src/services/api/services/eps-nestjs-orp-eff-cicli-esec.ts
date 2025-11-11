@@ -153,11 +153,11 @@ export type EpsNestjsOrpEffCicliEsecPatchRequest = {
 
   HYPSERV_REQ2_COD_CHIAVE_DELETED?: EpsNestjsOrpEffCicliEsec["HYPSERV_REQ2_COD_CHIAVE_DELETED"];
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM_DELETED"];
-  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED"]
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA_DELETED"];
 
-  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM ?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM"]
-  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA ?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA"]
-  HYPSERV_REQ2_COD_CHIAVE? : EpsNestjsOrpEffCicliEsec["HYPSERV_REQ2_COD_CHIAVE"]
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM"];
+  APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA?: EpsNestjsOrpEffCicliEsec["APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA"];
+  HYPSERV_REQ2_COD_CHIAVE?: EpsNestjsOrpEffCicliEsec["HYPSERV_REQ2_COD_CHIAVE"];
 };
 
 export type EpsNestjsOrpEffCicliEsecPostResponse = EpsNestjsOrpEffCicliEsec;
@@ -250,8 +250,7 @@ export function useGetEpsNestjsOrpEffCicliEsecOperatoreService() {
       return fetch(requestUrl, {
         method: "GET",
         ...requestConfig,
-      })
-        .then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>)
+      }).then(wrapperFetchJsonResponse<EpsNestjsOrpEffCicliEsecsResponse>);
     },
     [fetch]
   );

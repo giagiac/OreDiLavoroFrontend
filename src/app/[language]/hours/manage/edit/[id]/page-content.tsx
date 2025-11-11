@@ -147,11 +147,11 @@ function FormEditUser() {
     },
   });
 
-  const { handleSubmit, setError, reset } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
     const isEmailDirty = methods.getFieldState("email").isDirty;
-    const { data, status } = await fetchPatchUser({
+    const { status } = await fetchPatchUser({
       id: userId,
       data: {
         ...formData,
@@ -286,10 +286,10 @@ function FormChangePasswordUser() {
     },
   });
 
-  const { handleSubmit, setError, reset } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { data, status } = await fetchPatchUser({
+    const { status } = await fetchPatchUser({
       id: userId,
       data: formData,
     });

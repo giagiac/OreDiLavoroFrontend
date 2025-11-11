@@ -1,4 +1,3 @@
-
 export type HypServReq2 = {
   COD_CHIAVE: string;
 

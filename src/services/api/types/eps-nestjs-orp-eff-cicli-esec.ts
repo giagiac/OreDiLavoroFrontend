@@ -1,9 +1,9 @@
 import Decimal from "decimal.js";
+import { ArtAna } from "./art-ana";
+import { EpsNestjsOrpEffCicliEsecChild } from "./eps-nestjs-orp-eff-cicli-esec-child";
 import { Operatori } from "./operatori";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
-import { EpsNestjsOrpEffCicliEsecChild } from "./eps-nestjs-orp-eff-cicli-esec-child";
-import { ArtAna } from "./art-ana";
 
 export type TipoTrasferta =
   | "in_sede"
@@ -40,7 +40,7 @@ export type EpsNestjsOrpEffCicliEsec = {
   DOC_ID?: string | null;
   AZIENDA_ID?: number | null;
   TIPO_TRASFERTA: TipoTrasferta;
-  
+
   HYPSERV_REQ2_COD_CHIAVE: string | null;
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_KM?: string | null;
   APP_REQ3_HYPSERV_COD_CHIAVE_COSTO_OPERATORE_TRASFERTA?: string | null;

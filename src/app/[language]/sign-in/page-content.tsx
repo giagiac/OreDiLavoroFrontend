@@ -82,12 +82,12 @@ function Form() {
     const { data, status } = await fetchAuthLogin(formData);
 
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof SignInFormData>).forEach(
+      (Object.keys(data?.errors || {}) as Array<keyof SignInFormData>).forEach(
         (key) => {
           setError(key, {
             type: "manual",
             message: t(
-              `sign-in:inputs.${key}.validation.server.${data.errors[key]}`
+              `sign-in:inputs.${key}.validation.server.${data?.errors?.[key]}`
             ),
           });
         }

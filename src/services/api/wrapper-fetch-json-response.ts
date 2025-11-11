@@ -4,7 +4,7 @@ import HTTP_CODES_ENUM from "./types/http-codes";
 async function wrapperFetchJsonResponse<T>(
   response: Response
 ): Promise<FetchJsonResponse<T>> {
-  if (response?.status != null) {
+  if (response?.status !== undefined && response?.status !== null) {
     const status = response.status as FetchJsonResponse<T>["status"];
 
     if (status === HTTP_CODES_ENUM.OK || status === HTTP_CODES_ENUM.CREATED) {

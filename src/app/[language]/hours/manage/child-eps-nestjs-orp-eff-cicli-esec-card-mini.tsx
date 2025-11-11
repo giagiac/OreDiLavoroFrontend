@@ -5,9 +5,6 @@ import { EpsNestjsOrpEffCicliEsec } from "@/services/api/types/eps-nestjs-orp-ef
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import {
-  useMediaQuery
-} from "@mui/material";
 
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
@@ -20,12 +17,11 @@ import { Fragment, useState } from "react";
 
 interface Props {
   epsNestjsOrpEffCicliEsec: EpsNestjsOrpEffCicliEsec;
-  onUpdate: (id: string, TEMPO_OPERATORE: string | null) => Promise<boolean>;
+  onUpdate?: (id: string, TEMPO_OPERATORE: string | null) => Promise<boolean>;
 }
 
 export function ChildEpsNestjsOrpEffCicliEsecCardMini({
   epsNestjsOrpEffCicliEsec,
-  onUpdate,
 }: Props) {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [childContentVisible, setChildContentVisible] = useState<{
@@ -44,14 +40,6 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
   };
 
   const theme = useTheme();
-
-  const [editOpen, setEditOpen] = useState<string | null>(null);
-
-  const [tempoOreOperatore, setTempoOreOperatore] = useState<string | null>(
-    null
-  );
-
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const color =
     theme.palette.mode === "dark"

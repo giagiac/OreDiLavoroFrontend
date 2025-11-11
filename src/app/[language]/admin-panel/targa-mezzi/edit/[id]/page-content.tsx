@@ -158,7 +158,7 @@ function FormEditUser() {
         email: isEmailDirty ? formData.email : undefined,
       },
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
+    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY && data !== undefined) {
       (Object.keys(data.errors) as Array<keyof EditUserFormData>).forEach(
         (key) => {
           setError(key, {
@@ -302,12 +302,14 @@ function FormChangePasswordUser() {
     });
     if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
       (
-        Object.keys(data.errors) as Array<keyof ChangeUserPasswordFormData>
+        Object.keys(data?.errors || {}) as Array<
+          keyof ChangeUserPasswordFormData
+        >
       ).forEach((key) => {
         setError(key, {
           type: "manual",
           message: t(
-            `admin-panel-users-edit:inputs.${key}.validation.server.${data.errors[key]}`
+            `admin-panel-users-edit:inputs.${key}.validation.server.${data?.errors?.[key]}`
           ),
         });
       });

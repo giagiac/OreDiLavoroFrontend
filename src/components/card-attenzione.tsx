@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { ButtonTipoTrasferta } from "../../../../components/button-tipo-trasferta";
+import { ButtonTipoTrasferta } from "./button-tipo-trasferta";
 
 type CardAttenzioneProps = {
   onFuoriSedeClick?: () => void;

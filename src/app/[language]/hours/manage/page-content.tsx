@@ -33,12 +33,12 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import imageLogo from "../../../../../public/emotions.png";
-import CardAttenzione from "./card-attenzione";
 import { ChildEpsNestjsOrpEffCicliEsecCard } from "./child-eps-nestjs-orp-eff-cicli-esec-card";
 import {
   useGetEpsNestjsOrpEffCicliEsecQuery,
   useGetMeQuery,
 } from "./queries/queries";
+import CardAttenzione from "@/components/card-attenzione";
 dayjs.locale("it");
 
 type EpsNestjsOrpEffCicliEsecKeys = keyof EpsNestjsOrpEffCicliEsec;

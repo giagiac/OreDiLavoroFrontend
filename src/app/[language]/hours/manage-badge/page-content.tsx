@@ -1,6 +1,7 @@
 "use client";
 
 import { ButtonTipoTrasferta } from "@/components/button-tipo-trasferta";
+import CardAttenzione from "@/components/card-attenzione";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import {
@@ -171,8 +172,10 @@ function UserHours() {
           const { data, status } = await fetchGetMe({
             COD_OP: String(codOpValue),
           });
-          if (status === HTTP_CODES_ENUM.OK) {
+          if (data != undefined && status === HTTP_CODES_ENUM.OK) {
             setUserSelected(data as User);
+          } else {
+            setUserSelected(null);
           }
         } catch (error) {
           console.log(error);
@@ -455,6 +458,18 @@ function UserHours() {
             </Grid>
             {result.length === 0 && (
               <Grid size={{ xs: 12 }}>
+                <CardAttenzione
+                  onInSedeClick={() =>
+                    router.push(
+                      `${window.location.pathname}/create/in_sede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${data?.dateInizio}`
+                    )
+                  }
+                  onFuoriSedeClick={() =>
+                    router.push(
+                      `${window.location.pathname}/step1_FuoriSede?COD_OP=${userSelected?.COD_OP}&DATA_INIZIO=${data?.dateInizio}`
+                    )
+                  }
+                />
                 <Box
                   display="flex-column"
                   justifyContent="center"

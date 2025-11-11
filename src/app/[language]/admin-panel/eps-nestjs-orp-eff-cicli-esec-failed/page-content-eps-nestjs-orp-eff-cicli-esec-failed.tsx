@@ -256,73 +256,75 @@ function EpsNestjsOrpEffCicliEsecComponent() {
         <Grid size={{ xs: 12 }} mb={2}>
           <TableContainer component={Paper} elevation={3}>
             <Table size="small" sx={{ m: 0, p: 0, borderCollapse: "separate" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ width: "10%" }} />
-                  <TableSortFilterCellWrapper
-                    width={"20%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="id"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    id
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"20%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="DOC_ID"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    Ordine di Produzione
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"20%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="COD_OP"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    Codice Operatore
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"30%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="TIPO_TRASFERTA"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    Tipo trasferta
-                  </TableSortFilterCellWrapper>
-                  <TableSortFilterCellWrapper
-                    width={"30%"}
-                    orderBy={orderBy}
-                    order={order}
-                    column="DATA_INIZIO"
-                    filters={filters}
-                    handleRequestSort={handleRequestSort}
-                    handleRequestFilter={handleRequestFilter}
-                  >
-                    Data
-                  </TableSortFilterCellWrapper>
-                </TableRow>
-                {isFetchingNextPage && (
+              {result.length > 0 && (
+                <TableHead>
                   <TableRow>
-                    <TableCellLoadingContainer colSpan={6}>
-                      <LinearProgress />
-                    </TableCellLoadingContainer>
+                    <TableCell style={{ width: "10%" }} />
+                    <TableSortFilterCellWrapper
+                      width={"20%"}
+                      orderBy={orderBy}
+                      order={order}
+                      column="id"
+                      filters={filters}
+                      handleRequestSort={handleRequestSort}
+                      handleRequestFilter={handleRequestFilter}
+                    >
+                      id
+                    </TableSortFilterCellWrapper>
+                    <TableSortFilterCellWrapper
+                      width={"20%"}
+                      orderBy={orderBy}
+                      order={order}
+                      column="DOC_ID"
+                      filters={filters}
+                      handleRequestSort={handleRequestSort}
+                      handleRequestFilter={handleRequestFilter}
+                    >
+                      Ordine di Produzione
+                    </TableSortFilterCellWrapper>
+                    <TableSortFilterCellWrapper
+                      width={"20%"}
+                      orderBy={orderBy}
+                      order={order}
+                      column="COD_OP"
+                      filters={filters}
+                      handleRequestSort={handleRequestSort}
+                      handleRequestFilter={handleRequestFilter}
+                    >
+                      Codice Operatore
+                    </TableSortFilterCellWrapper>
+                    <TableSortFilterCellWrapper
+                      width={"30%"}
+                      orderBy={orderBy}
+                      order={order}
+                      column="TIPO_TRASFERTA"
+                      filters={filters}
+                      handleRequestSort={handleRequestSort}
+                      handleRequestFilter={handleRequestFilter}
+                    >
+                      Tipo trasferta
+                    </TableSortFilterCellWrapper>
+                    <TableSortFilterCellWrapper
+                      width={"30%"}
+                      orderBy={orderBy}
+                      order={order}
+                      column="DATA_INIZIO"
+                      filters={filters}
+                      handleRequestSort={handleRequestSort}
+                      handleRequestFilter={handleRequestFilter}
+                    >
+                      Data
+                    </TableSortFilterCellWrapper>
                   </TableRow>
-                )}
-              </TableHead>
+                  {isFetchingNextPage && (
+                    <TableRow>
+                      <TableCellLoadingContainer colSpan={6}>
+                        <LinearProgress />
+                      </TableCellLoadingContainer>
+                    </TableRow>
+                  )}
+                </TableHead>
+              )}
               <TableBody>
                 {result.map((item, index) => {
                   return (

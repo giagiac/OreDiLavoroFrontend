@@ -337,7 +337,9 @@ function UserHours() {
 
   return (
     <Container maxWidth="xl">
-      {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) && (
+      {[RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
+        user?.role?.id as RoleEnum
+      ) && (
         <FormProvider {...methods}>
           <EditOperatori
             join={true}
@@ -373,7 +375,9 @@ function UserHours() {
                 direction="column"
                 alignItems={"flex-end"}
               >
-                {[RoleEnum.ADMIN].includes(user?.role?.id as RoleEnum) ? (
+                {[RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
+                  user?.role?.id as RoleEnum
+                ) ? (
                   <LocalizationProvider
                     dateAdapter={AdapterDayjs}
                     adapterLocale={language}
@@ -473,7 +477,7 @@ function UserHours() {
               padding: theme.spacing(1),
             })}
           >
-            {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
+            {[RoleEnum.AUTISTA, RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
               userSelected?.role?.id as RoleEnum
             ) && (
               <Grid>
@@ -524,5 +528,5 @@ function UserHours() {
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.ADMIN],
+  roles: [RoleEnum.ADMIN, RoleEnum.CANTIERE],
 });

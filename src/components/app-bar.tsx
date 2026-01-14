@@ -121,9 +121,12 @@ function ResponsiveAppBar() {
               }}
             >
               {!!user?.role &&
-                [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER].includes(
-                  Number(user?.role?.id)
-                ) && (
+                [
+                  RoleEnum.ADMIN,
+                  RoleEnum.AUTISTA,
+                  RoleEnum.USER,
+                  RoleEnum.CANTIERE,
+                ].includes(Number(user?.role?.id)) && (
                   <MenuItem
                     onClick={handleCloseNavMenu}
                     component={Link}
@@ -147,7 +150,9 @@ function ResponsiveAppBar() {
                 ]}
 
               {!!user?.role &&
-                [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && [
+                [RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
+                  Number(user?.role?.id)
+                ) && [
                   <MenuItem
                     key="badge"
                     onClick={handleCloseNavMenu}
@@ -271,9 +276,12 @@ function ResponsiveAppBar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {!!user?.role &&
-              [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER].includes(
-                Number(user?.role?.id)
-              ) && (
+              [
+                RoleEnum.ADMIN,
+                RoleEnum.AUTISTA,
+                RoleEnum.USER,
+                RoleEnum.CANTIERE,
+              ].includes(Number(user?.role?.id)) && (
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "inherit", display: "block" }}
@@ -295,7 +303,9 @@ function ResponsiveAppBar() {
                 </Button>
               )}
             {!!user?.role &&
-              [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && (
+              [RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
+                Number(user?.role?.id)
+              ) && (
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "inherit", display: "block" }}

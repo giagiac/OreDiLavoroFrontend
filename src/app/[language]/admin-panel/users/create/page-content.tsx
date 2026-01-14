@@ -1,26 +1,26 @@
 "use client";
 
+import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
+import FormSelectInput from "@/components/form/select/form-select";
+import FormTextInput from "@/components/form/text-input/form-text-input";
+import Link from "@/components/link";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { usePostUserService } from "@/services/api/services/users";
+import { FileEntity } from "@/services/api/types/file-entity";
+import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
+import { Role, RoleEnum } from "@/services/api/types/role";
+import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
+import { useTranslation } from "@/services/i18n/client";
+import useLeavePage from "@/services/leave-page/use-leave-page";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { useForm, FormProvider, useFormState } from "react-hook-form";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid2";
 import Typography from "@mui/material/Typography";
-import FormTextInput from "@/components/form/text-input/form-text-input";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
-import { useSnackbar } from "@/hooks/use-snackbar";
-import Link from "@/components/link";
-import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
-import { FileEntity } from "@/services/api/types/file-entity";
-import useLeavePage from "@/services/leave-page/use-leave-page";
-import Box from "@mui/material/Box";
-import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
-import { useTranslation } from "@/services/i18n/client";
-import { usePostUserService } from "@/services/api/services/users";
 import { useRouter } from "next/navigation";
-import { Role, RoleEnum } from "@/services/api/types/role";
-import FormSelectInput from "@/components/form/select/form-select";
+import { FormProvider, useForm, useFormState } from "react-hook-form";
+import * as yup from "yup";
 
 type CreateFormData = {
   email: string;
@@ -223,6 +223,9 @@ function FormCreateUser() {
                   },
                   {
                     id: RoleEnum.BADGE,
+                  },
+                  {
+                    id: RoleEnum.CANTIERE,
                   },
                 ]}
                 keyValue="id"

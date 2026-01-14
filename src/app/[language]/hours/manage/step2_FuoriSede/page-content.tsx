@@ -341,5 +341,11 @@ function CreateUser() {
 }
 
 export default withPageRequiredAuth(CreateUser, {
-  roles: [RoleEnum.ADMIN, RoleEnum.AUTISTA, RoleEnum.USER, RoleEnum.BADGE],
+  roles: [
+    RoleEnum.ADMIN,
+    RoleEnum.AUTISTA,
+    RoleEnum.USER,
+    RoleEnum.BADGE,
+    RoleEnum.CANTIERE,
+  ],
 });

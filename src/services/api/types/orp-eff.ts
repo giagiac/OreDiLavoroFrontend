@@ -1,3 +1,4 @@
+import { LinkOrpOrd } from "./link-orp-ord";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { X1TrasCodici } from "./x1-tras-codici";
 
@@ -14,4 +15,6 @@ export type OrpEff = {
 
   orpEffCicli?: OrpEffCicli | null;
   x1TrasCodici?: X1TrasCodici | null;
+
+  linkOrpOrd?: Array<LinkOrpOrd> | null;
 };

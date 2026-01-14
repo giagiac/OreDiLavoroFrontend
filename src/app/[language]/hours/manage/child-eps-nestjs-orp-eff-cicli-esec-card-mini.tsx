@@ -101,19 +101,19 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
               </Fragment>
             ) : (
               // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
-              (epsNestjsOrpEffCicliEsec?.orpEffCicliPadre?.linkOrpOrd?.length ??
-                0) > 0 && (
+              (epsNestjsOrpEffCicliEsec?.orpEffPadre?.linkOrpOrd?.length ?? 0) >
+                0 && (
                 <Fragment>
                   <Typography>
                     {
-                      epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
-                        ?.linkOrpOrd?.[0]?.ordCliRighe?.cf.RAG_SOC_CF
+                      epsNestjsOrpEffCicliEsec?.orpEffPadre?.linkOrpOrd?.[0]
+                        ?.ordCliRighe?.cf.RAG_SOC_CF
                     }
                   </Typography>
                   <Typography>
                     {
-                      epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
-                        ?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                      epsNestjsOrpEffCicliEsec?.orpEffPadre?.linkOrpOrd?.[0]
+                        ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
                     }
                   </Typography>
                 </Fragment>
@@ -203,18 +203,18 @@ export function ChildEpsNestjsOrpEffCicliEsecCardMini({
                 </Fragment>
               ) : (
                 // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
-                (child?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) > 0 && (
+                (child?.orpEffPadre?.linkOrpOrd?.length ?? 0) > 0 && (
                   <Fragment>
                     <Typography>
                       {
-                        child?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe
-                          ?.cf.RAG_SOC_CF
+                        child?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe?.cf
+                          .RAG_SOC_CF
                       }
                     </Typography>
                     <Typography>
                       {
-                        child?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe
-                          ?.ordCli.cfComm?.DES_SEDE
+                        child?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
+                          .cfComm?.DES_SEDE
                       }
                     </Typography>
                   </Fragment>

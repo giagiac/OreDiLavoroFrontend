@@ -20,18 +20,15 @@ const Cliente: React.FC<ClienteProps> = ({ item }) => {
         </Fragment>
       ) : (
         <>
-          {(item?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) > 0 ? (
+          {(item?.orpEffPadre?.linkOrpOrd?.length ?? 0) > 0 ? (
             <Fragment>
               <Typography variant="h4" gutterBottom>
-                {
-                  item?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe?.cf
-                    .RAG_SOC_CF
-                }
+                {item?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe?.cf.RAG_SOC_CF}
               </Typography>
               <Typography variant="h4" gutterBottom>
                 {
-                  item?.orpEffCicliPadre?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli
-                    .cfComm?.DES_SEDE
+                  item?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli.cfComm
+                    ?.DES_SEDE
                 }
               </Typography>
             </Fragment>

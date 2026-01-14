@@ -4,6 +4,7 @@ import { EpsNestjsOrpEffCicliEsecChild } from "./eps-nestjs-orp-eff-cicli-esec-c
 import { Operatori } from "./operatori";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
+import { OrpEff } from "./orp-eff";
 
 export type TipoTrasferta =
   | "in_sede"
@@ -59,5 +60,5 @@ export type EpsNestjsOrpEffCicliEsec = {
 
   epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChild> | null;
 
-  orpEffCicliPadre?: OrpEffCicli | null;
+  orpEffPadre?: OrpEff | null;
 };

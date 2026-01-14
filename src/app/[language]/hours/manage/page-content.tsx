@@ -301,9 +301,12 @@ function UserHours() {
           padding: theme.spacing(1),
         })}
       >
-        {[RoleEnum.AUTISTA, RoleEnum.ADMIN, RoleEnum.BADGE].includes(
-          user?.role?.id as RoleEnum
-        ) && (
+        {[
+          RoleEnum.AUTISTA,
+          RoleEnum.ADMIN,
+          RoleEnum.BADGE,
+          RoleEnum.CANTIERE,
+        ].includes(user?.role?.id as RoleEnum) && (
           <Grid>
             <ButtonTipoTrasferta
               tipoTrasfertaButton="km_autista_button"
@@ -347,5 +350,11 @@ function UserHours() {
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
+  roles: [
+    RoleEnum.ADMIN,
+    RoleEnum.USER,
+    RoleEnum.AUTISTA,
+    RoleEnum.BADGE,
+    RoleEnum.CANTIERE,
+  ],
 });

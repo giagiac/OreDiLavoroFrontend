@@ -3,6 +3,7 @@ export enum RoleEnum {
   USER = 2,
   AUTISTA = 3,
   BADGE = 4,
+  CANTIERE = 5,
 }
 
 export type Role = {

@@ -96,5 +96,11 @@ function AdminPanel() {
 }
 
 export default withPageRequiredAuth(AdminPanel, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
+  roles: [
+    RoleEnum.ADMIN,
+    RoleEnum.USER,
+    RoleEnum.AUTISTA,
+    RoleEnum.BADGE,
+    RoleEnum.CANTIERE,
+  ],
 });

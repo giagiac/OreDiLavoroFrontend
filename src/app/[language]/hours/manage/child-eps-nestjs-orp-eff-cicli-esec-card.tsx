@@ -305,25 +305,25 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                     </Fragment>
                   ) : (
                     // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
-                    (epsNestjsOrpEffCicliEsec?.orpEffCicliPadre?.linkOrpOrd
+                    (epsNestjsOrpEffCicliEsec?.orpEffPadre?.linkOrpOrd
                       ?.length ?? 0) > 0 && (
                       <Fragment>
                         <Typography>
                           {
-                            epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
+                            epsNestjsOrpEffCicliEsec?.orpEffPadre
                               ?.linkOrpOrd?.[0]?.ordCliRighe?.cf.RAG_SOC_CF
                           }
                         </Typography>
                         <Typography>
                           {
-                            epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
+                            epsNestjsOrpEffCicliEsec?.orpEffPadre
                               ?.linkOrpOrd?.[0]?.ordCliRighe?.ordCli.cfComm
                               ?.DES_SEDE
                           }
                         </Typography>
                         <CfContainer
                           ordCliRighe={
-                            epsNestjsOrpEffCicliEsec?.orpEffCicliPadre
+                            epsNestjsOrpEffCicliEsec?.orpEffPadre
                               ?.linkOrpOrd?.[0]?.ordCliRighe
                           }
                         />
@@ -492,25 +492,23 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                       </Fragment>
                     ) : (
                       // se ODP collegato a OC indirettamente mostro il CF dell'OC padre
-                      (child?.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) >
-                        0 && (
+                      (child?.orpEffPadre?.linkOrpOrd?.length ?? 0) > 0 && (
                         <Fragment>
                           <Typography>
                             {
-                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                                ?.ordCliRighe?.cf.RAG_SOC_CF
+                              child?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe
+                                ?.cf.RAG_SOC_CF
                             }
                           </Typography>
                           <Typography>
                             {
-                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                                ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
+                              child?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe
+                                ?.ordCli.cfComm?.DES_SEDE
                             }
                           </Typography>
                           <CfContainer
                             ordCliRighe={
-                              child?.orpEffCicliPadre?.linkOrpOrd?.[0]
-                                ?.ordCliRighe
+                              child?.orpEffPadre?.linkOrpOrd?.[0]?.ordCliRighe
                             }
                           />
                         </Fragment>

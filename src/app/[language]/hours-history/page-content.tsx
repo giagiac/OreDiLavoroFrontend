@@ -180,5 +180,11 @@ function UserHours() {
 }
 
 export default withPageRequiredAuth(UserHours, {
-  roles: [RoleEnum.ADMIN, RoleEnum.USER, RoleEnum.AUTISTA, RoleEnum.BADGE],
+  roles: [
+    RoleEnum.ADMIN,
+    RoleEnum.USER,
+    RoleEnum.AUTISTA,
+    RoleEnum.BADGE,
+    RoleEnum.CANTIERE,
+  ],
 });

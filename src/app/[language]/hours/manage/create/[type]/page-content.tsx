@@ -749,11 +749,10 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 {item?.DOC_ID}
                               </Typography>
                             ) : (
-                              (item?.orpEffCicliPadre?.gerarchiaDocumenti
-                                ?.length ?? 0) > 0 && (
+                              (item?.gerarchiaDocumenti?.length ?? 0) > 0 && (
                                 <Fragment>
                                   <Stack direction="row">
-                                    {item?.orpEffCicliPadre?.gerarchiaDocumenti?.map(
+                                    {item?.gerarchiaDocumenti?.map(
                                       (it, index) => (
                                         <Fragment key={it.DOC_ID}>
                                           {index !== 0 && (
@@ -796,11 +795,11 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                                 {item?.linkOrpOrd?.[0]?.ordCliRighe?.DOC_ID}
                               </Typography>
                             ) : (
-                              (item.orpEffCicliPadre?.linkOrpOrd?.length ?? 0) >
+                              (item.orpEffPadre?.linkOrpOrd?.length ?? 0) >
                                 0 && (
                                 <Typography variant="body1" gutterBottom>
                                   {
-                                    item.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                    item.orpEffPadre?.linkOrpOrd?.[0]
                                       ?.ordCliRighe?.DOC_ID
                                   }
                                 </Typography>
@@ -852,18 +851,18 @@ function FormCreateEpsNestjsOrpEffCicliEsec() {
                               </Fragment>
                             ) : (
                               <>
-                                {(item?.orpEffCicliPadre?.linkOrpOrd?.length ??
-                                  0) > 0 ? (
+                                {(item?.orpEffPadre?.linkOrpOrd?.length ?? 0) >
+                                0 ? (
                                   <Fragment>
                                     <Typography variant="h4" gutterBottom>
                                       {
-                                        item?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                        item?.orpEffPadre?.linkOrpOrd?.[0]
                                           ?.ordCliRighe?.cf.RAG_SOC_CF
                                       }
                                     </Typography>
                                     <Typography variant="h4" gutterBottom>
                                       {
-                                        item?.orpEffCicliPadre?.linkOrpOrd?.[0]
+                                        item?.orpEffPadre?.linkOrpOrd?.[0]
                                           ?.ordCliRighe?.ordCli.cfComm?.DES_SEDE
                                       }
                                     </Typography>

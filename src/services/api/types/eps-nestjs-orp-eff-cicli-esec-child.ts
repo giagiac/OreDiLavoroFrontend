@@ -4,6 +4,7 @@ import { ArtAna } from "./art-ana";
 import { Operatori } from "./operatori";
 import { OrpEffCicli } from "./orp-eff-cicli";
 import { OrpEffCicliEsec } from "./orp-eff-cicli-esec";
+import { OrpEff } from "./orp-eff";
 
 export type EpsNestjsOrpEffCicliEsecChild = {
   id: string;
@@ -43,5 +44,5 @@ export type EpsNestjsOrpEffCicliEsecChild = {
 
   artAna?: ArtAna | null;
 
-  orpEffCicliPadre?: OrpEffCicli | null;
+  orpEffPadre?: OrpEff | null;
 };

@@ -509,7 +509,7 @@ function UserHours() {
               padding: theme.spacing(1),
             })}
           >
-            {[RoleEnum.AUTISTA, RoleEnum.ADMIN].includes(
+            {[RoleEnum.AUTISTA, RoleEnum.ADMIN, RoleEnum.CANTIERE].includes(
               userSelected?.role?.id as RoleEnum
             ) && (
               <Grid>

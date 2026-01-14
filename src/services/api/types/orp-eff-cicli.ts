@@ -18,6 +18,6 @@ export type OrpEffCicli = {
   orpEffCicliEsec?: OrpEffCicliEsec | null;
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsec | null;
 
-  orpEffCicliPadre?: OrpEffCicli;
+  orpEffPadre?: OrpEff;
   gerarchiaDocumenti?: [{ DOC_ID: string }];
 };

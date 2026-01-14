@@ -242,6 +242,9 @@ function FormEditUser() {
                   {
                     id: RoleEnum.BADGE,
                   },
+                  {
+                    id: RoleEnum.CANTIERE,
+                  },
                 ]}
                 keyValue="id"
                 renderOption={(option) =>

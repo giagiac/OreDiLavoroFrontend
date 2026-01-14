@@ -50,7 +50,7 @@
     "mailparser": "^3.7.0",
     "mui-tiptap": "^1.17.0",
     "nanoid": "^5.0.1",
-    "next": "^15.5.4",
+    "next": "15.5.9",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-dropzone": "^14.3.5",

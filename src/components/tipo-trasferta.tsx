@@ -73,23 +73,23 @@ const TipoTrasfertaComponent: React.FC<TipoTrasfertaProps> = ({
       break;
     case "ancora_in_trasferta_0":
       icon = <HourglassTopTwoToneIcon />;
-      descrizione = "ancora in trasferta 0";
+      descrizione = "ancora in trasferta 0 km";
       break;
     case "ancora_in_trasferta_10":
       icon = <HourglassTopTwoToneIcon />;
-      descrizione = "ancora in trasferta 10";
+      descrizione = "ancora in trasferta 10 km";
       break;
     case "ancora_in_trasferta_20":
       icon = <HourglassTopTwoToneIcon />;
-      descrizione = "ancora in trasferta 20";
+      descrizione = "ancora in trasferta 20 km";
       break;
     case "ancora_in_trasferta_30":
       icon = <HourglassTopTwoToneIcon />;
-      descrizione = "ancora in trasferta 30";
+      descrizione = "ancora in trasferta 30 km";
       break;
     case "ancora_in_trasferta_40":
       icon = <HourglassTopTwoToneIcon />;
-      descrizione = "ancora in trasferta 40";
+      descrizione = "ancora in trasferta 40 km";
       break;
     case "step1_km_autista":
       icon = <AirportShuttleTwoToneIcon />;

@@ -13,6 +13,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     "admin-panel-hours-create"
   );
 
+  
   return {
     title: t("title"),
   };

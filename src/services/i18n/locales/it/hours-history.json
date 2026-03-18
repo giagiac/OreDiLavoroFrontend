@@ -16,27 +16,27 @@
   },
   "actions": {
     "add": "Add User",
-    "edit": "Edit",
-    "delete": "Delete",
-    "create": "Create User"
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "create": "Aggiunta ore"
   },
   "confirm": {
     "delete": {
-      "title": "Delete User",
-      "message": "Are you sure you want to delete this user?"
+      "title": "Elimina Utente",
+      "message": "Sei sicuro di voler eliminare questo utente?"
     }
   },
   "filter": {
     "actions": {
-      "filter": "Filter",
-      "apply": "Apply"
+      "filter": "Filtra",
+      "apply": "Applica"
     },
     "inputs": {
       "role": {
-        "label": "Role",
+        "label": "Ruolo",
         "options": {
           "1": "Admin",
-          "2": "User",
+          "2": "Utente",
           "3": "Autista",
           "4": "Badge",
           "5": "Cantiere"

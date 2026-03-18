@@ -7,24 +7,24 @@
   },
   "actions": {
     "add": "Add User",
-    "edit": "Edit",
-    "delete": "Delete",
-    "create": "Create User"
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "create": "Articoli costi"
   },
   "confirm": {
     "delete": {
-      "title": "Delete User",
-      "message": "Are you sure you want to delete this user?"
+      "title": "Elimina Articolo",
+      "message": "Sei sicuro di voler eliminare questo articolo?"
     }
   },
   "filter": {
     "actions": {
-      "filter": "Filter",
-      "apply": "Apply"
+      "filter": "Filtra",
+      "apply": "Applica"
     },
     "inputs": {
       "role": {
-        "label": "Role",
+        "label": "Ruolo",
         "options": {
           "1": "Admin",
           "2": "User",

@@ -1,0 +1,64 @@
+{
+  "title": "Creazione ore",
+  "actions": {
+    "submit": "Salva",
+    "cancel": "Annulla"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "validation": {
+        "invalid": "Email non valida",
+        "required": "Email è richiesta",
+        "server": {
+          "emailAlreadyExists": "Email già esistente"
+        }
+      }
+    },
+    "firstName": {
+      "label": "Nome",
+      "validation": {
+        "required": "Nome è richiesto"
+      }
+    },
+    "lastName": {
+      "label": "Cognome",
+      "validation": {
+        "required": "Cognome è richiesto"
+      }
+    },
+    "role": {
+      "label": "Ruolo",
+      "validation": {
+        "required": "Ruolo è richiesto"
+      },
+      "options": {
+        "1": "Admin",
+        "2": "Utente",
+        "3": "Autista",
+        "4": "Badge",
+        "5": "Cantiere"
+      }
+    },
+    "password": {
+      "label": "Password",
+      "validation": {
+        "required": "Password è richiesta",
+        "min": "La password deve essere lunga almeno 6 caratteri"
+      }
+    },
+    "passwordConfirmation": {
+      "label": "Conferma password",
+      "validation": {
+        "required": "Conferma password è richiesta",
+        "match": "La conferma password deve corrispondere alla password"
+      }
+    },
+    "<system>": "Do not remove this property"
+  },
+  "alerts": {
+    "user": {
+      "success": "Il profilo utente è stato creato con successo"
+    }
+  }
+}

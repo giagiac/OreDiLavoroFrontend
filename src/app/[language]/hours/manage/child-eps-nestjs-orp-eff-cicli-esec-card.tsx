@@ -203,7 +203,8 @@ export function ChildEpsNestjsOrpEffCicliEsecCard({
                     </Stack>
                   ) : (
                     <Stack direction="row" textAlign="center" spacing={1}>
-                      {user?.role?.id === RoleEnum.ADMIN && (
+                      {(user?.role?.id === RoleEnum.ADMIN ||
+                        user?.role?.id === RoleEnum.CANTIERE) && (
                         <>
                           {onSendHG && (
                             // solo gli amministratori possono inviare il lavoro ad HG
